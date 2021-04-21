@@ -1,0 +1,34 @@
+package com.thecattest.samsung.lyceumreports;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+
+import com.thecattest.samsung.lyceumreports.DataServices.Student;
+
+import java.util.ArrayList;
+
+public class StudentsAdapter extends ArrayAdapter<Student> {
+    public StudentsAdapter(Context context, ArrayList<Student> students) {
+        super(context, android.R.layout.simple_list_item_1, students);
+    }
+
+    @NonNull
+    @Override
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+        final Student student = getItem(position);
+        if (convertView == null) {
+            convertView = LayoutInflater.from(getContext()).inflate(android.R.layout.simple_list_item_1, parent, false);
+        }
+
+        String studentText = student.name + (student.absent ? " absent" : "");
+        ((TextView) convertView.findViewById(android.R.id.text1)).setText(studentText);
+
+        return convertView;
+    }
+}

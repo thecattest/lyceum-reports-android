@@ -2,10 +2,13 @@ package com.thecattest.samsung.lyceumreports;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.thecattest.samsung.lyceumreports.DataServices.Day;
@@ -23,12 +26,18 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
     private static final String URL = "http:92.53.124.98:8002";
+    private TextView classLabel;
+    private ListView studentsListView;
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_day);
+        context = this;
 
+        classLabel = findViewById(R.id.classLabel);
+        studentsListView = findViewById(R.id.studentsList);
         Button datePickerTrigger = findViewById(R.id.datePickerTrigger);
         MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
                 .setTitleText("SELECT A DATE")
@@ -47,9 +56,15 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    class GetDayAsyncTask extends AsyncTask<String, Void, Void> {
+    protected void updateDay(Day day) {
+        classLabel.setText(day.name);
+        StudentsAdapter studentsAdapter = new StudentsAdapter(this, day.students);
+        studentsListView.setAdapter(studentsAdapter);
+    }
+
+    class GetDayAsyncTask extends AsyncTask<String, Void, Day> {
         @Override
-        protected Void doInBackground(String... params) {
+        protected Day doInBackground(String... params) {
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(URL)
                     .addConverterFactory(GsonConverterFactory.create())
@@ -58,12 +73,18 @@ public class MainActivity extends AppCompatActivity {
             Call<Day> call = service.getDay(6, params[0]);
             try {
                 Response<Day> dayResponse = call.execute();
-                Day d = dayResponse.body();
-                Log.d("GET_DAY", "Day " + params[0] + ": " + d);
+                Day day = dayResponse.body();
+                Log.d("GET_DAY", "Day " + params[0] + ": " + day);
+                return day;
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return null;
+            return new Day();
+        }
+
+        @Override
+        protected void onPostExecute(Day day) {
+            updateDay(day);
         }
     }
 }
