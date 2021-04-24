@@ -1,6 +1,7 @@
 package com.thecattest.samsung.lyceumreports;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,8 +27,10 @@ public class StudentsAdapter extends ArrayAdapter<Student> {
             convertView = LayoutInflater.from(getContext()).inflate(android.R.layout.simple_list_item_1, parent, false);
         }
 
-        String studentText = student.name + (student.absent ? " absent" : "");
+        String studentText = student.name;
         ((TextView) convertView.findViewById(android.R.id.text1)).setText(studentText);
+        int backgroundColor = student.absent ? R.color.absent : R.color.white;
+        convertView.setBackgroundColor(getContext().getResources().getColor(backgroundColor));
 
         return convertView;
     }

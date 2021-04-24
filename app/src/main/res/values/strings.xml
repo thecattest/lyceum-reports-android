@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Lyceum Reports</string>
+    <string name="confirmButtonDefault">Подтвердить</string>
+    <string name="confirmButtonNoOneAbsent">Все в классе</string>
+    <string name="selectDateLabel">Выбрать дату</string>
+    <string name="serverDateFormat"></string>
 </resources>
