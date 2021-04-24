@@ -2,6 +2,7 @@ package com.thecattest.samsung.lyceumreports;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
                     datePickerTrigger.setText(datePicker.getHeaderText());
                     Log.d("DatePicker", selection.toString());
                     Date selectedDate = new Date(selection);
-                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                    @SuppressLint("SimpleDateFormat") DateFormat df = new SimpleDateFormat(getResources().getString(R.string.serverDateFormat));
                     String formattedDate = df.format(selectedDate);
                     Log.d("DatePicker", formattedDate);
 
