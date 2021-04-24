@@ -4,11 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -18,31 +15,41 @@ import com.thecattest.samsung.lyceumreports.DataServices.Day;
 import com.thecattest.samsung.lyceumreports.DataServices.DayService;
 import com.thecattest.samsung.lyceumreports.DataServices.Student;
 
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
     private static final String URL = "http:92.53.124.98:8002";
+
     private TextView classLabel;
     private ListView studentsListView;
     private Button confirmButton;
+
     private Day currentDay = new Day();
-    private ArrayList<Integer> currentAbsent = new ArrayList<>();
+    private ArrayList<Integer> loadedAbsent = new ArrayList<>();
+
     Context context;
+    private DayService dayService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_day);
         context = this;
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        dayService = retrofit.create(DayService.class);
 
         classLabel = findViewById(R.id.classLabel);
         studentsListView = findViewById(R.id.studentsList);
@@ -61,7 +68,20 @@ public class MainActivity extends AppCompatActivity {
                     String formattedDate = df.format(selectedDate);
                     Log.d("DatePicker", formattedDate);
 
-                    new GetDayAsyncTask().execute(formattedDate);
+                    Call<Day> call = dayService.getDay(6, formattedDate);
+                    call.enqueue(new Callback<Day>() {
+                        @Override
+                        public void onResponse(Call<Day> call, Response<Day> response) {
+                            currentDay = response.body();
+                            updateDay();
+                        }
+
+                        @Override
+                        public void onFailure(Call<Day> call, Throwable t) {
+                            currentDay = new Day();
+                            updateDay();
+                        }
+                    });
                 });
     }
 
@@ -69,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         classLabel.setText(currentDay.name);
         StudentsAdapter studentsAdapter = new StudentsAdapter(this, currentDay.students);
         studentsListView.setAdapter(studentsAdapter);
-        currentAbsent = currentDay.getAbsentStudents();
+        loadedAbsent = currentDay.getAbsentStudents();
         updateButton();
         studentsListView.setOnItemClickListener((parent, view, position, id) -> {
             Student student = (Student)parent.getItemAtPosition(position);
@@ -81,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void updateButton() {
-        if(currentAbsent.equals(currentDay.getAbsentStudents()) && currentDay.status.equals(Day.STATUS.OK)) {
+        if(loadedAbsent.equals(currentDay.getAbsentStudents()) && currentDay.status.equals(Day.STATUS.OK)) {
             if (currentDay.getAbsentStudents().size() == 0)
                 confirmButton.setText(getResources().getString(R.string.confirmButtonNoOneAbsent));
             else
@@ -93,33 +113,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             confirmButton.setText(R.string.confirmButtonDefault);
             confirmButton.setEnabled(true);
-        }
-    }
-
-    class GetDayAsyncTask extends AsyncTask<String, Void, Day> {
-        @Override
-        protected Day doInBackground(String... params) {
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(URL)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-            DayService service = retrofit.create(DayService.class);
-            Call<Day> call = service.getDay(6, params[0]);
-            try {
-                Response<Day> dayResponse = call.execute();
-                Day day = dayResponse.body();
-                Log.d("GET_DAY", "Day " + params[0] + ": " + day);
-                return day;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return new Day();
-        }
-
-        @Override
-        protected void onPostExecute(Day day) {
-            currentDay = day;
-            updateDay();
         }
     }
 }
