@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Day {
     public int id;
-    public String name = "...";
+    public String name = "";
     public String status = STATUS.EMPTY;
     public ArrayList<Student> students = new ArrayList<>(0);
 

@@ -8,7 +8,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +38,9 @@ public class MainActivity extends AppCompatActivity implements MaterialPickerOnP
     private ListView studentsListView;
     private Button confirmButton;
     private Button datePickerTrigger;
+    private RelativeLayout buttonsGroup;
+    private RelativeLayout main;
+    private LinearLayout loading;
 
     private MaterialDatePicker<Long> datePicker;
 
@@ -63,6 +68,9 @@ public class MainActivity extends AppCompatActivity implements MaterialPickerOnP
         studentsListView = findViewById(R.id.studentsList);
         confirmButton = findViewById(R.id.confirmButton);
         datePickerTrigger = findViewById(R.id.datePickerTrigger);
+        buttonsGroup = findViewById(R.id.buttonsGroup);
+        main = findViewById(R.id.main);
+        loading = findViewById(R.id.loadingLayout);
     }
 
     protected void initRetrofit() {
@@ -116,8 +124,9 @@ public class MainActivity extends AppCompatActivity implements MaterialPickerOnP
 
     protected void setLoading() {
         currentDay = new Day();
-        currentDay.name = "Loading...";
         updateDayView();
+        main.setVisibility(View.GONE);
+        loading.setVisibility(View.VISIBLE);
     }
 
     protected String formatDate(Long selection) {
@@ -132,6 +141,8 @@ public class MainActivity extends AppCompatActivity implements MaterialPickerOnP
     }
 
     protected void updateDayView() {
+        main.setVisibility(View.VISIBLE);
+        loading.setVisibility(View.GONE);
         classLabel.setText(currentDay.name);
         studentsAdapter = new StudentsAdapter(this, currentDay.students);
         studentsListView.setAdapter(studentsAdapter);

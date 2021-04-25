@@ -4,4 +4,5 @@
     <string name="confirmButtonNoOneAbsent">Все в классе</string>
     <string name="selectDateLabel">Выбрать дату</string>
     <string name="serverDateFormat">yyyy-MM-dd</string>
+    <string name="loadingLabel">Загрузка…</string>
 </resources>
