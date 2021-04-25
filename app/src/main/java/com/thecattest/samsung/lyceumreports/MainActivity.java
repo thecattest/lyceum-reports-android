@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -27,7 +29,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity implements MaterialPickerOnPositiveButtonClickListener<Long>{
+public class MainActivity extends AppCompatActivity implements MaterialPickerOnPositiveButtonClickListener<Long>, AdapterView.OnItemClickListener{
     private static final String URL = "http:92.53.124.98:8002";
 
     private TextView classLabel;
@@ -39,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements MaterialPickerOnP
 
     private Day currentDay = new Day();
     private ArrayList<Integer> loadedAbsent = new ArrayList<>();
+    private StudentsAdapter studentsAdapter;
 
     private DayService dayService;
 
@@ -50,6 +53,9 @@ public class MainActivity extends AppCompatActivity implements MaterialPickerOnP
         initRetrofit();
         findViews();
         initDatePicker();
+
+        studentsAdapter = new StudentsAdapter(this, new ArrayList<>());
+        studentsListView.setOnItemClickListener(this);
     }
 
     protected void findViews() {
@@ -80,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements MaterialPickerOnP
     public void onPositiveButtonClick(Long selection) {
         datePickerTrigger.setText(datePicker.getHeaderText());
         String formattedDate = formatDate(selection);
+        setLoading();
         Call<Day> call = dayService.getDay(6, formattedDate);
         call.enqueue(new Callback<Day>() {
             @Override
@@ -97,6 +104,22 @@ public class MainActivity extends AppCompatActivity implements MaterialPickerOnP
         });
     }
 
+    // Students list item click
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Student student = (Student)parent.getItemAtPosition(position);
+        student.absent = !student.absent;
+        Log.d("ItemClick", student.name + (student.absent ? " absent" : "not absent"));
+        studentsAdapter.notifyDataSetChanged();
+        updateConfirmButton();
+    }
+
+    protected void setLoading() {
+        currentDay = new Day();
+        currentDay.name = "Loading...";
+        updateDayView();
+    }
+
     protected String formatDate(Long selection) {
         Date selectedDate = new Date(selection);
         String serverDateFormat = getResources().getString(R.string.serverDateFormat);
@@ -110,17 +133,10 @@ public class MainActivity extends AppCompatActivity implements MaterialPickerOnP
 
     protected void updateDayView() {
         classLabel.setText(currentDay.name);
-        StudentsAdapter studentsAdapter = new StudentsAdapter(this, currentDay.students);
+        studentsAdapter = new StudentsAdapter(this, currentDay.students);
         studentsListView.setAdapter(studentsAdapter);
         loadedAbsent = currentDay.getAbsentStudents();
         updateConfirmButton();
-        studentsListView.setOnItemClickListener((parent, view, position, id) -> {
-            Student student = (Student)parent.getItemAtPosition(position);
-            student.absent = !student.absent;
-            Log.d("ItemClick", student.name + (student.absent ? " absent" : "not absent"));
-            studentsAdapter.notifyDataSetChanged();
-            updateConfirmButton();
-        });
     }
 
     protected void updateConfirmButton() {
