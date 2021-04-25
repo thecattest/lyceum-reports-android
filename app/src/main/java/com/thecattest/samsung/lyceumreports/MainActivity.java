@@ -140,18 +140,10 @@ public class MainActivity extends AppCompatActivity implements MaterialPickerOnP
     }
 
     protected void updateConfirmButton() {
-        if(loadedAbsent.equals(currentDay.getAbsentStudents()) && currentDay.status.equals(Day.STATUS.OK)) {
-            if (currentDay.getAbsentStudents().size() == 0)
-                confirmButton.setText(getResources().getString(R.string.confirmButtonNoOneAbsent));
-            else
-                confirmButton.setText(getResources().getString(R.string.confirmButtonDefault));
-            confirmButton.setEnabled(false);
-        } else if (currentDay.getAbsentStudents().size() == 0){
+        confirmButton.setEnabled(!loadedAbsent.equals(currentDay.getAbsentStudents()) || !currentDay.status.equals(Day.STATUS.OK));
+        if (currentDay.getAbsentStudents().size() == 0)
             confirmButton.setText(getResources().getString(R.string.confirmButtonNoOneAbsent));
-            confirmButton.setEnabled(true);
-        } else {
-            confirmButton.setText(R.string.confirmButtonDefault);
-            confirmButton.setEnabled(true);
-        }
+        else
+            confirmButton.setText(getResources().getString(R.string.confirmButtonDefault));
     }
 }
