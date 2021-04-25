@@ -8,4 +8,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="absent">#EAC1C1</color>
+    <color name="header">#E6E6E6</color>
+    <color name="status_bar_night">#EEEEEE</color>
+    <color name="status_bar">#AAAAAA</color>
 </resources>
