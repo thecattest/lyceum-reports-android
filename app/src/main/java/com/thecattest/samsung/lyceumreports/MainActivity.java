@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.thecattest.samsung.lyceumreports.DataServices.Day;
 import com.thecattest.samsung.lyceumreports.DataServices.DayService;
 import com.thecattest.samsung.lyceumreports.DataServices.Student;
@@ -46,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements MaterialPickerOnP
 
     private MaterialDatePicker<Long> datePicker;
 
-    private Day currentDay = new Day();
+    private Day currentDay = new Day(true);
     private ArrayList<Integer> loadedAbsent = new ArrayList<>();
     private StudentsAdapter studentsAdapter;
     private Long currentSelection;
@@ -157,6 +158,13 @@ public class MainActivity extends AppCompatActivity implements MaterialPickerOnP
         classLabel.setText(currentDay.name);
         updateStudentsAdapterData();
         updateConfirmButton();
+        if (!currentDay.empty && currentDay.status.equals(Day.STATUS.EMPTY)) {
+            Snackbar.make(
+                    serverError,
+                    getResources().getString(R.string.no_info_for_day),
+                    Snackbar.LENGTH_LONG
+            ).setAnchorView(buttonsGroup).show();
+        }
     }
 
     private void updateStudentsAdapterData() {
@@ -192,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements MaterialPickerOnP
     }
 
     protected void setLoadingStatus() {
-        currentDay = new Day();
+        currentDay = new Day(true);
         updateDayView();
         setLoadingLayout();
     }

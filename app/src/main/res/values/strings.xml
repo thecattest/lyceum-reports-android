@@ -8,4 +8,5 @@
     <string name="oops">Ой</string>
     <string name="somethingGoneWrong">Что-то пошло не так</string>
     <string name="retry"><u>Попробовать снова</u></string>
+    <string name="no_info_for_day">За этот день данных нет</string>
 </resources>

@@ -7,6 +7,13 @@ public class Day {
     public String name = "";
     public String status = STATUS.EMPTY;
     public ArrayList<Student> students = new ArrayList<>(0);
+    public boolean empty = false;
+
+    public Day() {}
+
+    public Day(boolean empty) {
+        this.empty = empty;
+    }
 
     public ArrayList<Integer> getAbsentStudents(){
         ArrayList<Integer> absentStudents = new ArrayList<>(0);
