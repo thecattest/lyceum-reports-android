@@ -5,4 +5,7 @@
     <string name="selectDateLabel">Выбрать дату</string>
     <string name="serverDateFormat">yyyy-MM-dd</string>
     <string name="loadingLabel">Загрузка…</string>
+    <string name="oops">Ой</string>
+    <string name="somethingGoneWrong">Что-то пошло не так</string>
+    <string name="retry"><u>Попробовать снова</u></string>
 </resources>

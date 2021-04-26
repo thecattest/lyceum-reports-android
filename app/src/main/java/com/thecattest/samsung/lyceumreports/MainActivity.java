@@ -6,8 +6,6 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -33,22 +31,25 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity implements MaterialPickerOnPositiveButtonClickListener<Long>, AdapterView.OnItemClickListener{
+public class MainActivity extends AppCompatActivity implements MaterialPickerOnPositiveButtonClickListener<Long>, AdapterView.OnItemClickListener, View.OnClickListener {
     private static final String URL = "http:92.53.124.98:8002";
 
     private TextView classLabel;
     private ListView studentsListView;
     private Button confirmButton;
     private Button datePickerTrigger;
+    private TextView retry;
     private RelativeLayout buttonsGroup;
     private RelativeLayout main;
     private LinearLayout loading;
+    private LinearLayout serverError;
 
     private MaterialDatePicker<Long> datePicker;
 
     private Day currentDay = new Day();
     private ArrayList<Integer> loadedAbsent = new ArrayList<>();
     private StudentsAdapter studentsAdapter;
+    private Long currentSelection;
 
     private DayService dayService;
 
@@ -60,9 +61,7 @@ public class MainActivity extends AppCompatActivity implements MaterialPickerOnP
         initRetrofit();
         findViews();
         initDatePicker();
-
-        studentsAdapter = new StudentsAdapter(this, new ArrayList<>());
-        studentsListView.setOnItemClickListener(this);
+        setListeners();
     }
 
     protected void findViews() {
@@ -70,9 +69,12 @@ public class MainActivity extends AppCompatActivity implements MaterialPickerOnP
         studentsListView = findViewById(R.id.studentsList);
         confirmButton = findViewById(R.id.confirmButton);
         datePickerTrigger = findViewById(R.id.datePickerTrigger);
+        retry = findViewById(R.id.retry);
         buttonsGroup = findViewById(R.id.buttonsGroup);
+
         main = findViewById(R.id.main);
         loading = findViewById(R.id.loadingLayout);
+        serverError = findViewById(R.id.serverError);
     }
 
     protected void initRetrofit() {
@@ -91,27 +93,17 @@ public class MainActivity extends AppCompatActivity implements MaterialPickerOnP
         datePicker.addOnPositiveButtonClickListener(this);
     }
 
+    protected void setListeners() {
+        studentsListView.setOnItemClickListener(this);
+        retry.setOnClickListener(this);
+    }
+
     // Date picker positive button click
     @Override
     public void onPositiveButtonClick(Long selection) {
         datePickerTrigger.setText(datePicker.getHeaderText());
-        String formattedDate = formatDate(selection);
-        setLoading();
-        Call<Day> call = dayService.getDay(6, formattedDate);
-        call.enqueue(new Callback<Day>() {
-            @Override
-            public void onResponse(Call<Day> call, Response<Day> response) {
-                currentDay = response.body();
-                updateDayView();
-            }
-
-            @Override
-            public void onFailure(Call<Day> call, Throwable t) {
-                Toast.makeText(MainActivity.this, "Error accessing server", Toast.LENGTH_LONG).show();
-                currentDay = new Day();
-                updateDayView();
-            }
-        });
+        currentSelection = selection;
+        updateDay();
     }
 
     // Students list item click
@@ -119,16 +111,14 @@ public class MainActivity extends AppCompatActivity implements MaterialPickerOnP
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Student student = (Student)parent.getItemAtPosition(position);
         student.absent = !student.absent;
-        Log.d("ItemClick", student.name + (student.absent ? " absent" : "not absent"));
         studentsAdapter.notifyDataSetChanged();
         updateConfirmButton();
     }
 
-    protected void setLoading() {
-        currentDay = new Day();
-        updateDayView();
-        main.setVisibility(View.GONE);
-        loading.setVisibility(View.VISIBLE);
+    // Retry button click
+    @Override
+    public void onClick(View v) {
+        updateDay();
     }
 
     protected String formatDate(Long selection) {
@@ -142,14 +132,37 @@ public class MainActivity extends AppCompatActivity implements MaterialPickerOnP
         return formattedDate;
     }
 
+    private void updateDay() {
+        setLoadingStatus();
+        String formattedDate = formatDate(currentSelection);
+        Call<Day> call = dayService.getDay(6, formattedDate);
+        call.enqueue(new Callback<Day>() {
+            @Override
+            public void onResponse(Call<Day> call, Response<Day> response) {
+                currentDay = response.body();
+                updateDayView();
+            }
+
+            @Override
+            public void onFailure(Call<Day> call, Throwable t) {
+                Log.d("DayCall", t.toString());
+                Toast.makeText(MainActivity.this, "Error accessing server", Toast.LENGTH_LONG).show();
+                setServerErrorLayout();
+            }
+        });
+    }
+
     protected void updateDayView() {
-        main.setVisibility(View.VISIBLE);
-        loading.setVisibility(View.GONE);
+        setMainLayout();
         classLabel.setText(currentDay.name);
+        updateStudentsAdapterData();
+        updateConfirmButton();
+    }
+
+    private void updateStudentsAdapterData() {
         studentsAdapter = new StudentsAdapter(this, currentDay.students);
         studentsListView.setAdapter(studentsAdapter);
         loadedAbsent = currentDay.getAbsentStudents();
-        updateConfirmButton();
     }
 
     protected void updateConfirmButton() {
@@ -158,5 +171,29 @@ public class MainActivity extends AppCompatActivity implements MaterialPickerOnP
             confirmButton.setText(getResources().getString(R.string.confirmButtonNoOneAbsent));
         else
             confirmButton.setText(getResources().getString(R.string.confirmButtonDefault));
+    }
+
+    private void setMainLayout() {
+        main.setVisibility(View.VISIBLE);
+        loading.setVisibility(View.GONE);
+        serverError.setVisibility(View.GONE);
+    }
+
+    private void setLoadingLayout() {
+        loading.setVisibility(View.VISIBLE);
+        main.setVisibility(View.GONE);
+        serverError.setVisibility(View.GONE);
+    }
+
+    private void setServerErrorLayout() {
+        serverError.setVisibility(View.VISIBLE);
+        main.setVisibility(View.GONE);
+        loading.setVisibility(View.GONE);
+    }
+
+    protected void setLoadingStatus() {
+        currentDay = new Day();
+        updateDayView();
+        setLoadingLayout();
     }
 }
