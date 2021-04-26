@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements MaterialPickerOnP
             @Override
             public void onFailure(Call<Day> call, Throwable t) {
                 Log.d("DayCall", t.toString());
-                Toast.makeText(MainActivity.this, "Error accessing server", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "Error accessing server", Toast.LENGTH_SHORT).show();
                 setServerErrorLayout();
             }
         });
