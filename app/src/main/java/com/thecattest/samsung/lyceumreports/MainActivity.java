@@ -1,5 +1,6 @@
 package com.thecattest.samsung.lyceumreports;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
 import com.thecattest.samsung.lyceumreports.DataServices.Day;
 import com.thecattest.samsung.lyceumreports.DataServices.DayService;
 import com.thecattest.samsung.lyceumreports.DataServices.Student;
@@ -33,6 +35,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements MaterialPickerOnPositiveButtonClickListener<Long>, AdapterView.OnItemClickListener, View.OnClickListener {
     private static final String URL = "http:92.53.124.98:8002";
+
+    private final static String CURRENT_DAY = "CURRENT_DAY";
+    private final static String CURRENT_SELECTION = "CURRENT_SELECTION";
+    private final static String DATE_PICKER_TRIGGER_TEXT = "DATE_PICKER_TRIGGER_TEXT";
 
     private TextView classLabel;
     private ListView studentsListView;
@@ -61,6 +67,42 @@ public class MainActivity extends AppCompatActivity implements MaterialPickerOnP
         findViews();
         initDatePicker();
         setListeners();
+
+        onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            super.onRestoreInstanceState(savedInstanceState);
+
+            String dayJson = savedInstanceState.getString(CURRENT_DAY);
+            Long selection = savedInstanceState.getLong(CURRENT_SELECTION);
+            String datePickerText = savedInstanceState.getString(DATE_PICKER_TRIGGER_TEXT);
+
+            if (dayJson != null && !dayJson.isEmpty()) {
+                Gson gson = new Gson();
+                currentDay = gson.fromJson(dayJson, Day.class);
+            }
+            if (selection != null)
+                currentSelection = selection;
+            if (datePickerText != null && !datePickerText.isEmpty())
+                datePickerTrigger.setText(datePickerText);
+
+            updateDayView();
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        if (currentDay != null) {
+            Gson gson = new Gson();
+            outState.putString(CURRENT_DAY, gson.toJson(currentDay));
+        }
+        if (currentSelection != null)
+            outState.putLong(CURRENT_SELECTION, currentSelection);
+        outState.putString(DATE_PICKER_TRIGGER_TEXT, (String) datePickerTrigger.getText());
+        super.onSaveInstanceState(outState);
     }
 
     protected void findViews() {
@@ -139,6 +181,7 @@ public class MainActivity extends AppCompatActivity implements MaterialPickerOnP
             @Override
             public void onResponse(Call<Day> call, Response<Day> response) {
                 currentDay = response.body();
+                currentDay.updateLoadedAbsent();
                 updateDayView();
             }
 
@@ -168,7 +211,6 @@ public class MainActivity extends AppCompatActivity implements MaterialPickerOnP
     private void updateStudentsAdapterData() {
         studentsAdapter = new StudentsAdapter(this, currentDay.students);
         studentsListView.setAdapter(studentsAdapter);
-        currentDay.updateLoadedAbsent();
     }
 
     protected void updateConfirmButton() {
