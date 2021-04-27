@@ -69,29 +69,27 @@ public class MainActivity extends AppCompatActivity {
         initDatePicker();
         setListeners();
 
-        onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState != null)
+            onRestoreInstanceState(savedInstanceState);
     }
 
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            super.onRestoreInstanceState(savedInstanceState);
+        super.onRestoreInstanceState(savedInstanceState);
 
-            String dayJson = savedInstanceState.getString(CURRENT_DAY);
-            Long selection = savedInstanceState.getLong(CURRENT_SELECTION);
-            String datePickerText = savedInstanceState.getString(DATE_PICKER_TRIGGER_TEXT);
+        String dayJson = savedInstanceState.getString(CURRENT_DAY);
+        long selection = savedInstanceState.getLong(CURRENT_SELECTION);
+        String datePickerText = savedInstanceState.getString(DATE_PICKER_TRIGGER_TEXT);
 
-            if (dayJson != null && !dayJson.isEmpty()) {
-                Gson gson = new Gson();
-                currentDay = gson.fromJson(dayJson, Day.class);
-            }
-            if (selection != null)
-                currentSelection = selection;
-            if (datePickerText != null && !datePickerText.isEmpty())
-                datePickerTrigger.setText(datePickerText);
-
-            updateDayView();
+        if (dayJson != null && !dayJson.isEmpty()) {
+            Gson gson = new Gson();
+            currentDay = gson.fromJson(dayJson, Day.class);
         }
+        currentSelection = selection;
+        if (datePickerText != null && !datePickerText.isEmpty())
+            datePickerTrigger.setText(datePickerText);
+
+        updateDayView();
     }
 
     @Override
