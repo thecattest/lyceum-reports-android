@@ -50,11 +50,16 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/header">
 
-        <ListView
-            android:id="@+id/studentsList"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefreshLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@id/buttonsGroup"/>
+            android:layout_above="@id/buttonsGroup">
+            <ListView
+                android:id="@+id/studentsList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <RelativeLayout
             android:id="@+id/buttonsGroup"

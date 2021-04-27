@@ -2,6 +2,7 @@ package com.thecattest.samsung.lyceumreports;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private RelativeLayout main;
     private LinearLayout loading;
     private LinearLayout serverError;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     private MaterialDatePicker<Long> datePicker;
 
@@ -113,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
         buttonsGroup = findViewById(R.id.buttonsGroup);
 
         main = findViewById(R.id.main);
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         loading = findViewById(R.id.loadingLayout);
         serverError = findViewById(R.id.serverError);
     }
@@ -137,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
         studentsListView.setOnItemClickListener(this::onStudentItemClick);
         retry.setOnClickListener(this::onRetryButtonClick);
         confirmButton.setOnClickListener(this::onConfirmButtonClick);
+        swipeRefreshLayout.setOnRefreshListener(this::onRefresh);
     }
 
     // Date picker positive button click
@@ -152,6 +156,12 @@ public class MainActivity extends AppCompatActivity {
         student.absent = !student.absent;
         studentsAdapter.notifyDataSetChanged();
         updateConfirmButton();
+    }
+
+    // Refresh action
+    public void onRefresh() {
+        updateDay();
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     // Retry button click
