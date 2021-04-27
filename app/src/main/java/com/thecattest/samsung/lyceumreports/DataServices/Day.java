@@ -6,7 +6,8 @@ public class Day {
     public int id;
     public String name = "";
     public String status = STATUS.EMPTY;
-    public ArrayList<Student> students = new ArrayList<>(0);
+    public ArrayList<Student> students = new ArrayList<>();
+    private ArrayList<Integer> loadedAbsent = new ArrayList<>();
     public boolean empty = false;
 
     public Day() {}
@@ -15,12 +16,24 @@ public class Day {
         this.empty = empty;
     }
 
-    public ArrayList<Integer> getAbsentStudents(){
-        ArrayList<Integer> absentStudents = new ArrayList<>(0);
+    public void updateLoadedAbsent() {
+        loadedAbsent = getAbsentStudentsIds();
+    }
+
+    public ArrayList<Integer> getAbsentStudentsIds(){
+        ArrayList<Integer> absentStudents = new ArrayList<>();
         for (Student st : students)
             if (st.absent)
                 absentStudents.add(st.id);
         return absentStudents;
+    }
+
+    public boolean noOneAbsent() {
+        return !empty && status.equals(STATUS.EMPTY);
+    }
+
+    public boolean noChanges() {
+        return loadedAbsent.equals(getAbsentStudentsIds());
     }
 
     @Override

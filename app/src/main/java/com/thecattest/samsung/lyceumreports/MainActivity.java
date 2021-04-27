@@ -23,7 +23,6 @@ import com.thecattest.samsung.lyceumreports.DataServices.Student;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
 import retrofit2.Call;
@@ -48,7 +47,6 @@ public class MainActivity extends AppCompatActivity implements MaterialPickerOnP
     private MaterialDatePicker<Long> datePicker;
 
     private Day currentDay = new Day(true);
-    private ArrayList<Integer> loadedAbsent = new ArrayList<>();
     private StudentsAdapter studentsAdapter;
     private Long currentSelection;
 
@@ -158,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements MaterialPickerOnP
         classLabel.setText(currentDay.name);
         updateStudentsAdapterData();
         updateConfirmButton();
-        if (!currentDay.empty && currentDay.status.equals(Day.STATUS.EMPTY)) {
+        if (currentDay.noOneAbsent()) {
             Snackbar.make(
                     serverError,
                     getResources().getString(R.string.no_info_for_day),
@@ -170,12 +168,12 @@ public class MainActivity extends AppCompatActivity implements MaterialPickerOnP
     private void updateStudentsAdapterData() {
         studentsAdapter = new StudentsAdapter(this, currentDay.students);
         studentsListView.setAdapter(studentsAdapter);
-        loadedAbsent = currentDay.getAbsentStudents();
+        currentDay.updateLoadedAbsent();
     }
 
     protected void updateConfirmButton() {
-        confirmButton.setEnabled(!loadedAbsent.equals(currentDay.getAbsentStudents()) || !currentDay.status.equals(Day.STATUS.OK));
-        if (currentDay.getAbsentStudents().size() == 0)
+        confirmButton.setEnabled(!currentDay.noChanges() || currentDay.noOneAbsent());
+        if (currentDay.getAbsentStudentsIds().size() == 0)
             confirmButton.setText(getResources().getString(R.string.confirmButtonNoOneAbsent));
         else
             confirmButton.setText(getResources().getString(R.string.confirmButtonDefault));
