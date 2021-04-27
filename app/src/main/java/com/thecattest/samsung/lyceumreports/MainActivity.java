@@ -33,7 +33,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity implements MaterialPickerOnPositiveButtonClickListener<Long>, AdapterView.OnItemClickListener, View.OnClickListener {
+public class MainActivity extends AppCompatActivity {
     private static final String URL = "http:92.53.124.98:8002";
 
     private final static String CURRENT_DAY = "CURRENT_DAY";
@@ -131,25 +131,23 @@ public class MainActivity extends AppCompatActivity implements MaterialPickerOnP
                 .setTitleText(getResources().getString(R.string.selectDateLabel))
                 .build();
         datePickerTrigger.setOnClickListener(v -> datePicker.show(getSupportFragmentManager(), "MATERIAL_DATE_PICKER"));
-        datePicker.addOnPositiveButtonClickListener(this);
     }
 
     protected void setListeners() {
-        studentsListView.setOnItemClickListener(this);
-        retry.setOnClickListener(this);
+        datePicker.addOnPositiveButtonClickListener(this::onPositiveDatePickerButtonClick);
+        studentsListView.setOnItemClickListener(this::onStudentItemClick);
+        retry.setOnClickListener(this::onRetryButtonClick);
     }
 
     // Date picker positive button click
-    @Override
-    public void onPositiveButtonClick(Long selection) {
+    public void onPositiveDatePickerButtonClick(Long selection) {
         datePickerTrigger.setText(datePicker.getHeaderText());
         currentSelection = selection;
         updateDay();
     }
 
     // Students list item click
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    public void onStudentItemClick(AdapterView<?> parent, View view, int position, long id) {
         Student student = (Student)parent.getItemAtPosition(position);
         student.absent = !student.absent;
         studentsAdapter.notifyDataSetChanged();
@@ -157,8 +155,7 @@ public class MainActivity extends AppCompatActivity implements MaterialPickerOnP
     }
 
     // Retry button click
-    @Override
-    public void onClick(View v) {
+    public void onRetryButtonClick(View v) {
         updateDay();
     }
 
