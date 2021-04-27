@@ -16,10 +16,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
-import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.thecattest.samsung.lyceumreports.DataServices.Day;
+import com.thecattest.samsung.lyceumreports.DataServices.DayPost;
 import com.thecattest.samsung.lyceumreports.DataServices.DayService;
 import com.thecattest.samsung.lyceumreports.DataServices.Student;
 
@@ -35,6 +35,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
     private static final String URL = "http:92.53.124.98:8002";
+    private static final int groupId = 6;
 
     private final static String CURRENT_DAY = "CURRENT_DAY";
     private final static String CURRENT_SELECTION = "CURRENT_SELECTION";
@@ -137,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
         datePicker.addOnPositiveButtonClickListener(this::onPositiveDatePickerButtonClick);
         studentsListView.setOnItemClickListener(this::onStudentItemClick);
         retry.setOnClickListener(this::onRetryButtonClick);
+        confirmButton.setOnClickListener(this::onConfirmButtonClick);
     }
 
     // Date picker positive button click
@@ -159,21 +161,46 @@ public class MainActivity extends AppCompatActivity {
         updateDay();
     }
 
-    protected String formatDate(Long selection) {
-        Date selectedDate = new Date(selection);
-        String serverDateFormat = getResources().getString(R.string.serverDateFormat);
-        @SuppressLint("SimpleDateFormat")
-        DateFormat df = new SimpleDateFormat(serverDateFormat);
-        String formattedDate = df.format(selectedDate);
+    public void onConfirmButtonClick(View v) {
+        String formattedDate = formatDate(currentSelection);
+        String absentStudentsIdsString = currentDay.getAbsentStudentsIdsString();
+        Call<Void> call = dayService.updateDay(groupId, new DayPost(formattedDate, absentStudentsIdsString));
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                int code = response.code();
+                if (code == 200) {
+                    Snackbar.make(
+                            main,
+                            "Сработало :) код " + code,
+                            Snackbar.LENGTH_LONG
+                    ).setAnchorView(buttonsGroup).show();
+                    updateDay();
+                } else {
+                    Snackbar.make(
+                            main,
+                            "Не сработало :( код " + code,
+                            Snackbar.LENGTH_LONG
+                    ).setAnchorView(buttonsGroup).show();
+                }
+            }
 
-        Log.d("DatePicker", formattedDate);
-        return formattedDate;
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.d("UpdateDayCall", call.toString());
+                Snackbar.make(
+                        main,
+                        "Ошибка, попробуйте ещё раз позднее",
+                        Snackbar.LENGTH_LONG
+                ).setAnchorView(buttonsGroup).show();
+            }
+        });
     }
 
     private void updateDay() {
         setLoadingStatus();
         String formattedDate = formatDate(currentSelection);
-        Call<Day> call = dayService.getDay(6, formattedDate);
+        Call<Day> call = dayService.getDay(groupId, formattedDate);
         call.enqueue(new Callback<Day>() {
             @Override
             public void onResponse(Call<Day> call, Response<Day> response) {
@@ -198,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
         updateConfirmButton();
         if (currentDay.noOneAbsent()) {
             Snackbar.make(
-                    serverError,
+                    main,
                     getResources().getString(R.string.no_info_for_day),
                     Snackbar.LENGTH_LONG
             ).setAnchorView(buttonsGroup).show();
@@ -216,6 +243,17 @@ public class MainActivity extends AppCompatActivity {
             confirmButton.setText(getResources().getString(R.string.confirmButtonNoOneAbsent));
         else
             confirmButton.setText(getResources().getString(R.string.confirmButtonDefault));
+    }
+
+    protected String formatDate(Long selection) {
+        Date selectedDate = new Date(selection);
+        String serverDateFormat = getResources().getString(R.string.serverDateFormat);
+        @SuppressLint("SimpleDateFormat")
+        DateFormat df = new SimpleDateFormat(serverDateFormat);
+        String formattedDate = df.format(selectedDate);
+
+        Log.d("DatePicker", formattedDate);
+        return formattedDate;
     }
 
     private void setMainLayout() {

@@ -28,6 +28,20 @@ public class Day {
         return absentStudents;
     }
 
+    public String getAbsentStudentsIdsString() {
+        ArrayList<Integer> absentStudentIds = getAbsentStudentsIds();
+        if (absentStudentIds.size() != 0) {
+            StringBuilder ids = new StringBuilder();
+            ids.append(absentStudentIds.get(0));
+            for (Integer id : absentStudentIds.subList(1, absentStudentIds.size())) {
+                ids.append(",");
+                ids.append(id.toString());
+            }
+            return ids.toString();
+        } else
+            return "";
+    }
+
     public boolean noOneAbsent() {
         return !empty && status.equals(STATUS.EMPTY);
     }
