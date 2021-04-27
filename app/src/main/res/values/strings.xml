@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Lyceum Reports</string>
-    <string name="confirmButtonDefault">Подтвердить</string>
+    <string name="confirmButtonDefault">Отправить</string>
     <string name="confirmButtonNoOneAbsent">Все в классе</string>
     <string name="selectDateLabel">Выбрать дату</string>
     <string name="serverDateFormat">yyyy-MM-dd</string>
@@ -9,4 +9,5 @@
     <string name="somethingGoneWrong">Что-то пошло не так</string>
     <string name="retry"><u>Попробовать снова</u></string>
     <string name="no_info_for_day">За этот день данных нет</string>
+    <string name="no_absent">Все в классе</string>
 </resources>

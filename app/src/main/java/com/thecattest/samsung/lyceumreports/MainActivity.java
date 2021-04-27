@@ -223,10 +223,16 @@ public class MainActivity extends AppCompatActivity {
         classLabel.setText(currentDay.name);
         updateStudentsAdapterData();
         updateConfirmButton();
-        if (currentDay.noOneAbsent()) {
+        if (currentDay.noInfo()) {
             Snackbar.make(
                     main,
                     getResources().getString(R.string.no_info_for_day),
+                    Snackbar.LENGTH_LONG
+            ).setAnchorView(buttonsGroup).show();
+        } else if (currentDay.noAbsent()) {
+            Snackbar.make(
+                    main,
+                    getResources().getString(R.string.no_absent),
                     Snackbar.LENGTH_LONG
             ).setAnchorView(buttonsGroup).show();
         }
@@ -238,8 +244,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void updateConfirmButton() {
-        confirmButton.setEnabled(!currentDay.noChanges() || currentDay.noOneAbsent());
-        if (currentDay.getAbsentStudentsIds().size() == 0)
+        confirmButton.setEnabled(!currentDay.noChanges() || currentDay.noInfo());
+        if (currentDay.noAbsent())
             confirmButton.setText(getResources().getString(R.string.confirmButtonNoOneAbsent));
         else
             confirmButton.setText(getResources().getString(R.string.confirmButtonDefault));

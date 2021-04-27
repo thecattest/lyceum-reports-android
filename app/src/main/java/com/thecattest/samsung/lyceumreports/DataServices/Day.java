@@ -42,8 +42,12 @@ public class Day {
             return "";
     }
 
-    public boolean noOneAbsent() {
+    public boolean noInfo() {
         return !empty && status.equals(STATUS.EMPTY);
+    }
+
+    public boolean noAbsent() {
+        return !empty && status.equals(STATUS.OK) && getAbsentStudentsIds().size() == 0;
     }
 
     public boolean noChanges() {
