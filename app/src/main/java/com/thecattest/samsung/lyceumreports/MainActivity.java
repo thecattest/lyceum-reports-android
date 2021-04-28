@@ -41,6 +41,11 @@ public class MainActivity extends AppCompatActivity {
     private final static String CURRENT_DAY = "CURRENT_DAY";
     private final static String CURRENT_SELECTION = "CURRENT_SELECTION";
     private final static String DATE_PICKER_TRIGGER_TEXT = "DATE_PICKER_TRIGGER_TEXT";
+    private static final String LAYOUT_TYPE = "LAYOUT_TYPE";
+    private static final String LAYOUT_TYPE_MAIN = "LAYOUT_TYPE_MAIN";
+    private static final String LAYOUT_TYPE_SERVER_ERROR = "LAYOUT_TYPE_SERVER_ERROR";
+    private static final String LAYOUT_TYPE_LOADING = "LAYOUT_TYPE_LOADING";
+
 
     private TextView classLabel;
     private ListView studentsListView;
@@ -82,6 +87,8 @@ public class MainActivity extends AppCompatActivity {
         String dayJson = savedInstanceState.getString(CURRENT_DAY);
         long selection = savedInstanceState.getLong(CURRENT_SELECTION);
         String datePickerText = savedInstanceState.getString(DATE_PICKER_TRIGGER_TEXT);
+        String layout = savedInstanceState.getString(LAYOUT_TYPE);
+        Log.d(LAYOUT_TYPE + " in", layout);
 
         if (dayJson != null && !dayJson.isEmpty()) {
             Gson gson = new Gson();
@@ -90,8 +97,17 @@ public class MainActivity extends AppCompatActivity {
         currentSelection = selection;
         if (datePickerText != null && !datePickerText.isEmpty())
             datePickerTrigger.setText(datePickerText);
-
-        updateDayView();
+        switch (layout) {
+            case LAYOUT_TYPE_SERVER_ERROR:
+                setServerErrorLayout();
+                break;
+            case LAYOUT_TYPE_LOADING:
+                setLoadingStatus();
+                break;
+            case LAYOUT_TYPE_MAIN:
+                setMainLayout();
+                updateDayView();
+        }
     }
 
     @Override
@@ -103,6 +119,16 @@ public class MainActivity extends AppCompatActivity {
         if (currentSelection != null)
             outState.putLong(CURRENT_SELECTION, currentSelection);
         outState.putString(DATE_PICKER_TRIGGER_TEXT, (String) datePickerTrigger.getText());
+        String layout = "";
+        if (main.getVisibility() == View.VISIBLE) {
+            layout = LAYOUT_TYPE_MAIN;
+        } else if (serverError.getVisibility() == View.VISIBLE) {
+            layout = LAYOUT_TYPE_SERVER_ERROR;
+        } else if (loading.getVisibility() == View.VISIBLE) {
+            layout = LAYOUT_TYPE_LOADING;
+        }
+        Log.d(LAYOUT_TYPE + " out", layout);
+        outState.putString(LAYOUT_TYPE, layout);
         super.onSaveInstanceState(outState);
     }
 
