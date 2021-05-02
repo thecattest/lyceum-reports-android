@@ -70,6 +70,19 @@
             android:layout_alignParentBottom="true">
 
             <Button
+                android:id="@+id/cancelButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/cancel"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_toLeftOf="@id/confirmButton"
+                android:layout_toStartOf="@id/confirmButton"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginEnd="10dp" />
+
+            <Button
                 android:id="@+id/confirmButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

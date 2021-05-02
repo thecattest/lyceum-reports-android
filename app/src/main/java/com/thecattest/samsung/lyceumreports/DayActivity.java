@@ -50,6 +50,7 @@ public class DayActivity extends AppCompatActivity {
     private TextView classLabel;
     private ListView studentsListView;
     private Button confirmButton;
+    private Button cancelButton;
     private Button datePickerTrigger;
     private TextView retry;
     private RelativeLayout buttonsGroup;
@@ -133,6 +134,7 @@ public class DayActivity extends AppCompatActivity {
         classLabel = findViewById(R.id.classLabel);
         studentsListView = findViewById(R.id.studentsList);
         confirmButton = findViewById(R.id.confirmButton);
+        cancelButton = findViewById(R.id.cancelButton);
         datePickerTrigger = findViewById(R.id.datePickerTrigger);
         retry = findViewById(R.id.retry);
         buttonsGroup = findViewById(R.id.buttonsGroup);
@@ -163,6 +165,7 @@ public class DayActivity extends AppCompatActivity {
         studentsListView.setOnItemClickListener(this::onStudentItemClick);
         retry.setOnClickListener(this::onRetryButtonClick);
         confirmButton.setOnClickListener(this::onConfirmButtonClick);
+        cancelButton.setOnClickListener(this::onCancelButtonClick);
         swipeRefreshLayout.setOnRefreshListener(this::onRefresh);
     }
 
@@ -192,6 +195,12 @@ public class DayActivity extends AppCompatActivity {
         updateDay();
     }
 
+    // Cancel button click
+    public void onCancelButtonClick(View v) {
+        finish();
+    }
+
+    // Confirm button click
     public void onConfirmButtonClick(View v) {
         String formattedDate = formatDate(currentSelection);
         String absentStudentsIdsString = currentDay.getAbsentStudentsIdsString();

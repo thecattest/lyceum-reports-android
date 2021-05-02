@@ -10,4 +10,5 @@
     <string name="retry"><u>Попробовать снова</u></string>
     <string name="no_info_for_day">За этот день данных нет</string>
     <string name="no_absent">Все в классе</string>
+    <string name="cancel">Назад</string>
 </resources>
