@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="15dp">
+
+    <RelativeLayout
+        android:id="@+id/cardHeader"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/header">
+
+        <TextView
+            android:id="@+id/cardClassLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="10A"
+            android:textColor="#212529"
+            android:textSize="32sp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp" />
+
+        <Button
+            android:id="@+id/addButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add"
+            android:textColor="@color/link_color"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_alignParentEnd="true"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="20dp"
+            android:layout_marginRight="20dp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/cardBody"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cardHeader"
+        android:layout_margin="16dp">
+
+        <RelativeLayout
+            android:id="@+id/today"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="16dp">
+
+            <RelativeLayout
+                android:id="@+id/todayGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/todayLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:textColor="#222"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:text="@string/today"/>
+
+                <TextView
+                    android:id="@+id/todayDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_toRightOf="@id/todayLabel"
+                    android:layout_toEndOf="@id/todayLabel"
+                    android:layout_marginLeft="5dp"
+                    android:textColor="#777"
+                    android:textSize="18sp"
+                    android:text="2 мая" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/todayAbsent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/todayGroup"
+                android:textSize="16sp"
+                android:text="@string/no_absent"
+                android:layout_marginLeft="15dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="4dp"/>
+
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/hr"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/hr"
+            android:layout_below="@id/today" />
+
+        <RelativeLayout
+            android:id="@+id/yesterday"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/hr"
+            android:layout_marginTop="16dp">
+
+            <RelativeLayout
+                android:id="@+id/yesterdayGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/yesterdayLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:textColor="#222"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:text="@string/yesterday"/>
+
+                <TextView
+                    android:id="@+id/yesterdayDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_toRightOf="@id/yesterdayLabel"
+                    android:layout_toEndOf="@id/yesterdayLabel"
+                    android:layout_marginLeft="5dp"
+                    android:textColor="#777"
+                    android:textSize="18sp"
+                    android:text="1 мая" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/yesterdayAbsent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/yesterdayGroup"
+                android:textSize="16sp"
+                android:text="Антонов"
+                android:layout_marginLeft="15dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="4dp"/>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/hr2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/card_border"
+        android:layout_below="@id/cardBody" />
+
+</RelativeLayout>

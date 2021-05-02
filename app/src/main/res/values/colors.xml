@@ -11,4 +11,7 @@
     <color name="header">#E6E6E6</color>
     <color name="status_bar_night">#EEEEEE</color>
     <color name="status_bar">#AAAAAA</color>
+    <color name="link_color">#007bff</color>
+    <color name="card_border">#DFDFDF</color>
+    <color name="hr">#E5E5E5</color>
 </resources>
