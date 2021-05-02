@@ -202,6 +202,7 @@ public class DayActivity extends AppCompatActivity {
 
     // Confirm button click
     public void onConfirmButtonClick(View v) {
+        setLoadingStatus(true);
         String formattedDate = formatDate(currentSelection);
         String absentStudentsIdsString = currentDay.getAbsentStudentsIdsString();
         Call<Void> call = dayService.updateDay(groupId, new DayPost(formattedDate, absentStudentsIdsString));
@@ -309,9 +310,17 @@ public class DayActivity extends AppCompatActivity {
     }
 
     private void setLoadingLayout() {
+        setLoadingLayout(false);
+    }
+
+    private void setLoadingLayout(boolean mainIsVisible) {
         loading.setVisibility(View.VISIBLE);
-        main.setVisibility(View.GONE);
         serverError.setVisibility(View.GONE);
+        if (mainIsVisible) {
+            main.setVisibility(View.VISIBLE);
+        } else {
+            main.setVisibility(View.GONE);
+        }
     }
 
     private void setServerErrorLayout() {
@@ -320,9 +329,15 @@ public class DayActivity extends AppCompatActivity {
         loading.setVisibility(View.GONE);
     }
 
+    protected void setLoadingStatus(boolean mainIsVisible) {
+        if (!mainIsVisible) {
+            currentDay = new Day(true);
+            updateDayView();
+        }
+        setLoadingLayout(mainIsVisible);
+    }
+
     protected void setLoadingStatus() {
-        currentDay = new Day(true);
-        updateDayView();
-        setLoadingLayout();
+        setLoadingStatus(false);
     }
 }
