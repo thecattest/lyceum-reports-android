@@ -19,4 +19,12 @@ public class SummaryDays implements SummaryDayInterface {
     public String getYesterdayAbsentStudentsString() {
         return yesterday.getAbsentStudentsString();
     }
+
+    @Override
+    public String toString() {
+        return "SummaryDays{" +
+                "today=" + today +
+                ", yesterday=" + yesterday +
+                '}';
+    }
 }

@@ -33,4 +33,14 @@ public class Summary implements SummaryDayInterface {
     public String getYesterdayAbsentStudentsString() {
         return days.getYesterdayAbsentStudentsString();
     }
+
+    @Override
+    public String toString() {
+        return "Summary{" +
+                "id=" + id +
+                ", letter='" + letter + '\'' +
+                ", number=" + number +
+                ", days=" + days +
+                '}';
+    }
 }

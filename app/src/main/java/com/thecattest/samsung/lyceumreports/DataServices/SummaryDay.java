@@ -50,4 +50,13 @@ public class SummaryDay {
         public static String OK = "ok";
         public static String EMPTY = "empty";
     }
+
+    @Override
+    public String toString() {
+        return "SummaryDay{" +
+                "date='" + date + '\'' +
+                ", status='" + status + '\'' +
+                ", students=" + students +
+                '}';
+    }
 }

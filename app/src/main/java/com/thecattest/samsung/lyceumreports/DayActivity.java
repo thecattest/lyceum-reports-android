@@ -36,7 +36,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DayActivity extends AppCompatActivity {
 
-    private static final String URL = "http:92.53.124.98:8002";
     private static final int groupId = 6;
 
     private final static String CURRENT_DAY = "CURRENT_DAY";
@@ -147,7 +146,7 @@ public class DayActivity extends AppCompatActivity {
 
     protected void initRetrofit() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(URL)
+                .baseUrl(Config.URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         dayService = retrofit.create(DayService.class);
