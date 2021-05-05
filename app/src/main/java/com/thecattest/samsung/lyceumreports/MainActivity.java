@@ -1,11 +1,13 @@
 package com.thecattest.samsung.lyceumreports;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,6 +21,7 @@ import com.thecattest.samsung.lyceumreports.Fragments.LoadingFragment;
 import com.thecattest.samsung.lyceumreports.Fragments.ServerErrorFragment;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -27,6 +30,10 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String LAYOUT_TYPE = "LAYOUT_TYPE";
+    private static final String LAYOUT_TYPE_MAIN = "LAYOUT_TYPE_MAIN";
+    private static final String LAYOUT_TYPE_SERVER_ERROR = "LAYOUT_TYPE_SERVER_ERROR";
 
     private ListView summaryListView;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -50,6 +57,33 @@ public class MainActivity extends AppCompatActivity {
         setListeners();
 
         updateSummary();
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        String layout = savedInstanceState.getString(LAYOUT_TYPE);
+        switch (layout) {
+            case LAYOUT_TYPE_SERVER_ERROR:
+                setServerErrorLayout();
+                break;
+            case LAYOUT_TYPE_MAIN:
+                setMainLayout();
+                updateSummary();
+        }
+    }
+
+    @SuppressLint("MissingSuperCall")
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        String layout = "";
+        if (swipeRefreshLayout.getVisibility() == View.VISIBLE) {
+            layout = LAYOUT_TYPE_MAIN;
+        } else if (!Objects.requireNonNull(fragmentManager.findFragmentByTag(ServerErrorFragment.TAG)).isHidden()) {
+            layout = LAYOUT_TYPE_SERVER_ERROR;
+        }
+        outState.putString(LAYOUT_TYPE, layout);
     }
 
     protected void initRetrofit() {
