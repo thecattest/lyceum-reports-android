@@ -107,36 +107,10 @@
         android:orientation="vertical"/>
 
     <LinearLayout
-        android:id="@+id/serverError"
+        android:id="@+id/serverErrorLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:visibility="gone"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/oops"
-            android:textStyle="bold"
-            android:textSize="46sp"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textSize="24sp"
-            android:text="@string/somethingGoneWrong"/>
-        <TextView
-            android:id="@+id/retry"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textSize="20sp"
-            android:text="@string/retry"
-            android:textColor="@color/link_color"/>
-
-
-    </LinearLayout>
+        android:orientation="vertical" />
 
 </RelativeLayout>

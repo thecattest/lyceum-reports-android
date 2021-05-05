@@ -3,7 +3,6 @@ package com.thecattest.samsung.lyceumreports;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -55,16 +54,16 @@ public class DayActivity extends AppCompatActivity {
     private Button confirmButton;
     private Button cancelButton;
     private Button datePickerTrigger;
-    private TextView retry;
     private RelativeLayout buttonsGroup;
-    private RelativeLayout main;
-    private LinearLayout serverError;
+    private RelativeLayout mainLayout;
+    private LinearLayout serverErrorLayout;
     private SwipeRefreshLayout swipeRefreshLayout;
 
     private MaterialDatePicker<Long> datePicker;
 
     private final FragmentManager fragmentManager = getSupportFragmentManager();
     private LoadingFragment loadingFragment;
+    private ServerErrorFragment serverErrorFragment;
 
     private Day currentDay = new Day(true);
     private StudentsAdapter studentsAdapter;
@@ -130,9 +129,10 @@ public class DayActivity extends AppCompatActivity {
             outState.putLong(CURRENT_SELECTION, currentSelection);
         outState.putString(DATE_PICKER_TRIGGER_TEXT, (String) datePickerTrigger.getText());
         String layout = "";
-        if (main.getVisibility() == View.VISIBLE) {
+        if (mainLayout.getVisibility() == View.VISIBLE) {
             layout = LAYOUT_TYPE_MAIN;
-        } else if (serverError.getVisibility() == View.VISIBLE) {
+        }
+        else if (serverErrorLayout.getVisibility() == View.VISIBLE) {
             layout = LAYOUT_TYPE_SERVER_ERROR;
         }
         Log.d(LAYOUT_TYPE + " out", layout);
@@ -146,12 +146,11 @@ public class DayActivity extends AppCompatActivity {
         confirmButton = findViewById(R.id.confirmButton);
         cancelButton = findViewById(R.id.cancelButton);
         datePickerTrigger = findViewById(R.id.datePickerTrigger);
-        retry = findViewById(R.id.retry);
         buttonsGroup = findViewById(R.id.buttonsGroup);
 
-        main = findViewById(R.id.main);
+        mainLayout = findViewById(R.id.main);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
-        serverError = findViewById(R.id.serverError);
+        serverErrorLayout = findViewById(R.id.serverErrorLayout);
     }
 
     protected void initRetrofit() {
@@ -171,17 +170,22 @@ public class DayActivity extends AppCompatActivity {
 
     protected void createFragments() {
         FragmentTransaction ft = fragmentManager.beginTransaction();
+        ft.disallowAddToBackStack();
+
         loadingFragment = new LoadingFragment();
         ft.add(R.id.loadingLayout, loadingFragment, "LOADING_FRAGMENT");
-        ft.disallowAddToBackStack();
         ft.hide(loadingFragment);
+
+        serverErrorFragment = new ServerErrorFragment(this::onRetryButtonClick);
+        ft.add(R.id.serverErrorLayout, serverErrorFragment, "SERVER_ERROR_FRAGMENT");
+        ft.hide(serverErrorFragment);
+
         ft.commit();
     }
 
     protected void setListeners() {
         datePicker.addOnPositiveButtonClickListener(this::onPositiveDatePickerButtonClick);
         studentsListView.setOnItemClickListener(this::onStudentItemClick);
-        retry.setOnClickListener(this::onRetryButtonClick);
         confirmButton.setOnClickListener(this::onConfirmButtonClick);
         cancelButton.setOnClickListener(this::onCancelButtonClick);
         swipeRefreshLayout.setOnRefreshListener(this::onRefresh);
@@ -231,14 +235,14 @@ public class DayActivity extends AppCompatActivity {
                 int code = response.code();
                 if (code == 200) {
                     Snackbar.make(
-                            main,
+                            mainLayout,
                             "Сработало :) код " + code,
                             Snackbar.LENGTH_SHORT
                     ).setAnchorView(buttonsGroup).show();
                     updateDay();
                 } else {
                     Snackbar.make(
-                            main,
+                            mainLayout,
                             "Не сработало :( код " + code,
                             Snackbar.LENGTH_LONG
                     ).setAnchorView(buttonsGroup).show();
@@ -249,7 +253,7 @@ public class DayActivity extends AppCompatActivity {
             public void onFailure(Call<Void> call, Throwable t) {
                 Log.d("UpdateDayCall", call.toString());
                 Snackbar.make(
-                        main,
+                        mainLayout,
                         "Ошибка, попробуйте ещё раз позднее",
                         Snackbar.LENGTH_LONG
                 ).setAnchorView(buttonsGroup).show();
@@ -285,13 +289,13 @@ public class DayActivity extends AppCompatActivity {
         updateConfirmButton();
         if (currentDay.noInfo()) {
             Snackbar.make(
-                    main,
+                    mainLayout,
                     getResources().getString(R.string.no_info_for_day),
                     Snackbar.LENGTH_LONG
             ).setAnchorView(buttonsGroup).show();
         } else if (currentDay.noAbsent()) {
             Snackbar.make(
-                    main,
+                    mainLayout,
                     getResources().getString(R.string.no_absent),
                     Snackbar.LENGTH_LONG
             ).setAnchorView(buttonsGroup).show();
@@ -323,9 +327,9 @@ public class DayActivity extends AppCompatActivity {
     }
 
     private void setMainLayout() {
-        main.setVisibility(View.VISIBLE);
+        mainLayout.setVisibility(View.VISIBLE);
         setLoadingFragmentVisibility(false);
-        serverError.setVisibility(View.GONE);
+        setServerErrorFragmentVisibility(false);
     }
 
     private void setLoadingLayout() {
@@ -334,17 +338,17 @@ public class DayActivity extends AppCompatActivity {
 
     private void setLoadingLayout(boolean mainIsVisible) {
         setLoadingFragmentVisibility(true);
-        serverError.setVisibility(View.GONE);
+        setServerErrorFragmentVisibility(false);
         if (mainIsVisible) {
-            main.setVisibility(View.VISIBLE);
+            mainLayout.setVisibility(View.VISIBLE);
         } else {
-            main.setVisibility(View.GONE);
+            mainLayout.setVisibility(View.GONE);
         }
     }
 
     private void setServerErrorLayout() {
-        serverError.setVisibility(View.VISIBLE);
-        main.setVisibility(View.GONE);
+        setServerErrorFragmentVisibility(true);
+        mainLayout.setVisibility(View.GONE);
         setLoadingFragmentVisibility(false);
     }
 
@@ -367,6 +371,16 @@ public class DayActivity extends AppCompatActivity {
             ft.show(loadingFragment);
         } else {
             ft.hide(loadingFragment);
+        }
+        ft.commit();
+    }
+
+    private void setServerErrorFragmentVisibility(boolean visible) {
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        if (visible) {
+            ft.show(serverErrorFragment);
+        } else {
+            ft.hide(serverErrorFragment);
         }
         ft.commit();
     }
