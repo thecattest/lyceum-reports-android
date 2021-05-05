@@ -2,6 +2,7 @@ package com.thecattest.samsung.lyceumreports;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -23,9 +24,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity {
 
     private ListView summaryListView;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     private ArrayList<Summary> summary = new ArrayList<>();
-    private SummaryAdapter summaryAdapter;
 
     SummaryService summaryService;
 
@@ -51,10 +52,16 @@ public class MainActivity extends AppCompatActivity {
 
     private void findViews() {
         summaryListView = findViewById(R.id.summaryList);
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
     }
 
     private void setListeners() {
+        swipeRefreshLayout.setOnRefreshListener(this::onRefresh);
+    }
 
+    public void onRefresh() {
+        updateSummary();
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     private void updateSummary() {
@@ -80,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateSummaryAdapterData() {
-        summaryAdapter = new SummaryAdapter(this, summary);
+        SummaryAdapter summaryAdapter = new SummaryAdapter(this, summary);
         summaryListView.setAdapter(summaryAdapter);
     }
 }
