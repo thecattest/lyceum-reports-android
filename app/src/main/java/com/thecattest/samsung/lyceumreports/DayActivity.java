@@ -89,9 +89,10 @@ public class DayActivity extends AppCompatActivity {
 
         groupId = getIntent().getIntExtra(GROUP_ID, 6);
         defaultGroupLabel = getIntent().getStringExtra(GROUP_LABEL);
-
         currentDay.name = defaultGroupLabel;
         updateDayView();
+
+        swipeRefreshLayout.setEnabled(false);
     }
 
     @Override
@@ -273,6 +274,7 @@ public class DayActivity extends AppCompatActivity {
                 currentDay = response.body();
                 currentDay.updateLoadedAbsent();
                 updateDayView();
+                swipeRefreshLayout.setEnabled(true);
             }
 
             @Override
