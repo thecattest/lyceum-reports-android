@@ -17,7 +17,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="10A"
             android:textColor="#212529"
             android:textSize="32sp"
             android:layout_alignParentLeft="true"
@@ -82,9 +81,9 @@
                     android:layout_toRightOf="@id/todayLabel"
                     android:layout_toEndOf="@id/todayLabel"
                     android:layout_marginLeft="3dp"
+                    android:layout_marginStart="3dp"
                     android:textColor="#777"
-                    android:textSize="18sp"
-                    android:text="2 мая" />
+                    android:textSize="18sp" />
 
             </RelativeLayout>
 
@@ -94,7 +93,6 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/todayGroup"
                 android:textSize="16sp"
-                android:text="@string/no_absent"
                 android:layout_marginLeft="10dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="4dp"/>
@@ -140,9 +138,9 @@
                     android:layout_toRightOf="@id/yesterdayLabel"
                     android:layout_toEndOf="@id/yesterdayLabel"
                     android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
                     android:textColor="#777"
-                    android:textSize="18sp"
-                    android:text="1 мая" />
+                    android:textSize="18sp" />
 
             </RelativeLayout>
 
@@ -152,7 +150,6 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/yesterdayGroup"
                 android:textSize="16sp"
-                android:text="Антонов"
                 android:layout_marginLeft="10dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="4dp"/>
