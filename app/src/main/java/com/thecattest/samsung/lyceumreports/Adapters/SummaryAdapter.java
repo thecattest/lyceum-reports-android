@@ -1,4 +1,4 @@
-package com.thecattest.samsung.lyceumreports;
+package com.thecattest.samsung.lyceumreports.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.thecattest.samsung.lyceumreports.DataServices.Summary.Summary;
+import com.thecattest.samsung.lyceumreports.DayActivity;
+import com.thecattest.samsung.lyceumreports.R;
 
 import java.util.ArrayList;
 

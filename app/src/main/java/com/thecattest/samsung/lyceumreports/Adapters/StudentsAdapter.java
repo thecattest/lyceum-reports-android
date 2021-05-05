@@ -1,4 +1,4 @@
-package com.thecattest.samsung.lyceumreports;
+package com.thecattest.samsung.lyceumreports.Adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.thecattest.samsung.lyceumreports.DataServices.Day.Student;
+import com.thecattest.samsung.lyceumreports.R;
 
 import java.util.ArrayList;
 
