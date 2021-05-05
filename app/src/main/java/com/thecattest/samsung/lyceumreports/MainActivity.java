@@ -9,9 +9,8 @@ import android.util.Log;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.thecattest.samsung.lyceumreports.DataServices.DayService;
-import com.thecattest.samsung.lyceumreports.DataServices.Summary;
-import com.thecattest.samsung.lyceumreports.DataServices.SummaryService;
+import com.thecattest.samsung.lyceumreports.DataServices.Summary.Summary;
+import com.thecattest.samsung.lyceumreports.DataServices.Summary.SummaryService;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package com.thecattest.samsung.lyceumreports.DataServices;
+package com.thecattest.samsung.lyceumreports.DataServices.Summary;
 
 public interface SummaryDayInterface {
     String getTodayDate();

@@ -19,10 +19,10 @@ import android.widget.Toast;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
-import com.thecattest.samsung.lyceumreports.DataServices.Day;
-import com.thecattest.samsung.lyceumreports.DataServices.DayPost;
-import com.thecattest.samsung.lyceumreports.DataServices.DayService;
-import com.thecattest.samsung.lyceumreports.DataServices.Student;
+import com.thecattest.samsung.lyceumreports.DataServices.Day.Day;
+import com.thecattest.samsung.lyceumreports.DataServices.Day.DayPost;
+import com.thecattest.samsung.lyceumreports.DataServices.Day.DayService;
+import com.thecattest.samsung.lyceumreports.DataServices.Day.Student;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -195,7 +195,8 @@ public class DayActivity extends AppCompatActivity {
 
     // Refresh action
     public void onRefresh() {
-        updateDay();
+        if (!currentDay.empty)
+            updateDay();
         swipeRefreshLayout.setRefreshing(false);
     }
 

@@ -12,7 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.thecattest.samsung.lyceumreports.DataServices.Summary;
+import com.thecattest.samsung.lyceumreports.DataServices.Summary.Summary;
 
 import java.util.ArrayList;
 

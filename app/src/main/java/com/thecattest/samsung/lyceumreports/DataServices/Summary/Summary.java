@@ -1,4 +1,4 @@
-package com.thecattest.samsung.lyceumreports.DataServices;
+package com.thecattest.samsung.lyceumreports.DataServices.Summary;
 
 public class Summary implements SummaryDayInterface {
     public int id;

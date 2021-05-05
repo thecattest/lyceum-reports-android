@@ -1,6 +1,7 @@
-package com.thecattest.samsung.lyceumreports.DataServices;
+package com.thecattest.samsung.lyceumreports.DataServices.Summary;
 
-import java.lang.reflect.Array;
+import com.thecattest.samsung.lyceumreports.DataServices.Summary.Summary;
+
 import java.util.ArrayList;
 
 import retrofit2.Call;

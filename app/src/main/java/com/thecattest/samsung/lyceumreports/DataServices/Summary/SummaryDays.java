@@ -1,4 +1,7 @@
-package com.thecattest.samsung.lyceumreports.DataServices;
+package com.thecattest.samsung.lyceumreports.DataServices.Summary;
+
+import com.thecattest.samsung.lyceumreports.DataServices.Summary.SummaryDay;
+import com.thecattest.samsung.lyceumreports.DataServices.Summary.SummaryDayInterface;
 
 public class SummaryDays implements SummaryDayInterface {
     public SummaryDay today;

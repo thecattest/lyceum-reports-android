@@ -1,4 +1,4 @@
-package com.thecattest.samsung.lyceumreports.DataServices;
+package com.thecattest.samsung.lyceumreports.DataServices.Day;
 
 public class DayPost {
     public String date;

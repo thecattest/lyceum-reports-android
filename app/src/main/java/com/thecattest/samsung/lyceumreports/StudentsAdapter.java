@@ -1,7 +1,6 @@
 package com.thecattest.samsung.lyceumreports;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +9,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import com.thecattest.samsung.lyceumreports.DataServices.Student;
+import com.thecattest.samsung.lyceumreports.DataServices.Day.Student;
 
 import java.util.ArrayList;
 
