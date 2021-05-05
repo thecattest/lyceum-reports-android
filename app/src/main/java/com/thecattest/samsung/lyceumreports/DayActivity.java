@@ -26,6 +26,8 @@ import com.thecattest.samsung.lyceumreports.DataServices.Day.Day;
 import com.thecattest.samsung.lyceumreports.DataServices.Day.DayPost;
 import com.thecattest.samsung.lyceumreports.DataServices.Day.DayService;
 import com.thecattest.samsung.lyceumreports.DataServices.Day.Student;
+import com.thecattest.samsung.lyceumreports.Fragments.LoadingFragment;
+import com.thecattest.samsung.lyceumreports.Fragments.ServerErrorFragment;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

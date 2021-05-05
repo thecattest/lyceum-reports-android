@@ -15,6 +15,8 @@ import android.widget.Toast;
 import com.thecattest.samsung.lyceumreports.Adapters.SummaryAdapter;
 import com.thecattest.samsung.lyceumreports.DataServices.Summary.Summary;
 import com.thecattest.samsung.lyceumreports.DataServices.Summary.SummaryService;
+import com.thecattest.samsung.lyceumreports.Fragments.LoadingFragment;
+import com.thecattest.samsung.lyceumreports.Fragments.ServerErrorFragment;
 
 import java.util.ArrayList;
 
