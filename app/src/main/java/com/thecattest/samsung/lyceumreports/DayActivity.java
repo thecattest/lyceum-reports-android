@@ -36,7 +36,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DayActivity extends AppCompatActivity {
 
-    private static final int groupId = 6;
+    public static final String GROUP_ID = "GROUP_ID";
+    public static final String GROUP_LABEL = "GROUP_LABEL";
 
     private final static String CURRENT_DAY = "CURRENT_DAY";
     private final static String CURRENT_SELECTION = "CURRENT_SELECTION";
@@ -66,6 +67,9 @@ public class DayActivity extends AppCompatActivity {
 
     private DayService dayService;
 
+    private int groupId;
+    private String defaultGroupLabel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +79,12 @@ public class DayActivity extends AppCompatActivity {
         findViews();
         initDatePicker();
         setListeners();
+
+        groupId = getIntent().getIntExtra(GROUP_ID, 6);
+        defaultGroupLabel = getIntent().getStringExtra(GROUP_LABEL);
+
+        currentDay.name = defaultGroupLabel;
+        updateDayView();
     }
 
     @Override
@@ -331,6 +341,7 @@ public class DayActivity extends AppCompatActivity {
     protected void setLoadingStatus(boolean mainIsVisible) {
         if (!mainIsVisible) {
             currentDay = new Day(true);
+            currentDay.name = defaultGroupLabel;
             updateDayView();
         }
         setLoadingLayout(mainIsVisible);

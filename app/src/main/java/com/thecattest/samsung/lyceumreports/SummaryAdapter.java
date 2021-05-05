@@ -1,6 +1,7 @@
 package com.thecattest.samsung.lyceumreports;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +40,12 @@ public class SummaryAdapter extends ArrayAdapter<Summary> {
 
 
         classLabel.setText(summary.getLabel());
-        addButton.setTag(summary.getId());
+        addButton.setOnClickListener(v -> {
+            Intent i = new Intent(getContext(), DayActivity.class);
+            i.putExtra(DayActivity.GROUP_ID, summary.getId());
+            i.putExtra(DayActivity.GROUP_LABEL, summary.getLabel());
+            getContext().startActivity(i);
+        });
 
         todayDate.setText(summary.getTodayDate());
         todayAbsent.setText(summary.getTodayAbsentStudentsString());

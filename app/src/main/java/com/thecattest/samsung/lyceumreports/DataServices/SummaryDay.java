@@ -55,9 +55,11 @@ public class SummaryDay {
         if (status.equals(STATUS.OK)) {
             if (students.size() != 0) {
                 StringBuilder absentStudentsString = new StringBuilder();
-                for (String absentStudent : students)
+                for (String absentStudent : students) {
                     absentStudentsString.append(absentStudent);
-                return absentStudentsString.toString();
+                    absentStudentsString.append(", ");
+                }
+                return absentStudentsString.toString().substring(0, absentStudentsString.length() - 2);
             } else {
                 return "Все в классе";
             }
