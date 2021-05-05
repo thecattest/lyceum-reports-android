@@ -12,6 +12,8 @@ import com.thecattest.samsung.lyceumreports.R;
 
 public class ServerErrorFragment extends Fragment {
 
+    public static final String TAG = "SERVER_ERROR_FRAGMENT_TAG";
+
     private View.OnClickListener retryButtonOnClickListener;
 
     public ServerErrorFragment() {

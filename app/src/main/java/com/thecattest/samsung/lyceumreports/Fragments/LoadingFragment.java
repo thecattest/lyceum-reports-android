@@ -12,6 +12,8 @@ import com.thecattest.samsung.lyceumreports.R;
 
 public class LoadingFragment extends Fragment {
 
+    public static final String TAG = "LOADING_FRAGMENT_TAG";
+
     public LoadingFragment() {}
 
     @Override

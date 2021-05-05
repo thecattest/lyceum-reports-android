@@ -32,6 +32,7 @@ import com.thecattest.samsung.lyceumreports.Fragments.ServerErrorFragment;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -58,7 +59,6 @@ public class DayActivity extends AppCompatActivity {
     private Button datePickerTrigger;
     private RelativeLayout buttonsGroup;
     private RelativeLayout mainLayout;
-    private LinearLayout serverErrorLayout;
     private SwipeRefreshLayout swipeRefreshLayout;
 
     private MaterialDatePicker<Long> datePicker;
@@ -122,6 +122,7 @@ public class DayActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("MissingSuperCall")
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         if (currentDay != null) {
@@ -135,12 +136,11 @@ public class DayActivity extends AppCompatActivity {
         if (mainLayout.getVisibility() == View.VISIBLE) {
             layout = LAYOUT_TYPE_MAIN;
         }
-        else if (serverErrorLayout.getVisibility() == View.VISIBLE) {
+        else if (!Objects.requireNonNull(fragmentManager.findFragmentByTag(ServerErrorFragment.TAG)).isHidden()) {
             layout = LAYOUT_TYPE_SERVER_ERROR;
         }
         Log.d(LAYOUT_TYPE + " out", layout);
         outState.putString(LAYOUT_TYPE, layout);
-        super.onSaveInstanceState(outState);
     }
 
     protected void findViews() {
@@ -153,7 +153,6 @@ public class DayActivity extends AppCompatActivity {
 
         mainLayout = findViewById(R.id.main);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
-        serverErrorLayout = findViewById(R.id.serverErrorLayout);
     }
 
     protected void initRetrofit() {
@@ -176,11 +175,11 @@ public class DayActivity extends AppCompatActivity {
         ft.disallowAddToBackStack();
 
         loadingFragment = new LoadingFragment();
-        ft.add(R.id.loadingLayout, loadingFragment, "LOADING_FRAGMENT");
+        ft.add(R.id.loadingLayout, loadingFragment, LoadingFragment.TAG);
         ft.hide(loadingFragment);
 
         serverErrorFragment = new ServerErrorFragment(this::onRetryButtonClick);
-        ft.add(R.id.serverErrorLayout, serverErrorFragment, "SERVER_ERROR_FRAGMENT");
+        ft.add(R.id.serverErrorLayout, serverErrorFragment, ServerErrorFragment.TAG);
         ft.hide(serverErrorFragment);
 
         ft.commit();
@@ -260,6 +259,7 @@ public class DayActivity extends AppCompatActivity {
                         "Ошибка, попробуйте ещё раз позднее",
                         Snackbar.LENGTH_LONG
                 ).setAnchorView(buttonsGroup).show();
+                setMainLayout();
             }
         });
     }

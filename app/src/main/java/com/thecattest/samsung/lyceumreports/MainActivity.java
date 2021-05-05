@@ -70,11 +70,11 @@ public class MainActivity extends AppCompatActivity {
         ft.disallowAddToBackStack();
 
         loadingFragment = new LoadingFragment();
-        ft.add(R.id.loadingLayout, loadingFragment, "LOADING_FRAGMENT");
+        ft.add(R.id.loadingLayout, loadingFragment, LoadingFragment.TAG);
         ft.hide(loadingFragment);
 
         serverErrorFragment = new ServerErrorFragment(this::onRetryButtonClick);
-        ft.add(R.id.serverErrorLayout, serverErrorFragment, "SERVER_ERROR_FRAGMENT");
+        ft.add(R.id.serverErrorLayout, serverErrorFragment, ServerErrorFragment.TAG);
         ft.hide(serverErrorFragment);
 
         ft.commit();
