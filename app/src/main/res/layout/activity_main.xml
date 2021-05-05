@@ -17,4 +17,11 @@
             tools:listitem="@layout/card_list_item"
             android:divider="@null"/>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <LinearLayout
+        android:id="@+id/loadingLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"/>
 </RelativeLayout>

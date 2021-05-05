@@ -2,10 +2,13 @@ package com.thecattest.samsung.lyceumreports;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -26,6 +29,9 @@ public class MainActivity extends AppCompatActivity {
     private ListView summaryListView;
     private SwipeRefreshLayout swipeRefreshLayout;
 
+    private final FragmentManager fragmentManager = getSupportFragmentManager();
+    private LoadingFragment loadingFragment;
+
     private ArrayList<Summary> summary = new ArrayList<>();
 
     SummaryService summaryService;
@@ -37,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
         initRetrofit();
         findViews();
+        createFragments();
         setListeners();
 
         updateSummary();
@@ -55,6 +62,15 @@ public class MainActivity extends AppCompatActivity {
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
     }
 
+    private void createFragments() {
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        loadingFragment = new LoadingFragment();
+        ft.add(R.id.loadingLayout, loadingFragment, "LOADING_FRAGMENT");
+        ft.disallowAddToBackStack();
+        ft.hide(loadingFragment);
+        ft.commit();
+    }
+
     private void setListeners() {
         swipeRefreshLayout.setOnRefreshListener(this::onRefresh);
     }
@@ -65,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateSummary() {
+        setLoadingStatus();
         Call<ArrayList<Summary>> call = summaryService.getSummary();
         call.enqueue(new Callback<ArrayList<Summary>>() {
             @Override
@@ -83,11 +100,37 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateSummaryView() {
+        setMainLayout();
         updateSummaryAdapterData();
     }
 
     private void updateSummaryAdapterData() {
         SummaryAdapter summaryAdapter = new SummaryAdapter(this, summary);
         summaryListView.setAdapter(summaryAdapter);
+    }
+
+    private void setLoadingLayout() {
+        swipeRefreshLayout.setVisibility(View.GONE);
+        setLoadingFragmentVisibility(true);
+    }
+
+    private void setMainLayout() {
+        swipeRefreshLayout.setVisibility(View.VISIBLE);
+        setLoadingFragmentVisibility(false);
+    }
+
+    private void setLoadingStatus() {
+        summary = new ArrayList<>();
+        setLoadingLayout();
+    }
+
+    private void setLoadingFragmentVisibility(boolean visible) {
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        if (visible) {
+            ft.show(loadingFragment);
+        } else {
+            ft.hide(loadingFragment);
+        }
+        ft.commit();
     }
 }
