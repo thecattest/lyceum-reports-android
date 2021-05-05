@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
     private final FragmentManager fragmentManager = getSupportFragmentManager();
     private LoadingFragment loadingFragment;
+    private ServerErrorFragment serverErrorFragment;
 
     private ArrayList<Summary> summary = new ArrayList<>();
 
@@ -64,10 +65,16 @@ public class MainActivity extends AppCompatActivity {
 
     private void createFragments() {
         FragmentTransaction ft = fragmentManager.beginTransaction();
+        ft.disallowAddToBackStack();
+
         loadingFragment = new LoadingFragment();
         ft.add(R.id.loadingLayout, loadingFragment, "LOADING_FRAGMENT");
-        ft.disallowAddToBackStack();
         ft.hide(loadingFragment);
+
+        serverErrorFragment = new ServerErrorFragment(this::onRetryButtonClick);
+        ft.add(R.id.serverErrorLayout, serverErrorFragment, "SERVER_ERROR_FRAGMENT");
+        ft.hide(serverErrorFragment);
+
         ft.commit();
     }
 
@@ -78,6 +85,11 @@ public class MainActivity extends AppCompatActivity {
     public void onRefresh() {
         updateSummary();
         swipeRefreshLayout.setRefreshing(false);
+    }
+
+    // Retry button click
+    public void onRetryButtonClick(View v) {
+        updateSummary();
     }
 
     private void updateSummary() {
@@ -95,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
             public void onFailure(Call<ArrayList<Summary>> call, Throwable t) {
                 Log.d("SummaryCall", t.toString());
                 Toast.makeText(MainActivity.this, "Error loading summary", Toast.LENGTH_SHORT).show();
+                setServerErrorLayout();
             }
         });
     }
@@ -109,14 +122,22 @@ public class MainActivity extends AppCompatActivity {
         summaryListView.setAdapter(summaryAdapter);
     }
 
+    private void setServerErrorLayout() {
+        swipeRefreshLayout.setVisibility(View.GONE);
+        setLoadingFragmentVisibility(false);
+        setServerErrorFragmentVisibility(true);
+    }
+
     private void setLoadingLayout() {
         swipeRefreshLayout.setVisibility(View.GONE);
         setLoadingFragmentVisibility(true);
+        setServerErrorFragmentVisibility(false);
     }
 
     private void setMainLayout() {
         swipeRefreshLayout.setVisibility(View.VISIBLE);
         setLoadingFragmentVisibility(false);
+        setServerErrorFragmentVisibility(false);
     }
 
     private void setLoadingStatus() {
@@ -130,6 +151,16 @@ public class MainActivity extends AppCompatActivity {
             ft.show(loadingFragment);
         } else {
             ft.hide(loadingFragment);
+        }
+        ft.commit();
+    }
+
+    private void setServerErrorFragmentVisibility(boolean visible) {
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        if (visible) {
+            ft.show(serverErrorFragment);
+        } else {
+            ft.hide(serverErrorFragment);
         }
         ft.commit();
     }
