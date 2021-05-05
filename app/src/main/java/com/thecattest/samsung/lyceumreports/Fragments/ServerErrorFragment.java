@@ -13,20 +13,12 @@ import com.thecattest.samsung.lyceumreports.R;
 public class ServerErrorFragment extends Fragment {
 
     public static final String TAG = "SERVER_ERROR_FRAGMENT_TAG";
-
     private View.OnClickListener retryButtonOnClickListener;
 
-    public ServerErrorFragment() {
-
-    }
+    public ServerErrorFragment() {}
 
     public ServerErrorFragment(View.OnClickListener retryButtonOnClickListener) {
         this.retryButtonOnClickListener = retryButtonOnClickListener;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override

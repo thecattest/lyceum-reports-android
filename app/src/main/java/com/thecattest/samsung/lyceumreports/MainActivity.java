@@ -14,11 +14,17 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.thecattest.samsung.lyceumreports.Adapters.SummaryAdapter;
 import com.thecattest.samsung.lyceumreports.DataServices.Summary.Summary;
 import com.thecattest.samsung.lyceumreports.DataServices.Summary.SummaryService;
 import com.thecattest.samsung.lyceumreports.Fragments.LoadingFragment;
 import com.thecattest.samsung.lyceumreports.Fragments.ServerErrorFragment;
+
+import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -34,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String LAYOUT_TYPE = "LAYOUT_TYPE";
     private static final String LAYOUT_TYPE_MAIN = "LAYOUT_TYPE_MAIN";
     private static final String LAYOUT_TYPE_SERVER_ERROR = "LAYOUT_TYPE_SERVER_ERROR";
+    private static final String SUMMARY = "SUMMARY";
 
     private ListView summaryListView;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -56,7 +63,10 @@ public class MainActivity extends AppCompatActivity {
         createFragments();
         setListeners();
 
-        updateSummary();
+        if (savedInstanceState == null || savedInstanceState.getString(SUMMARY) == null || savedInstanceState.getString(SUMMARY).isEmpty()) {
+            updateSummary();
+            Log.d("Summary", "Updated");
+        }
     }
 
     @Override
@@ -70,13 +80,25 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case LAYOUT_TYPE_MAIN:
                 setMainLayout();
-                updateSummary();
+                String summaryJsonString = savedInstanceState.getString(SUMMARY);
+                Gson gson = new Gson();
+                JsonElement summaryJsonObject = new JsonParser().parse(summaryJsonString);
+                for(JsonElement s : summaryJsonObject.getAsJsonArray()) {
+                    summary.add(gson.fromJson(s, Summary.class));
+                }
+                Log.d("Summary", "Loaded");
+                updateSummaryView();
         }
     }
 
     @SuppressLint("MissingSuperCall")
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
+        if (summary.size() > 0) {
+            Gson gson = new Gson();
+            outState.putString(SUMMARY, gson.toJson(summary));
+        }
+
         String layout = "";
         if (swipeRefreshLayout.getVisibility() == View.VISIBLE) {
             layout = LAYOUT_TYPE_MAIN;
