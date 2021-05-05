@@ -20,13 +20,15 @@
         android:layout_gravity="center"
         android:textSize="24sp"
         android:text="@string/somethingGoneWrong"/>
-    <TextView
+    <Button
         android:id="@+id/retry"
+        android:layout_marginTop="-10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:textSize="20sp"
+        android:textSize="18sp"
+        android:textAllCaps="false"
         android:text="@string/retry"
-        android:textColor="@color/link_color"/>
+        android:textColor="@color/link_color"
+        style="@style/Widget.MaterialComponents.Button.TextButton"/>
 
 </LinearLayout>
