@@ -3,6 +3,9 @@ package com.thecattest.samsung.lyceumreports;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -46,7 +49,6 @@ public class DayActivity extends AppCompatActivity {
     private static final String LAYOUT_TYPE = "LAYOUT_TYPE";
     private static final String LAYOUT_TYPE_MAIN = "LAYOUT_TYPE_MAIN";
     private static final String LAYOUT_TYPE_SERVER_ERROR = "LAYOUT_TYPE_SERVER_ERROR";
-    private static final String LAYOUT_TYPE_LOADING = "LAYOUT_TYPE_LOADING";
 
     private TextView classLabel;
     private ListView studentsListView;
@@ -56,11 +58,13 @@ public class DayActivity extends AppCompatActivity {
     private TextView retry;
     private RelativeLayout buttonsGroup;
     private RelativeLayout main;
-    private LinearLayout loading;
     private LinearLayout serverError;
     private SwipeRefreshLayout swipeRefreshLayout;
 
     private MaterialDatePicker<Long> datePicker;
+
+    private final FragmentManager fragmentManager = getSupportFragmentManager();
+    private LoadingFragment loadingFragment;
 
     private Day currentDay = new Day(true);
     private StudentsAdapter studentsAdapter;
@@ -79,6 +83,7 @@ public class DayActivity extends AppCompatActivity {
         initRetrofit();
         findViews();
         initDatePicker();
+        createFragments();
         setListeners();
 
         groupId = getIntent().getIntExtra(GROUP_ID, 6);
@@ -109,9 +114,6 @@ public class DayActivity extends AppCompatActivity {
             case LAYOUT_TYPE_SERVER_ERROR:
                 setServerErrorLayout();
                 break;
-            case LAYOUT_TYPE_LOADING:
-                setLoadingStatus();
-                break;
             case LAYOUT_TYPE_MAIN:
                 setMainLayout();
                 updateDayView();
@@ -132,8 +134,6 @@ public class DayActivity extends AppCompatActivity {
             layout = LAYOUT_TYPE_MAIN;
         } else if (serverError.getVisibility() == View.VISIBLE) {
             layout = LAYOUT_TYPE_SERVER_ERROR;
-        } else if (loading.getVisibility() == View.VISIBLE) {
-            layout = LAYOUT_TYPE_LOADING;
         }
         Log.d(LAYOUT_TYPE + " out", layout);
         outState.putString(LAYOUT_TYPE, layout);
@@ -151,7 +151,6 @@ public class DayActivity extends AppCompatActivity {
 
         main = findViewById(R.id.main);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
-        loading = findViewById(R.id.loadingLayout);
         serverError = findViewById(R.id.serverError);
     }
 
@@ -168,6 +167,15 @@ public class DayActivity extends AppCompatActivity {
                 .setTitleText(getResources().getString(R.string.selectDateLabel))
                 .build();
         datePickerTrigger.setOnClickListener(v -> datePicker.show(getSupportFragmentManager(), "MATERIAL_DATE_PICKER"));
+    }
+
+    protected void createFragments() {
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        loadingFragment = new LoadingFragment();
+        ft.add(R.id.loadingLayout, loadingFragment, "LOADING_FRAGMENT");
+        ft.disallowAddToBackStack();
+        ft.hide(loadingFragment);
+        ft.commit();
     }
 
     protected void setListeners() {
@@ -225,7 +233,7 @@ public class DayActivity extends AppCompatActivity {
                     Snackbar.make(
                             main,
                             "Сработало :) код " + code,
-                            Snackbar.LENGTH_LONG
+                            Snackbar.LENGTH_SHORT
                     ).setAnchorView(buttonsGroup).show();
                     updateDay();
                 } else {
@@ -316,7 +324,7 @@ public class DayActivity extends AppCompatActivity {
 
     private void setMainLayout() {
         main.setVisibility(View.VISIBLE);
-        loading.setVisibility(View.GONE);
+        setLoadingFragmentVisibility(false);
         serverError.setVisibility(View.GONE);
     }
 
@@ -325,7 +333,7 @@ public class DayActivity extends AppCompatActivity {
     }
 
     private void setLoadingLayout(boolean mainIsVisible) {
-        loading.setVisibility(View.VISIBLE);
+        setLoadingFragmentVisibility(true);
         serverError.setVisibility(View.GONE);
         if (mainIsVisible) {
             main.setVisibility(View.VISIBLE);
@@ -337,7 +345,7 @@ public class DayActivity extends AppCompatActivity {
     private void setServerErrorLayout() {
         serverError.setVisibility(View.VISIBLE);
         main.setVisibility(View.GONE);
-        loading.setVisibility(View.GONE);
+        setLoadingFragmentVisibility(false);
     }
 
     protected void setLoadingStatus(boolean mainIsVisible) {
@@ -351,5 +359,15 @@ public class DayActivity extends AppCompatActivity {
 
     protected void setLoadingStatus() {
         setLoadingStatus(false);
+    }
+
+    private void setLoadingFragmentVisibility(boolean visible) {
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        if (visible) {
+            ft.show(loadingFragment);
+        } else {
+            ft.hide(loadingFragment);
+        }
+        ft.commit();
     }
 }
