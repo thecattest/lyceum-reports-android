@@ -313,7 +313,7 @@ public class DayActivity extends AppCompatActivity {
 
     protected void updateConfirmButton() {
         confirmButton.setEnabled(!currentDay.noChanges() || currentDay.noInfo());
-        if (currentDay.noAbsent())
+        if (currentDay.noAbsent() || currentDay.noInfo() && currentDay.getAbsentStudentsIds().size() == 0)
             confirmButton.setText(getResources().getString(R.string.confirmButtonNoOneAbsent));
         else
             confirmButton.setText(getResources().getString(R.string.confirmButtonDefault));
