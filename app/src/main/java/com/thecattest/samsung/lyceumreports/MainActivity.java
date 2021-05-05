@@ -24,7 +24,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ListView summaryListView;
 
-    ArrayList<Summary> summary = new ArrayList<>();
+    private ArrayList<Summary> summary = new ArrayList<>();
+    private SummaryAdapter summaryAdapter;
 
     SummaryService summaryService;
 
@@ -63,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<ArrayList<Summary>> call, Response<ArrayList<Summary>> response) {
                 summary = response.body();
                 Log.d("Summary", summary.toString());
+                updateSummaryView();
             }
 
             @Override
@@ -71,5 +73,14 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Error loading summary", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void updateSummaryView() {
+        updateSummaryAdapterData();
+    }
+
+    private void updateSummaryAdapterData() {
+        summaryAdapter = new SummaryAdapter(this, summary);
+        summaryListView.setAdapter(summaryAdapter);
     }
 }

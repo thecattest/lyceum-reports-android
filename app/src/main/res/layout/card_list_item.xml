@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="15dp">
+    android:paddingBottom="30dp">
 
     <RelativeLayout
         android:id="@+id/cardHeader"
@@ -81,7 +81,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_toRightOf="@id/todayLabel"
                     android:layout_toEndOf="@id/todayLabel"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginLeft="3dp"
                     android:textColor="#777"
                     android:textSize="18sp"
                     android:text="2 мая" />
@@ -95,8 +95,8 @@
                 android:layout_below="@id/todayGroup"
                 android:textSize="16sp"
                 android:text="@string/no_absent"
-                android:layout_marginLeft="15dp"
-                android:layout_marginStart="15dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginTop="4dp"/>
 
         </RelativeLayout>
@@ -153,8 +153,8 @@
                 android:layout_below="@id/yesterdayGroup"
                 android:textSize="16sp"
                 android:text="Антонов"
-                android:layout_marginLeft="15dp"
-                android:layout_marginStart="15dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginTop="4dp"/>
 
         </RelativeLayout>
