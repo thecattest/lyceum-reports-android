@@ -66,6 +66,8 @@ public class DayActivity extends AppCompatActivity {
     private LoadingFragment loadingFragment;
     private ServerErrorFragment serverErrorFragment;
 
+    private LoginManager loginManager;
+
     private Day currentDay = new Day(true);
     private StudentsAdapter studentsAdapter;
     private Long currentSelection;
@@ -85,6 +87,9 @@ public class DayActivity extends AppCompatActivity {
         initDatePicker();
         createFragments();
         setListeners();
+
+        loginManager = new LoginManager(this);
+        if(!loginManager.checkAuthorized()) loginManager.handleNotAuthorized();
 
         groupId = getIntent().getIntExtra(GROUP_ID, 6);
         defaultGroupLabel = getIntent().getStringExtra(GROUP_LABEL);
@@ -235,19 +240,27 @@ public class DayActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 int code = response.code();
-                if (code == 200) {
-                    Snackbar.make(
-                            mainLayout,
-                            "Сработало :) код " + code,
-                            Snackbar.LENGTH_SHORT
-                    ).setAnchorView(buttonsGroup).show();
-                    updateDay();
-                } else {
-                    Snackbar.make(
-                            mainLayout,
-                            "Не сработало :( код " + code,
-                            Snackbar.LENGTH_LONG
-                    ).setAnchorView(buttonsGroup).show();
+                switch (code) {
+                    case 200:
+                        Snackbar.make(
+                                mainLayout,
+                                "Сработало :) код " + code,
+                                Snackbar.LENGTH_SHORT
+                        ).setAnchorView(buttonsGroup).show();
+                        updateDay();
+                        break;
+
+                    case 403:
+                        loginManager.handleNotAuthorized();
+                        break;
+
+                    default:
+                        Snackbar.make(
+                                swipeRefreshLayout,
+                                "Ошибка при выполнении запроса :( код " + code,
+                                Snackbar.LENGTH_SHORT
+                        ).show();
+                        break;
                 }
             }
 
@@ -271,10 +284,27 @@ public class DayActivity extends AppCompatActivity {
         call.enqueue(new Callback<Day>() {
             @Override
             public void onResponse(Call<Day> call, Response<Day> response) {
-                currentDay = response.body();
-                currentDay.updateLoadedAbsent();
-                updateDayView();
-                swipeRefreshLayout.setEnabled(true);
+                int code = response.code();
+                switch (code) {
+                    case 200:
+                        currentDay = response.body();
+                        currentDay.updateLoadedAbsent();
+                        updateDayView();
+                        swipeRefreshLayout.setEnabled(true);
+                        break;
+
+                    case 403:
+                        loginManager.handleNotAuthorized();
+                        break;
+
+                    default:
+                        Snackbar.make(
+                                swipeRefreshLayout,
+                                "Ошибка при выполнении запроса :( код " + code,
+                                Snackbar.LENGTH_SHORT
+                        ).show();
+                        break;
+                }
             }
 
             @Override

@@ -52,8 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private LoadingFragment loadingFragment;
     private ServerErrorFragment serverErrorFragment;
 
-    private SharedPreferences sharedPreferences;
-    private String cookies;
+    private LoginManager loginManager;
 
     private SummaryWithPermissions summaryWithPermissions = new SummaryWithPermissions();
 
@@ -69,9 +68,8 @@ public class MainActivity extends AppCompatActivity {
         createFragments();
         setListeners();
 
-         sharedPreferences = getSharedPreferences(Config.URL, MODE_PRIVATE);
-
-        if(!checkAuthorized()) handleNotAuthorized();
+        loginManager = new LoginManager(this);
+        if(!loginManager.checkAuthorized()) loginManager.handleNotAuthorized();
 
         if (savedInstanceState == null || savedInstanceState.getString(SUMMARY) == null || savedInstanceState.getString(SUMMARY).isEmpty()) {
             updateSummary();
@@ -173,18 +171,24 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<SummaryWithPermissions> call, Response<SummaryWithPermissions> response) {
                 int code = response.code();
-                if (code == 200) {
-                    summaryWithPermissions = response.body();
-                    Log.d("Summary", summaryWithPermissions.toString());
-                    updateSummaryView();
-                } else if (code == 403) {
-                    handleNotAuthorized();
-                } else {
-                    Snackbar.make(
-                            swipeRefreshLayout,
-                            "Ошибка при обновлении данных :( код " + code,
-                            Snackbar.LENGTH_SHORT
-                    ).show();
+                switch (code) {
+                    case 200:
+                        summaryWithPermissions = response.body();
+                        Log.d("Summary", summaryWithPermissions.toString());
+                        updateSummaryView();
+                        break;
+
+                    case 403:
+                        loginManager.handleNotAuthorized();
+                        break;
+
+                    default:
+                        Snackbar.make(
+                                swipeRefreshLayout,
+                                "Ошибка при выполнении запроса :( код " + code,
+                                Snackbar.LENGTH_SHORT
+                        ).show();
+                        break;
                 }
             }
 
@@ -248,20 +252,5 @@ public class MainActivity extends AppCompatActivity {
             ft.hide(serverErrorFragment);
         }
         ft.commit();
-    }
-
-    private boolean checkAuthorized() {
-        cookies = sharedPreferences.getString(Config.KEY_COOKIES, "");
-        Log.d("Login check", cookies);
-        return !cookies.isEmpty();
-    }
-
-    private void handleNotAuthorized() {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(Config.KEY_COOKIES, "");
-        editor.apply();
-        Intent i = new Intent(MainActivity.this, LoginActivity.class);
-        startActivity(i);
-        finish();
     }
 }
