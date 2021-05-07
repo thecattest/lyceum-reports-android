@@ -88,7 +88,6 @@ public class DayActivity extends AppCompatActivity {
         setListeners();
 
         loginManager = new LoginManager(this);
-        if(loginManager.isNotAuthorized()) loginManager.handleNotAuthorized();
 
         groupId = getIntent().getIntExtra(GROUP_ID, 6);
         defaultGroupLabel = getIntent().getStringExtra(GROUP_LABEL);
@@ -234,7 +233,7 @@ public class DayActivity extends AppCompatActivity {
         setLoadingStatus(true);
         String formattedDate = formatDate(currentSelection);
         String absentStudentsIdsString = currentDay.getAbsentStudentsIdsString();
-        Call<Void> call = dayService.updateDay(groupId, new DayPost(formattedDate, absentStudentsIdsString));
+        Call<Void> call = dayService.updateDay(loginManager.getCookies(), groupId, new DayPost(formattedDate, absentStudentsIdsString));
         call.enqueue(new DefaultCallback<Void>(loginManager, mainLayout) {
             @Override
             public void onResponse200(Response<Void> response) {
@@ -265,7 +264,7 @@ public class DayActivity extends AppCompatActivity {
     private void updateDay() {
         setLoadingStatus();
         String formattedDate = formatDate(currentSelection);
-        Call<Day> call = dayService.getDay(groupId, formattedDate);
+        Call<Day> call = dayService.getDay(loginManager.getCookies(), groupId, formattedDate);
         call.enqueue(new DefaultCallback<Day>(loginManager, mainLayout) {
             @Override
             public void onResponse200(Response<Day> response) {

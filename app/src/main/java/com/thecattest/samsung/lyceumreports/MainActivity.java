@@ -64,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
         setListeners();
 
         loginManager = new LoginManager(this);
-        if(loginManager.isNotAuthorized()) loginManager.handleNotAuthorized();
 
         if (savedInstanceState == null || savedInstanceState.getString(SUMMARY) == null || savedInstanceState.getString(SUMMARY).isEmpty()) {
             updateSummary();
@@ -161,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateSummary() {
         setLoadingStatus();
-        Call<SummaryWithPermissions> call = summaryService.getSummary();
+        Call<SummaryWithPermissions> call = summaryService.getSummary(loginManager.getCookies());
         call.enqueue(new DefaultCallback<SummaryWithPermissions>(loginManager, swipeRefreshLayout) {
             @Override
             public void onResponse200(Response<SummaryWithPermissions> response) {

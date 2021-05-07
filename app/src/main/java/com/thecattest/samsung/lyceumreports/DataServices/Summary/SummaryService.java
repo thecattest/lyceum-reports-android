@@ -6,8 +6,9 @@ import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 
 public interface SummaryService {
     @GET("/api/summary")
-    Call<SummaryWithPermissions> getSummary();
+    Call<SummaryWithPermissions> getSummary(@Header("Cookie") String cookies);
 }
