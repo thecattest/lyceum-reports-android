@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -63,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
         findViews();
         createFragments();
         setListeners();
+
+        if(!checkAuthorized()) handleNotAuthorized();
 
         if (savedInstanceState == null || savedInstanceState.getString(SUMMARY) == null || savedInstanceState.getString(SUMMARY).isEmpty()) {
             updateSummary();
@@ -163,9 +166,20 @@ public class MainActivity extends AppCompatActivity {
         call.enqueue(new Callback<SummaryWithPermissions>() {
             @Override
             public void onResponse(Call<SummaryWithPermissions> call, Response<SummaryWithPermissions> response) {
-                summaryWithPermissions = response.body();
-                Log.d("Summary", summaryWithPermissions.toString());
-                updateSummaryView();
+                int code = response.code();
+                if (code == 200) {
+                    summaryWithPermissions = response.body();
+                    Log.d("Summary", summaryWithPermissions.toString());
+                    updateSummaryView();
+                } else if (code == 403) {
+                    handleNotAuthorized();
+                } else {
+                    Snackbar.make(
+                            swipeRefreshLayout,
+                            "Ошибка при обновлении данных :( код " + code,
+                            Snackbar.LENGTH_SHORT
+                    ).show();
+                }
             }
 
             @Override
@@ -228,5 +242,15 @@ public class MainActivity extends AppCompatActivity {
             ft.hide(serverErrorFragment);
         }
         ft.commit();
+    }
+
+    private boolean checkAuthorized() {
+        return false;
+    }
+
+    private void handleNotAuthorized() {
+        Intent i = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(i);
+        finish();
     }
 }
