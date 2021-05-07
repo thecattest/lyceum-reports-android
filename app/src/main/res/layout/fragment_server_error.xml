@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:textSize="24sp"
-        android:text="@string/somethingGoneWrong"/>
+        android:text="@string/something_gone_wrong"/>
     <Button
         android:id="@+id/retry"
         android:layout_marginTop="-10dp"

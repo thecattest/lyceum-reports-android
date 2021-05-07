@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -166,7 +165,7 @@ public class DayActivity extends AppCompatActivity {
 
     protected void initDatePicker() {
         datePicker = MaterialDatePicker.Builder.datePicker()
-                .setTitleText(getResources().getString(R.string.selectDateLabel))
+                .setTitleText(getResources().getString(R.string.select_date_label))
                 .build();
         datePickerTrigger.setOnClickListener(v -> datePicker.show(getSupportFragmentManager(), "MATERIAL_DATE_PICKER"));
     }
@@ -315,14 +314,14 @@ public class DayActivity extends AppCompatActivity {
     protected void updateConfirmButton() {
         confirmButton.setEnabled(!currentDay.noChanges() || currentDay.noInfo());
         if (currentDay.noAbsent() || currentDay.noInfo() && currentDay.getAbsentStudentsIds().size() == 0)
-            confirmButton.setText(getResources().getString(R.string.confirmButtonNoOneAbsent));
+            confirmButton.setText(getResources().getString(R.string.confirm_button_no_one_absent));
         else
-            confirmButton.setText(getResources().getString(R.string.confirmButtonDefault));
+            confirmButton.setText(getResources().getString(R.string.confirm_button_default));
     }
 
     protected String formatDate(Long selection) {
         Date selectedDate = new Date(selection);
-        String serverDateFormat = getResources().getString(R.string.serverDateFormat);
+        String serverDateFormat = getResources().getString(R.string.server_date_format);
         @SuppressLint("SimpleDateFormat")
         DateFormat df = new SimpleDateFormat(serverDateFormat);
         String formattedDate = df.format(selectedDate);
