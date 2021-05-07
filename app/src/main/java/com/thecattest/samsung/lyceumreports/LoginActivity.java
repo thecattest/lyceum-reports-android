@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.inputmethodservice.InputMethodService;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -38,6 +40,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private LoginService loginService;
 
+    private boolean loginIsValid = false;
+    private boolean passwordIsValid = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +53,7 @@ public class LoginActivity extends AppCompatActivity {
         initRetrofit();
         findViews();
         setListeners();
+        updateButtonState();
     }
 
     protected void initRetrofit() {
@@ -67,6 +73,32 @@ public class LoginActivity extends AppCompatActivity {
 
     private void setListeners() {
         loginButton.setOnClickListener(this::login);
+        login.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                loginIsValid = !s.toString().isEmpty();
+                updateButtonState();
+            }
+        });
+        password.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                passwordIsValid = !s.toString().isEmpty();
+                updateButtonState();
+            }
+        });
     }
 
     public void login(View v) {
@@ -110,6 +142,10 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(LoginActivity.this, "Error logging in", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void updateButtonState() {
+        loginButton.setEnabled(loginIsValid && passwordIsValid);
     }
 
     private void hideKeyboard() {
