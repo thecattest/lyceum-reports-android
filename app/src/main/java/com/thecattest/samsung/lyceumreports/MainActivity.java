@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private LoadingFragment loadingFragment;
     private ServerErrorFragment serverErrorFragment;
 
+    private SharedPreferences sharedPreferences;
     private String cookies;
 
     private SummaryWithPermissions summaryWithPermissions = new SummaryWithPermissions();
@@ -67,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
         findViews();
         createFragments();
         setListeners();
+
+         sharedPreferences = getSharedPreferences(Config.URL, MODE_PRIVATE);
 
         if(!checkAuthorized()) handleNotAuthorized();
 
@@ -248,13 +251,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean checkAuthorized() {
-        SharedPreferences sharedPreferences = getSharedPreferences(Config.URL, MODE_PRIVATE);
         cookies = sharedPreferences.getString(Config.KEY_COOKIES, "");
         Log.d("Login check", cookies);
         return !cookies.isEmpty();
     }
 
     private void handleNotAuthorized() {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(Config.KEY_COOKIES, "");
+        editor.apply();
         Intent i = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(i);
         finish();
