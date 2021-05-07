@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String LAYOUT_TYPE_MAIN = "LAYOUT_TYPE_MAIN";
     private static final String LAYOUT_TYPE_SERVER_ERROR = "LAYOUT_TYPE_SERVER_ERROR";
     private static final String SUMMARY = "SUMMARY";
+    private static final String CAN_EDIT = "CAN_EDIT";
+    private static final String CAN_VIEW_TABLE = "CAN_VIEW_TABLE";
 
     private ListView summaryListView;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -78,15 +80,18 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case LAYOUT_TYPE_MAIN:
                 setMainLayout();
-//                String summaryJsonString = savedInstanceState.getString(SUMMARY);
-//                Gson gson = new Gson();
-//                JsonElement summaryJsonObject = new JsonParser().parse(summaryJsonString);
-//                for(JsonElement s : summaryJsonObject.getAsJsonArray()) {
-//                    summaryWithPermissions.summary.add(gson.fromJson(s, Summary.class));
-//                }
-//                Log.d("Summary", "Loaded");
-//                updateSummaryView();
-                updateSummary();
+                String summaryJsonString = savedInstanceState.getString(SUMMARY);
+                if (summaryJsonString != null && !summaryJsonString.isEmpty()) {
+                    Gson gson = new Gson();
+                    JsonElement summaryJsonObject = new JsonParser().parse(summaryJsonString);
+                    for(JsonElement s : summaryJsonObject.getAsJsonArray()) {
+                        summaryWithPermissions.summary.add(gson.fromJson(s, Summary.class));
+                    }
+                }
+                summaryWithPermissions.canEdit = savedInstanceState.getBoolean(CAN_EDIT);
+                summaryWithPermissions.canViewTable = savedInstanceState.getBoolean(CAN_VIEW_TABLE);
+                Log.d("Summary", "Loaded");
+                updateSummaryView();
         }
     }
 
@@ -95,7 +100,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         if (summaryWithPermissions.summary.size() > 0) {
             Gson gson = new Gson();
-            outState.putString(SUMMARY, gson.toJson(summaryWithPermissions));
+            outState.putString(SUMMARY, gson.toJson(summaryWithPermissions.summary));
+            outState.putBoolean(CAN_EDIT, summaryWithPermissions.canEdit);
+            outState.putBoolean(CAN_VIEW_TABLE, summaryWithPermissions.canViewTable);
         }
 
         String layout = "";

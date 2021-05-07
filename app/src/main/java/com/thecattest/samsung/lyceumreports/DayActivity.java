@@ -108,6 +108,7 @@ public class DayActivity extends AppCompatActivity {
         if (dayJson != null && !dayJson.isEmpty()) {
             Gson gson = new Gson();
             currentDay = gson.fromJson(dayJson, Day.class);
+            swipeRefreshLayout.setEnabled(!currentDay.empty);
         }
         currentSelection = selection;
         if (datePickerText != null && !datePickerText.isEmpty())
