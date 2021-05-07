@@ -3,6 +3,7 @@ package com.thecattest.samsung.lyceumreports;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -10,10 +11,12 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -42,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ListView summaryListView;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private MaterialToolbar toolbar;
 
     private final FragmentManager fragmentManager = getSupportFragmentManager();
     private LoadingFragment loadingFragment;
@@ -127,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
     private void findViews() {
         summaryListView = findViewById(R.id.summaryList);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        toolbar = findViewById(R.id.topAppBar);
     }
 
     private void createFragments() {
@@ -146,11 +151,20 @@ public class MainActivity extends AppCompatActivity {
 
     private void setListeners() {
         swipeRefreshLayout.setOnRefreshListener(this::onRefresh);
+        toolbar.setOnMenuItemClickListener(this::onMenuItemClick);
     }
 
     public void onRefresh() {
         updateSummary();
         swipeRefreshLayout.setRefreshing(false);
+    }
+
+    public boolean onMenuItemClick(MenuItem item) {
+        if (item.getItemId() == R.id.logout) {
+            loginManager.handleNotAuthorized();
+            return true;
+        }
+        return false;
     }
 
     // Retry button click

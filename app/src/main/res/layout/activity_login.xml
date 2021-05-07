@@ -5,26 +5,28 @@
     android:id="@+id/loginFormLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity"
-    android:padding="10dp">
+    tools:context=".LoginActivity">
 
-    <TextView
-        android:id="@+id/title"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/topBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/authorization_title"
-        android:textSize="28sp"
-        android:textColor="@color/black"
-        android:background="@color/main"
-        android:layout_marginBottom="15dp"
-        android:paddingVertical="12dp"
-        android:gravity="center"/>
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="@string/authorization_title"
+            style="@style/Widget.MaterialComponents.Toolbar.Primary"
+            />
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/loginLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/title"
+        android:layout_below="@id/topBar"
         android:hint="@string/login_hint">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -60,6 +62,7 @@
         android:text="@string/login_button"
         android:paddingHorizontal="30dp"
         android:paddingVertical="10dp"
-        android:layout_alignParentRight="true" />
+        android:layout_alignParentRight="true"
+        android:layout_marginHorizontal="10dp"/>
 
 </RelativeLayout>

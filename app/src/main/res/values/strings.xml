@@ -18,4 +18,6 @@
     <string name="password_hint">Пароль</string>
     <string name="login_button">Войти</string>
     <string name="authorization_title">Авторизация</string>
+    <string name="main_page_title">Отсутствующие</string>
+    <string name="logout">Выйти</string>
 </resources>
