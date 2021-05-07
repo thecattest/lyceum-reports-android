@@ -304,6 +304,8 @@ public class DayActivity extends AppCompatActivity {
                     Snackbar.LENGTH_LONG
             ).setAnchorView(buttonsGroup).show();
         }
+        buttonsGroup.setVisibility(currentDay.empty ? View.GONE : View.VISIBLE);
+        confirmButton.setVisibility(currentDay.canEdit ? View.VISIBLE : View.GONE);
     }
 
     private void updateStudentsAdapterData() {

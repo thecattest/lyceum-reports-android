@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateSummaryAdapterData() {
-        SummaryAdapter summaryAdapter = new SummaryAdapter(this, summaryWithPermissions.summary);
+        SummaryAdapter summaryAdapter = new SummaryAdapter(this, summaryWithPermissions.summary, summaryWithPermissions.canEdit);
         summaryListView.setAdapter(summaryAdapter);
     }
 

@@ -19,8 +19,11 @@ import com.thecattest.samsung.lyceumreports.R;
 import java.util.ArrayList;
 
 public class SummaryAdapter extends ArrayAdapter<Summary> {
-    public SummaryAdapter(Context context, ArrayList<Summary> summaries) {
+    private boolean canEdit;
+
+    public SummaryAdapter(Context context, ArrayList<Summary> summaries, boolean canEdit) {
         super(context, R.layout.card_list_item, summaries);
+        this.canEdit = canEdit;
     }
 
     @NonNull
@@ -42,12 +45,15 @@ public class SummaryAdapter extends ArrayAdapter<Summary> {
 
 
         classLabel.setText(summary.getLabel());
-        addButton.setOnClickListener(v -> {
-            Intent i = new Intent(getContext(), DayActivity.class);
-            i.putExtra(DayActivity.GROUP_ID, summary.getId());
-            i.putExtra(DayActivity.GROUP_LABEL, summary.getLabel());
-            getContext().startActivity(i);
-        });
+        if (canEdit)
+            addButton.setOnClickListener(v -> {
+                Intent i = new Intent(getContext(), DayActivity.class);
+                i.putExtra(DayActivity.GROUP_ID, summary.getId());
+                i.putExtra(DayActivity.GROUP_LABEL, summary.getLabel());
+                getContext().startActivity(i);
+            });
+        else
+            addButton.setVisibility(View.GONE);
 
         todayDate.setText(summary.getTodayDate());
         todayAbsent.setText(summary.getTodayAbsentStudentsString());
