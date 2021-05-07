@@ -18,14 +18,18 @@ public class LoginManager {
         return sharedPreferences.getString(Config.KEY_COOKIES, "");
     }
 
-    public void removeCookies() {
+    public void setCookies(String cookies) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(Config.KEY_COOKIES, "");
+        editor.putString(Config.KEY_COOKIES, cookies);
         editor.apply();
     }
 
-    public boolean checkAuthorized() {
-        return !getCookies().isEmpty();
+    public void removeCookies() {
+        setCookies("");
+    }
+
+    public boolean isNotAuthorized() {
+        return getCookies().isEmpty();
     }
 
     public void handleNotAuthorized() {

@@ -34,7 +34,6 @@ import java.util.Date;
 import java.util.Objects;
 
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -89,7 +88,7 @@ public class DayActivity extends AppCompatActivity {
         setListeners();
 
         loginManager = new LoginManager(this);
-        if(!loginManager.checkAuthorized()) loginManager.handleNotAuthorized();
+        if(loginManager.isNotAuthorized()) loginManager.handleNotAuthorized();
 
         groupId = getIntent().getIntExtra(GROUP_ID, 6);
         defaultGroupLabel = getIntent().getStringExtra(GROUP_LABEL);
@@ -236,32 +235,15 @@ public class DayActivity extends AppCompatActivity {
         String formattedDate = formatDate(currentSelection);
         String absentStudentsIdsString = currentDay.getAbsentStudentsIdsString();
         Call<Void> call = dayService.updateDay(groupId, new DayPost(formattedDate, absentStudentsIdsString));
-        call.enqueue(new Callback<Void>() {
+        call.enqueue(new DefaultCallback<Void>(loginManager, mainLayout) {
             @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                int code = response.code();
-                switch (code) {
-                    case 200:
-                        Snackbar.make(
-                                mainLayout,
-                                "Сработало :) код " + code,
-                                Snackbar.LENGTH_SHORT
-                        ).setAnchorView(buttonsGroup).show();
-                        updateDay();
-                        break;
-
-                    case 403:
-                        loginManager.handleNotAuthorized();
-                        break;
-
-                    default:
-                        Snackbar.make(
-                                swipeRefreshLayout,
-                                "Ошибка при выполнении запроса :( код " + code,
-                                Snackbar.LENGTH_SHORT
-                        ).show();
-                        break;
-                }
+            public void onResponse200(Response<Void> response) {
+                Snackbar.make(
+                        mainLayout,
+                        "Сработало :) код " + response.code(),
+                        Snackbar.LENGTH_SHORT
+                ).setAnchorView(buttonsGroup).show();
+                updateDay();
             }
 
             @Override
@@ -274,6 +256,9 @@ public class DayActivity extends AppCompatActivity {
                 ).setAnchorView(buttonsGroup).show();
                 setMainLayout();
             }
+
+            @Override
+            protected void onResponse401() {}
         });
     }
 
@@ -281,30 +266,13 @@ public class DayActivity extends AppCompatActivity {
         setLoadingStatus();
         String formattedDate = formatDate(currentSelection);
         Call<Day> call = dayService.getDay(groupId, formattedDate);
-        call.enqueue(new Callback<Day>() {
+        call.enqueue(new DefaultCallback<Day>(loginManager, mainLayout) {
             @Override
-            public void onResponse(Call<Day> call, Response<Day> response) {
-                int code = response.code();
-                switch (code) {
-                    case 200:
-                        currentDay = response.body();
-                        currentDay.updateLoadedAbsent();
-                        updateDayView();
-                        swipeRefreshLayout.setEnabled(true);
-                        break;
-
-                    case 403:
-                        loginManager.handleNotAuthorized();
-                        break;
-
-                    default:
-                        Snackbar.make(
-                                swipeRefreshLayout,
-                                "Ошибка при выполнении запроса :( код " + code,
-                                Snackbar.LENGTH_SHORT
-                        ).show();
-                        break;
-                }
+            public void onResponse200(Response<Day> response) {
+                currentDay = response.body();
+                currentDay.updateLoadedAbsent();
+                updateDayView();
+                swipeRefreshLayout.setEnabled(true);
             }
 
             @Override
@@ -313,6 +281,9 @@ public class DayActivity extends AppCompatActivity {
                 Toast.makeText(DayActivity.this, "Error accessing server", Toast.LENGTH_SHORT).show();
                 setServerErrorLayout();
             }
+
+            @Override
+            protected void onResponse401() {}
         });
     }
 

@@ -34,12 +34,16 @@ public class LoginActivity extends AppCompatActivity {
     private Button loginButton;
     private RelativeLayout loginFormLayout;
 
+    private LoginManager loginManager;
+
     private LoginService loginService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        loginManager = new LoginManager(this);
 
         initRetrofit();
         findViews();
@@ -66,63 +70,54 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void login(View v) {
+        hideKeyboard();
+
         String loginString = Objects.requireNonNull(login.getText()).toString();
         String passwordString = Objects.requireNonNull(password.getText()).toString();
+        Call<Void> call = loginService.login(loginString, passwordString);
+        call.enqueue(new DefaultCallback<Void>(loginManager, loginFormLayout) {
+            @Override
+            public void onResponse200(Response<Void> response) {
+                Snackbar.make(
+                        loginFormLayout,
+                        "Авторизован",
+                        Snackbar.LENGTH_LONG
+                ).show();
+                Log.d("Login", "ok");
+
+                String cookies = response.headers().get("Set-Cookie");
+                if(!cookies.isEmpty())
+                    loginManager.setCookies(cookies);
+
+                Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(i);
+                finish();
+            }
+
+            @Override
+            protected void onResponse401() {
+                Snackbar.make(
+                        loginFormLayout,
+                        "Неправильный логин или пароль",
+                        Snackbar.LENGTH_LONG
+                ).show();
+                Log.d("Login", "wrong credentials");
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.d("LoginCall", t.toString());
+                Toast.makeText(LoginActivity.this, "Error logging in", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void hideKeyboard() {
         InputMethodManager inputMethodManager = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
         View view = this.getCurrentFocus();
         if (view == null) {
             view = new View(this);
         }
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-
-        Call<Void> call = loginService.login(loginString, passwordString);
-        call.enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                int code = response.code();
-                switch (code) {
-                    case 200:
-                        Snackbar.make(
-                                loginFormLayout,
-                                "Авторизован",
-                                Snackbar.LENGTH_LONG
-                        ).show();
-                        Log.d("Login", "ok");
-                        String cookies = response.headers().get("Set-Cookie");
-                        if(!cookies.isEmpty()) {
-                            SharedPreferences sharedPreferences = getSharedPreferences(Config.URL, MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putString(Config.KEY_COOKIES, cookies);
-                            editor.apply();
-                        }
-                        Intent i = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(i);
-                        finish();
-                        break;
-                    case 401:
-                        Snackbar.make(
-                                loginFormLayout,
-                                "Неправильный логин или пароль",
-                                Snackbar.LENGTH_LONG
-                        ).show();
-                        Log.d("Login", "wrong credentials");
-                        break;
-                    default:
-                        Snackbar.make(
-                                loginFormLayout,
-                                "Ошибка :( код " + code,
-                                Snackbar.LENGTH_LONG
-                        ).show();
-                        Log.d("Login", "error " + code);
-                        break;
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                Log.d("LoginCall", t.toString());
-                Toast.makeText(LoginActivity.this, "Error loading summary", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 }

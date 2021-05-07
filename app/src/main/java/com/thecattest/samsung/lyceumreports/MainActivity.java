@@ -8,15 +8,12 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -27,11 +24,9 @@ import com.thecattest.samsung.lyceumreports.DataServices.Summary.SummaryWithPerm
 import com.thecattest.samsung.lyceumreports.Fragments.LoadingFragment;
 import com.thecattest.samsung.lyceumreports.Fragments.ServerErrorFragment;
 
-import java.util.ArrayList;
 import java.util.Objects;
 
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -69,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         setListeners();
 
         loginManager = new LoginManager(this);
-        if(!loginManager.checkAuthorized()) loginManager.handleNotAuthorized();
+        if(loginManager.isNotAuthorized()) loginManager.handleNotAuthorized();
 
         if (savedInstanceState == null || savedInstanceState.getString(SUMMARY) == null || savedInstanceState.getString(SUMMARY).isEmpty()) {
             updateSummary();
@@ -167,29 +162,12 @@ public class MainActivity extends AppCompatActivity {
     private void updateSummary() {
         setLoadingStatus();
         Call<SummaryWithPermissions> call = summaryService.getSummary();
-        call.enqueue(new Callback<SummaryWithPermissions>() {
+        call.enqueue(new DefaultCallback<SummaryWithPermissions>(loginManager, swipeRefreshLayout) {
             @Override
-            public void onResponse(Call<SummaryWithPermissions> call, Response<SummaryWithPermissions> response) {
-                int code = response.code();
-                switch (code) {
-                    case 200:
-                        summaryWithPermissions = response.body();
-                        Log.d("Summary", summaryWithPermissions.toString());
-                        updateSummaryView();
-                        break;
-
-                    case 403:
-                        loginManager.handleNotAuthorized();
-                        break;
-
-                    default:
-                        Snackbar.make(
-                                swipeRefreshLayout,
-                                "Ошибка при выполнении запроса :( код " + code,
-                                Snackbar.LENGTH_SHORT
-                        ).show();
-                        break;
-                }
+            public void onResponse200(Response<SummaryWithPermissions> response) {
+                summaryWithPermissions = response.body();
+                Log.d("Summary", summaryWithPermissions.toString());
+                updateSummaryView();
             }
 
             @Override
@@ -198,6 +176,9 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Error loading summary", Toast.LENGTH_SHORT).show();
                 setServerErrorLayout();
             }
+
+            @Override
+            protected void onResponse401() {}
         });
     }
 
