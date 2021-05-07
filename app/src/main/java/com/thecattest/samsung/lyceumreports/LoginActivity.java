@@ -3,6 +3,8 @@ package com.thecattest.samsung.lyceumreports;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.inputmethodservice.InputMethodService;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +18,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.thecattest.samsung.lyceumreports.DataServices.Login.LoginService;
 
+import java.util.HashSet;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -79,15 +82,22 @@ public class LoginActivity extends AppCompatActivity {
                 int code = response.code();
                 switch (code) {
                     case 200:
-//                        Intent i = new Intent(LoginActivity.this, MainActivity.class);
-//                        startActivity(i);
-//                        finish();
                         Snackbar.make(
                                 loginFormLayout,
                                 "Авторизован",
                                 Snackbar.LENGTH_LONG
                         ).show();
                         Log.d("Login", "ok");
+                        String cookies = response.headers().get("Set-Cookie");
+                        if(!cookies.isEmpty()) {
+                            SharedPreferences sharedPreferences = getSharedPreferences(Config.URL, MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString(Config.KEY_COOKIES, cookies);
+                            editor.apply();
+                        }
+                        Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                        startActivity(i);
+                        finish();
                         break;
                     case 401:
                         Snackbar.make(

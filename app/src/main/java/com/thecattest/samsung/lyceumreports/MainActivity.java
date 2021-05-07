@@ -9,6 +9,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -50,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
     private final FragmentManager fragmentManager = getSupportFragmentManager();
     private LoadingFragment loadingFragment;
     private ServerErrorFragment serverErrorFragment;
+
+    private String cookies;
 
     private SummaryWithPermissions summaryWithPermissions = new SummaryWithPermissions();
 
@@ -245,7 +248,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean checkAuthorized() {
-        return false;
+        SharedPreferences sharedPreferences = getSharedPreferences(Config.URL, MODE_PRIVATE);
+        cookies = sharedPreferences.getString(Config.KEY_COOKIES, "");
+        Log.d("Login check", cookies);
+        return !cookies.isEmpty();
     }
 
     private void handleNotAuthorized() {
