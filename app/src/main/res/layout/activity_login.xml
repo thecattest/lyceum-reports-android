@@ -8,65 +8,58 @@
     tools:context=".LoginActivity"
     android:padding="10dp">
 
-    <RelativeLayout
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/authorization_title"
+        android:textSize="28sp"
+        android:textColor="@color/black"
+        android:background="@color/main"
+        android:layout_marginBottom="15dp"
+        android:paddingVertical="12dp"
+        android:gravity="center"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/loginLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title"
+        android:hint="@string/login_hint">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:imeOptions="actionNext"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/passwordLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/loginLayout"
+        android:hint="@string/password_hint"
+        app:endIconMode="password_toggle">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/loginButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true">
-
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/authorization_title"
-            android:textSize="28sp"
-            android:textColor="@color/black"
-            android:background="@color/main"
-            android:layout_marginBottom="15dp"
-            android:paddingVertical="12dp"
-            android:gravity="center"/>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/loginLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/title"
-            android:hint="@string/login_hint">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/login"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text"
-                android:imeOptions="actionNext"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/passwordLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/loginLayout"
-            android:hint="@string/password_hint"
-            app:endIconMode="password_toggle">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <Button
-            android:id="@+id/loginButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/passwordLayout"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="10dp"
-            android:text="@string/login_button"
-            android:paddingHorizontal="30dp"
-            android:paddingVertical="10dp"
-            android:layout_alignParentRight="true" />
-
-    </RelativeLayout>
+        android:layout_below="@id/passwordLayout"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dp"
+        android:text="@string/login_button"
+        android:paddingHorizontal="30dp"
+        android:paddingVertical="10dp"
+        android:layout_alignParentRight="true" />
 
 </RelativeLayout>
