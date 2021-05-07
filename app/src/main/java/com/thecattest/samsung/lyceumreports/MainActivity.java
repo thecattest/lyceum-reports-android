@@ -16,15 +16,13 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.thecattest.samsung.lyceumreports.Adapters.SummaryAdapter;
 import com.thecattest.samsung.lyceumreports.DataServices.Summary.Summary;
 import com.thecattest.samsung.lyceumreports.DataServices.Summary.SummaryService;
+import com.thecattest.samsung.lyceumreports.DataServices.Summary.SummaryWithPermissions;
 import com.thecattest.samsung.lyceumreports.Fragments.LoadingFragment;
 import com.thecattest.samsung.lyceumreports.Fragments.ServerErrorFragment;
-
-import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -49,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private LoadingFragment loadingFragment;
     private ServerErrorFragment serverErrorFragment;
 
-    private ArrayList<Summary> summary = new ArrayList<>();
+    private SummaryWithPermissions summaryWithPermissions = new SummaryWithPermissions();
 
     SummaryService summaryService;
 
@@ -80,23 +78,24 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case LAYOUT_TYPE_MAIN:
                 setMainLayout();
-                String summaryJsonString = savedInstanceState.getString(SUMMARY);
-                Gson gson = new Gson();
-                JsonElement summaryJsonObject = new JsonParser().parse(summaryJsonString);
-                for(JsonElement s : summaryJsonObject.getAsJsonArray()) {
-                    summary.add(gson.fromJson(s, Summary.class));
-                }
-                Log.d("Summary", "Loaded");
-                updateSummaryView();
+//                String summaryJsonString = savedInstanceState.getString(SUMMARY);
+//                Gson gson = new Gson();
+//                JsonElement summaryJsonObject = new JsonParser().parse(summaryJsonString);
+//                for(JsonElement s : summaryJsonObject.getAsJsonArray()) {
+//                    summaryWithPermissions.summary.add(gson.fromJson(s, Summary.class));
+//                }
+//                Log.d("Summary", "Loaded");
+//                updateSummaryView();
+                updateSummary();
         }
     }
 
     @SuppressLint("MissingSuperCall")
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
-        if (summary.size() > 0) {
+        if (summaryWithPermissions.summary.size() > 0) {
             Gson gson = new Gson();
-            outState.putString(SUMMARY, gson.toJson(summary));
+            outState.putString(SUMMARY, gson.toJson(summaryWithPermissions));
         }
 
         String layout = "";
@@ -152,17 +151,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateSummary() {
         setLoadingStatus();
-        Call<ArrayList<Summary>> call = summaryService.getSummary();
-        call.enqueue(new Callback<ArrayList<Summary>>() {
+        Call<SummaryWithPermissions> call = summaryService.getSummary();
+        call.enqueue(new Callback<SummaryWithPermissions>() {
             @Override
-            public void onResponse(Call<ArrayList<Summary>> call, Response<ArrayList<Summary>> response) {
-                summary = response.body();
-                Log.d("Summary", summary.toString());
+            public void onResponse(Call<SummaryWithPermissions> call, Response<SummaryWithPermissions> response) {
+                summaryWithPermissions = response.body();
+                Log.d("Summary", summaryWithPermissions.toString());
                 updateSummaryView();
             }
 
             @Override
-            public void onFailure(Call<ArrayList<Summary>> call, Throwable t) {
+            public void onFailure(Call<SummaryWithPermissions> call, Throwable t) {
                 Log.d("SummaryCall", t.toString());
                 Toast.makeText(MainActivity.this, "Error loading summary", Toast.LENGTH_SHORT).show();
                 setServerErrorLayout();
@@ -176,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateSummaryAdapterData() {
-        SummaryAdapter summaryAdapter = new SummaryAdapter(this, summary);
+        SummaryAdapter summaryAdapter = new SummaryAdapter(this, summaryWithPermissions.summary);
         summaryListView.setAdapter(summaryAdapter);
     }
 
@@ -199,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setLoadingStatus() {
-        summary = new ArrayList<>();
+        summaryWithPermissions = new SummaryWithPermissions();
         setLoadingLayout();
     }
 

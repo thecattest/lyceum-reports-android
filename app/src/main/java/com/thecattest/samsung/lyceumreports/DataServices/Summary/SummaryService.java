@@ -9,5 +9,5 @@ import retrofit2.http.GET;
 
 public interface SummaryService {
     @GET("/api/summary")
-    Call<ArrayList<Summary>> getSummary();
+    Call<SummaryWithPermissions> getSummary();
 }

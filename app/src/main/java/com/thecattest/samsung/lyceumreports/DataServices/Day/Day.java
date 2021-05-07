@@ -1,11 +1,15 @@
 package com.thecattest.samsung.lyceumreports.DataServices.Day;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 
 public class Day {
     public int id;
     public String name = "";
     public String status = STATUS.EMPTY;
+    @SerializedName("can_edit")
+    public boolean canEdit;
     public ArrayList<Student> students = new ArrayList<>();
     private ArrayList<Integer> loadedAbsent = new ArrayList<>();
     public boolean empty = false;
