@@ -172,6 +172,9 @@ public class MainActivity extends AppCompatActivity {
         updateSummary();
     }
 
+    @Override
+    public void onBackPressed() {}
+
     private void updateSummary() {
         setLoadingStatus();
         Call<SummaryWithPermissions> call = summaryService.getSummary(loginManager.getCookies());

@@ -102,6 +102,9 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {}
+
     public void login(View v) {
 //        hideKeyboard();
 

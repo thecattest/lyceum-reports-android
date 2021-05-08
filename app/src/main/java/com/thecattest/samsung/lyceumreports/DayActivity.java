@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -223,9 +224,16 @@ public class DayActivity extends AppCompatActivity {
         updateDay();
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent i = new Intent(DayActivity.this, MainActivity.class);
+        startActivity(i);
+        finish();
+    }
+
     // Cancel button click
     public void onCancelButtonClick(View v) {
-        finish();
+        onBackPressed();
     }
 
     // Confirm button click
