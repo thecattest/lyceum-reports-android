@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -34,7 +35,7 @@ public class LoginActivity extends AppCompatActivity {
     private TextInputEditText login;
     private TextInputEditText password;
     private Button loginButton;
-    private RelativeLayout loginFormLayout;
+    private ScrollView scrollView;
 
     private LoginManager loginManager;
 
@@ -68,7 +69,7 @@ public class LoginActivity extends AppCompatActivity {
         login = findViewById(R.id.login);
         password = findViewById(R.id.password);
         loginButton = findViewById(R.id.loginButton);
-        loginFormLayout = findViewById(R.id.loginFormLayout);
+        scrollView = findViewById(R.id.scrollView);
     }
 
     private void setListeners() {
@@ -102,16 +103,16 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void login(View v) {
-        hideKeyboard();
+//        hideKeyboard();
 
         String loginString = Objects.requireNonNull(login.getText()).toString();
         String passwordString = Objects.requireNonNull(password.getText()).toString();
         Call<Void> call = loginService.login(loginString, passwordString);
-        call.enqueue(new DefaultCallback<Void>(loginManager, loginFormLayout) {
+        call.enqueue(new DefaultCallback<Void>(loginManager, scrollView) {
             @Override
             public void onResponse200(Response<Void> response) {
                 Snackbar.make(
-                        loginFormLayout,
+                        scrollView,
                         "Авторизован",
                         Snackbar.LENGTH_LONG
                 ).show();
@@ -129,7 +130,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             protected void onResponse401() {
                 Snackbar.make(
-                        loginFormLayout,
+                        scrollView,
                         "Неправильный логин или пароль",
                         Snackbar.LENGTH_LONG
                 ).show();
@@ -139,7 +140,11 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
                 Log.d("LoginCall", t.toString());
-                Toast.makeText(LoginActivity.this, "Error logging in", Toast.LENGTH_SHORT).show();
+                Snackbar.make(
+                        scrollView,
+                        "Ошибка: сервер недоступен",
+                        Snackbar.LENGTH_LONG
+                ).show();
             }
         });
     }

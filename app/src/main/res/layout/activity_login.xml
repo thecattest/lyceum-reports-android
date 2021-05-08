@@ -65,4 +65,12 @@
         android:layout_alignParentRight="true"
         android:layout_marginHorizontal="10dp"/>
 
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_below="@id/loginButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </ScrollView>
+
 </RelativeLayout>
