@@ -2,6 +2,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/daySummaryTable"
+        android:title="@string/daySummaryTable"
+        android:icon="@drawable/ic_table_24"
+        android:contentDescription="@string/daySummaryTable"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/logout"
         android:title="@string/logout"
         android:icon="@drawable/ic_logout_24"
