@@ -28,12 +28,12 @@ public class LoginManager {
         setCookies("");
     }
 
-    public boolean isNotAuthorized() {
-        return getCookies().isEmpty();
+    public void logout() {
+        removeCookies();
+        handleNotAuthorized();
     }
 
     public void handleNotAuthorized() {
-        removeCookies();
         Intent i = new Intent(context, LoginActivity.class);
         context.startActivity(i);
         ((Activity) context).finish();

@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean onMenuItemClick(MenuItem item) {
         if (item.getItemId() == R.id.logout) {
-            loginManager.handleNotAuthorized();
+            loginManager.logout();
             return true;
         }
         return false;
