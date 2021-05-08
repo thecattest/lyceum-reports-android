@@ -63,10 +63,9 @@ public class DayActivity extends AppCompatActivity {
     private MaterialDatePicker<Long> datePicker;
 
     private final FragmentManager fragmentManager = getSupportFragmentManager();
-    private LoadingFragment loadingFragment;
-    private ServerErrorFragment serverErrorFragment;
 
     private LoginManager loginManager;
+    private StatusManager statusManager;
 
     private Day currentDay = new Day(true);
     private StudentsAdapter studentsAdapter;
@@ -85,10 +84,10 @@ public class DayActivity extends AppCompatActivity {
         initRetrofit();
         findViews();
         initDatePicker();
-        createFragments();
         setListeners();
 
         loginManager = new LoginManager(this);
+        statusManager = new StatusManager(mainLayout, fragmentManager, this::onRetryButtonClick);
 
         groupId = getIntent().getIntExtra(GROUP_ID, 6);
         defaultGroupLabel = getIntent().getStringExtra(GROUP_LABEL);
@@ -118,10 +117,10 @@ public class DayActivity extends AppCompatActivity {
             datePickerTrigger.setText(datePickerText);
         switch (layout) {
             case LAYOUT_TYPE_SERVER_ERROR:
-                setServerErrorLayout();
+                statusManager.setServerErrorLayout();
                 break;
             case LAYOUT_TYPE_MAIN:
-                setMainLayout();
+                statusManager.setMainLayout();
                 updateDayView();
         }
     }
@@ -172,21 +171,6 @@ public class DayActivity extends AppCompatActivity {
                 .setTitleText(getResources().getString(R.string.select_date_label))
                 .build();
         datePickerTrigger.setOnClickListener(v -> datePicker.show(getSupportFragmentManager(), "MATERIAL_DATE_PICKER"));
-    }
-
-    protected void createFragments() {
-        FragmentTransaction ft = fragmentManager.beginTransaction();
-        ft.disallowAddToBackStack();
-
-        loadingFragment = new LoadingFragment();
-        ft.add(R.id.loadingLayout, loadingFragment, LoadingFragment.TAG);
-        ft.hide(loadingFragment);
-
-        serverErrorFragment = new ServerErrorFragment(this::onRetryButtonClick);
-        ft.add(R.id.serverErrorLayout, serverErrorFragment, ServerErrorFragment.TAG);
-        ft.hide(serverErrorFragment);
-
-        ft.commit();
     }
 
     protected void setListeners() {
@@ -261,7 +245,7 @@ public class DayActivity extends AppCompatActivity {
                         "Ошибка, попробуйте ещё раз позднее",
                         Snackbar.LENGTH_LONG
                 ).setAnchorView(buttonsGroup).show();
-                setMainLayout();
+                statusManager.setMainLayout();
             }
 
             @Override
@@ -286,7 +270,7 @@ public class DayActivity extends AppCompatActivity {
             public void onFailure(Call<Day> call, Throwable t) {
                 Log.d("DayCall", t.toString());
                 Toast.makeText(DayActivity.this, "Error accessing server", Toast.LENGTH_SHORT).show();
-                setServerErrorLayout();
+                statusManager.setServerErrorLayout();
             }
 
             @Override
@@ -295,7 +279,7 @@ public class DayActivity extends AppCompatActivity {
     }
 
     protected void updateDayView() {
-        setMainLayout();
+        statusManager.setMainLayout();
         classLabel.setText(currentDay.name);
         updateStudentsAdapterData();
         updateConfirmButton();
@@ -340,62 +324,16 @@ public class DayActivity extends AppCompatActivity {
         return formattedDate;
     }
 
-    private void setMainLayout() {
-        mainLayout.setVisibility(View.VISIBLE);
-        setLoadingFragmentVisibility(false);
-        setServerErrorFragmentVisibility(false);
-    }
-
-    private void setLoadingLayout() {
-        setLoadingLayout(false);
-    }
-
-    private void setLoadingLayout(boolean mainIsVisible) {
-        setLoadingFragmentVisibility(true);
-        setServerErrorFragmentVisibility(false);
-        if (mainIsVisible) {
-            mainLayout.setVisibility(View.VISIBLE);
-        } else {
-            mainLayout.setVisibility(View.GONE);
-        }
-    }
-
-    private void setServerErrorLayout() {
-        setServerErrorFragmentVisibility(true);
-        mainLayout.setVisibility(View.GONE);
-        setLoadingFragmentVisibility(false);
-    }
-
     protected void setLoadingStatus(boolean mainIsVisible) {
         if (!mainIsVisible) {
             currentDay = new Day(true);
             currentDay.name = defaultGroupLabel;
             updateDayView();
         }
-        setLoadingLayout(mainIsVisible);
+        statusManager.setLoadingLayout(mainIsVisible);
     }
 
     protected void setLoadingStatus() {
         setLoadingStatus(false);
-    }
-
-    private void setLoadingFragmentVisibility(boolean visible) {
-        FragmentTransaction ft = fragmentManager.beginTransaction();
-        if (visible) {
-            ft.show(loadingFragment);
-        } else {
-            ft.hide(loadingFragment);
-        }
-        ft.commit();
-    }
-
-    private void setServerErrorFragmentVisibility(boolean visible) {
-        FragmentTransaction ft = fragmentManager.beginTransaction();
-        if (visible) {
-            ft.show(serverErrorFragment);
-        } else {
-            ft.hide(serverErrorFragment);
-        }
-        ft.commit();
     }
 }

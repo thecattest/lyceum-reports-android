@@ -3,9 +3,7 @@ package com.thecattest.samsung.lyceumreports;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.annotation.SuppressLint;
@@ -24,7 +22,6 @@ import com.thecattest.samsung.lyceumreports.Adapters.SummaryAdapter;
 import com.thecattest.samsung.lyceumreports.DataServices.Summary.Summary;
 import com.thecattest.samsung.lyceumreports.DataServices.Summary.SummaryService;
 import com.thecattest.samsung.lyceumreports.DataServices.Summary.SummaryWithPermissions;
-import com.thecattest.samsung.lyceumreports.Fragments.LoadingFragment;
 import com.thecattest.samsung.lyceumreports.Fragments.ServerErrorFragment;
 
 import java.util.Objects;
@@ -48,10 +45,9 @@ public class MainActivity extends AppCompatActivity {
     private MaterialToolbar toolbar;
 
     private final FragmentManager fragmentManager = getSupportFragmentManager();
-    private LoadingFragment loadingFragment;
-    private ServerErrorFragment serverErrorFragment;
 
     private LoginManager loginManager;
+    private StatusManager statusManager;
 
     private SummaryWithPermissions summaryWithPermissions = new SummaryWithPermissions();
 
@@ -64,10 +60,10 @@ public class MainActivity extends AppCompatActivity {
 
         initRetrofit();
         findViews();
-        createFragments();
         setListeners();
 
         loginManager = new LoginManager(this);
+        statusManager = new StatusManager(swipeRefreshLayout, fragmentManager, this::onRetryButtonClick);
 
         if (savedInstanceState == null || savedInstanceState.getString(SUMMARY) == null || savedInstanceState.getString(SUMMARY).isEmpty()) {
             updateSummary();
@@ -82,10 +78,10 @@ public class MainActivity extends AppCompatActivity {
         String layout = savedInstanceState.getString(LAYOUT_TYPE);
         switch (layout) {
             case LAYOUT_TYPE_SERVER_ERROR:
-                setServerErrorLayout();
+                statusManager.setServerErrorLayout();
                 break;
             case LAYOUT_TYPE_MAIN:
-                setMainLayout();
+                statusManager.setMainLayout();
                 String summaryJsonString = savedInstanceState.getString(SUMMARY);
                 if (summaryJsonString != null && !summaryJsonString.isEmpty()) {
                     Gson gson = new Gson();
@@ -134,21 +130,6 @@ public class MainActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.topAppBar);
     }
 
-    private void createFragments() {
-        FragmentTransaction ft = fragmentManager.beginTransaction();
-        ft.disallowAddToBackStack();
-
-        loadingFragment = new LoadingFragment();
-        ft.add(R.id.loadingLayout, loadingFragment, LoadingFragment.TAG);
-        ft.hide(loadingFragment);
-
-        serverErrorFragment = new ServerErrorFragment(this::onRetryButtonClick);
-        ft.add(R.id.serverErrorLayout, serverErrorFragment, ServerErrorFragment.TAG);
-        ft.hide(serverErrorFragment);
-
-        ft.commit();
-    }
-
     private void setListeners() {
         swipeRefreshLayout.setOnRefreshListener(this::onRefresh);
         toolbar.setOnMenuItemClickListener(this::onMenuItemClick);
@@ -190,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
             public void onFailure(Call<SummaryWithPermissions> call, Throwable t) {
                 Log.d("SummaryCall", t.toString());
                 Toast.makeText(MainActivity.this, "Error loading summary", Toast.LENGTH_SHORT).show();
-                setServerErrorLayout();
+                statusManager.setServerErrorLayout();
             }
 
             @Override
@@ -199,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateSummaryView() {
-        setMainLayout();
+        statusManager.setMainLayout();
         updateSummaryAdapterData();
     }
 
@@ -208,46 +189,8 @@ public class MainActivity extends AppCompatActivity {
         summaryListView.setAdapter(summaryAdapter);
     }
 
-    private void setServerErrorLayout() {
-        swipeRefreshLayout.setVisibility(View.GONE);
-        setLoadingFragmentVisibility(false);
-        setServerErrorFragmentVisibility(true);
-    }
-
-    private void setLoadingLayout() {
-        swipeRefreshLayout.setVisibility(View.GONE);
-        setLoadingFragmentVisibility(true);
-        setServerErrorFragmentVisibility(false);
-    }
-
-    private void setMainLayout() {
-        swipeRefreshLayout.setVisibility(View.VISIBLE);
-        setLoadingFragmentVisibility(false);
-        setServerErrorFragmentVisibility(false);
-    }
-
     private void setLoadingStatus() {
         summaryWithPermissions = new SummaryWithPermissions();
-        setLoadingLayout();
-    }
-
-    private void setLoadingFragmentVisibility(boolean visible) {
-        FragmentTransaction ft = fragmentManager.beginTransaction();
-        if (visible) {
-            ft.show(loadingFragment);
-        } else {
-            ft.hide(loadingFragment);
-        }
-        ft.commit();
-    }
-
-    private void setServerErrorFragmentVisibility(boolean visible) {
-        FragmentTransaction ft = fragmentManager.beginTransaction();
-        if (visible) {
-            ft.show(serverErrorFragment);
-        } else {
-            ft.hide(serverErrorFragment);
-        }
-        ft.commit();
+        statusManager.setLoadingLayout();
     }
 }
