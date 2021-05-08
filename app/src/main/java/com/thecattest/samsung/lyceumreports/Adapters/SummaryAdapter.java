@@ -52,8 +52,10 @@ public class SummaryAdapter extends ArrayAdapter<Summary> {
                 i.putExtra(DayActivity.GROUP_LABEL, summary.getLabel());
                 getContext().startActivity(i);
             });
-        else
+        else {
             addButton.setVisibility(View.GONE);
+            convertView.setEnabled(false);
+        }
 
         todayDate.setText(summary.getTodayDate());
         todayAbsent.setText(summary.getTodayAbsentStudentsString());
