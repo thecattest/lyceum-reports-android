@@ -1,4 +1,4 @@
-package com.thecattest.samsung.lyceumreports.DataServices.DaySummary;
+package com.thecattest.samsung.lyceumreports.DataServices.SummaryDay;
 
 import java.util.ArrayList;
 
