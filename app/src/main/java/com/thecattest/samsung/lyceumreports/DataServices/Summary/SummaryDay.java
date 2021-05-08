@@ -59,7 +59,7 @@ public class SummaryDay {
                     absentStudentsString.append(absentStudent);
                     absentStudentsString.append(", ");
                 }
-                return absentStudentsString.toString().substring(0, absentStudentsString.length() - 2);
+                return absentStudentsString.substring(0, absentStudentsString.length() - 2);
             } else {
                 return "Все в классе";
             }
