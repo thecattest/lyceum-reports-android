@@ -11,7 +11,7 @@
     <string name="no_info_for_day">За этот день данных нет</string>
     <string name="no_absent">Все в классе</string>
     <string name="cancel">Назад</string>
-    <string name="add">дополнить</string>
+    <string name="add">редактировать</string>
     <string name="yesterday">Вчера</string>
     <string name="today">Сегодня</string>
     <string name="login_hint">Логин</string>
