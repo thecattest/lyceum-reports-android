@@ -33,4 +33,13 @@ public class SummaryDayRow {
         public static String OK = "ok";
         public static String EMPTY = "empty";
     }
+
+    @Override
+    public String toString() {
+        return "SummaryDayRow{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", students=" + getAbsentStudentsString() +
+                '}';
+    }
 }

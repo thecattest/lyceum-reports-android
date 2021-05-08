@@ -20,4 +20,5 @@
     <string name="authorization_title">Авторизация</string>
     <string name="main_page_title">Отсутствующие</string>
     <string name="logout">Выйти</string>
+    <string name="summary_day_title">Отсутствующие: день</string>
 </resources>

@@ -101,27 +101,20 @@ public class DayActivity extends AppCompatActivity {
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
-        String dayJson = savedInstanceState.getString(CURRENT_DAY);
         long selection = savedInstanceState.getLong(CURRENT_SELECTION);
         String datePickerText = savedInstanceState.getString(DATE_PICKER_TRIGGER_TEXT);
-        String layout = savedInstanceState.getString(LAYOUT_TYPE);
-        Log.d(LAYOUT_TYPE + " in", layout);
 
-        if (dayJson != null && !dayJson.isEmpty()) {
-            Gson gson = new Gson();
-            currentDay = gson.fromJson(dayJson, Day.class);
-            swipeRefreshLayout.setEnabled(!currentDay.empty);
-        }
         currentSelection = selection;
         if (datePickerText != null && !datePickerText.isEmpty())
             datePickerTrigger.setText(datePickerText);
-        switch (layout) {
-            case LAYOUT_TYPE_SERVER_ERROR:
-                statusManager.setServerErrorLayout();
-                break;
-            case LAYOUT_TYPE_MAIN:
-                statusManager.setMainLayout();
-                updateDayView();
+        if (statusManager.loadLayoutType(savedInstanceState)) {
+            String dayJson = savedInstanceState.getString(CURRENT_DAY);
+            if (dayJson != null && !dayJson.isEmpty()) {
+                Gson gson = new Gson();
+                currentDay = gson.fromJson(dayJson, Day.class);
+                swipeRefreshLayout.setEnabled(!currentDay.empty);
+            }
+            updateDayView();
         }
     }
 
@@ -135,15 +128,7 @@ public class DayActivity extends AppCompatActivity {
         if (currentSelection != null)
             outState.putLong(CURRENT_SELECTION, currentSelection);
         outState.putString(DATE_PICKER_TRIGGER_TEXT, (String) datePickerTrigger.getText());
-        String layout = "";
-        if (mainLayout.getVisibility() == View.VISIBLE) {
-            layout = LAYOUT_TYPE_MAIN;
-        }
-        else if (!Objects.requireNonNull(fragmentManager.findFragmentByTag(ServerErrorFragment.TAG)).isHidden()) {
-            layout = LAYOUT_TYPE_SERVER_ERROR;
-        }
-        Log.d(LAYOUT_TYPE + " out", layout);
-        outState.putString(LAYOUT_TYPE, layout);
+        statusManager.saveLayoutType(outState);
     }
 
     protected void findViews() {
@@ -313,9 +298,9 @@ public class DayActivity extends AppCompatActivity {
             confirmButton.setText(getResources().getString(R.string.confirm_button_default));
     }
 
-    protected String formatDate(Long selection) {
+    public static String formatDate(Long selection) {
         Date selectedDate = new Date(selection);
-        String serverDateFormat = getResources().getString(R.string.server_date_format);
+        String serverDateFormat = "yyyy-MM-dd";
         @SuppressLint("SimpleDateFormat")
         DateFormat df = new SimpleDateFormat(serverDateFormat);
         String formattedDate = df.format(selectedDate);

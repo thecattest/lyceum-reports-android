@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -75,25 +76,19 @@ public class MainActivity extends AppCompatActivity {
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
-        String layout = savedInstanceState.getString(LAYOUT_TYPE);
-        switch (layout) {
-            case LAYOUT_TYPE_SERVER_ERROR:
-                statusManager.setServerErrorLayout();
-                break;
-            case LAYOUT_TYPE_MAIN:
-                statusManager.setMainLayout();
-                String summaryJsonString = savedInstanceState.getString(SUMMARY);
-                if (summaryJsonString != null && !summaryJsonString.isEmpty()) {
-                    Gson gson = new Gson();
-                    JsonElement summaryJsonObject = new JsonParser().parse(summaryJsonString);
-                    for(JsonElement s : summaryJsonObject.getAsJsonArray()) {
-                        summaryWithPermissions.summary.add(gson.fromJson(s, Summary.class));
-                    }
+        if(statusManager.loadLayoutType(savedInstanceState)) {
+            String summaryJsonString = savedInstanceState.getString(SUMMARY);
+            if (summaryJsonString != null && !summaryJsonString.isEmpty()) {
+                Gson gson = new Gson();
+                JsonElement summaryJsonObject = new JsonParser().parse(summaryJsonString);
+                for (JsonElement s : summaryJsonObject.getAsJsonArray()) {
+                    summaryWithPermissions.summary.add(gson.fromJson(s, Summary.class));
                 }
-                summaryWithPermissions.canEdit = savedInstanceState.getBoolean(CAN_EDIT);
-                summaryWithPermissions.canViewTable = savedInstanceState.getBoolean(CAN_VIEW_TABLE);
-                Log.d("Summary", "Loaded");
-                updateSummaryView();
+            }
+            summaryWithPermissions.canEdit = savedInstanceState.getBoolean(CAN_EDIT);
+            summaryWithPermissions.canViewTable = savedInstanceState.getBoolean(CAN_VIEW_TABLE);
+            Log.d("Summary", "Loaded");
+            updateSummaryView();
         }
     }
 
@@ -107,13 +102,7 @@ public class MainActivity extends AppCompatActivity {
             outState.putBoolean(CAN_VIEW_TABLE, summaryWithPermissions.canViewTable);
         }
 
-        String layout = "";
-        if (swipeRefreshLayout.getVisibility() == View.VISIBLE) {
-            layout = LAYOUT_TYPE_MAIN;
-        } else if (!Objects.requireNonNull(fragmentManager.findFragmentByTag(ServerErrorFragment.TAG)).isHidden()) {
-            layout = LAYOUT_TYPE_SERVER_ERROR;
-        }
-        outState.putString(LAYOUT_TYPE, layout);
+        statusManager.saveLayoutType(outState);
     }
 
     protected void initRetrofit() {
