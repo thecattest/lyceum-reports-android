@@ -1,11 +1,16 @@
-package com.thecattest.samsung.lyceumreports;
+package com.thecattest.samsung.lyceumreports.Managers;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import com.thecattest.samsung.lyceumreports.Config;
+import com.thecattest.samsung.lyceumreports.LoginActivity;
+
 public class LoginManager {
+    private static final String KEY_COOKIES = "COOKIES";
+
     private final SharedPreferences sharedPreferences;
     private final Context context;
 
@@ -15,12 +20,12 @@ public class LoginManager {
     }
 
     public String getCookie() {
-        return sharedPreferences.getString(Config.KEY_COOKIES, "");
+        return sharedPreferences.getString(KEY_COOKIES, "");
     }
 
     public void setCookie(String cookies) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(Config.KEY_COOKIES, cookies);
+        editor.putString(KEY_COOKIES, cookies);
         editor.apply();
     }
 

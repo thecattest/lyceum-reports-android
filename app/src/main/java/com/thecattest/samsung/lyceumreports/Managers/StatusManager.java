@@ -1,4 +1,4 @@
-package com.thecattest.samsung.lyceumreports;
+package com.thecattest.samsung.lyceumreports.Managers;
 
 import android.os.Bundle;
 import android.view.View;
@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.thecattest.samsung.lyceumreports.Fragments.LoadingFragment;
 import com.thecattest.samsung.lyceumreports.Fragments.ServerErrorFragment;
+import com.thecattest.samsung.lyceumreports.R;
 
 import java.util.Objects;
 

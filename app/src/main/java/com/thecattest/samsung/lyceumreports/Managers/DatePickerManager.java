@@ -1,4 +1,4 @@
-package com.thecattest.samsung.lyceumreports;
+package com.thecattest.samsung.lyceumreports.Managers;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;

@@ -18,6 +18,9 @@ import com.google.gson.Gson;
 import com.thecattest.samsung.lyceumreports.Adapters.SummaryDayAdapter;
 import com.thecattest.samsung.lyceumreports.DataServices.SummaryDay.SummaryDay;
 import com.thecattest.samsung.lyceumreports.DataServices.SummaryDay.SummaryDayService;
+import com.thecattest.samsung.lyceumreports.Managers.DatePickerManager;
+import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
+import com.thecattest.samsung.lyceumreports.Managers.StatusManager;
 
 import retrofit2.Call;
 import retrofit2.Response;

@@ -24,6 +24,8 @@ import com.thecattest.samsung.lyceumreports.Adapters.SummaryAdapter;
 import com.thecattest.samsung.lyceumreports.DataServices.Summary.Summary;
 import com.thecattest.samsung.lyceumreports.DataServices.Summary.SummaryService;
 import com.thecattest.samsung.lyceumreports.DataServices.Summary.SummaryWithPermissions;
+import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
+import com.thecattest.samsung.lyceumreports.Managers.StatusManager;
 
 import retrofit2.Call;
 import retrofit2.Response;
