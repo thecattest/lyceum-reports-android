@@ -4,8 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.inputmethodservice.InputMethodService;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,19 +11,15 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
-import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.thecattest.samsung.lyceumreports.DataServices.Login.LoginService;
 
-import java.util.HashSet;
 import java.util.Objects;
 
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -123,7 +117,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 String cookies = response.headers().get("Set-Cookie");
                 if(!cookies.isEmpty())
-                    loginManager.setCookies(cookies);
+                    loginManager.setCookie(cookies);
 
                 Intent i = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(i);

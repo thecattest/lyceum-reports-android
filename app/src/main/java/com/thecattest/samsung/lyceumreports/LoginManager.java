@@ -14,22 +14,22 @@ public class LoginManager {
         sharedPreferences = context.getSharedPreferences(Config.URL, Context.MODE_PRIVATE);
     }
 
-    public String getCookies() {
+    public String getCookie() {
         return sharedPreferences.getString(Config.KEY_COOKIES, "");
     }
 
-    public void setCookies(String cookies) {
+    public void setCookie(String cookies) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(Config.KEY_COOKIES, cookies);
         editor.apply();
     }
 
-    public void removeCookies() {
-        setCookies("");
+    public void removeCookie() {
+        setCookie("");
     }
 
     public void logout() {
-        removeCookies();
+        removeCookie();
         handleNotAuthorized();
     }
 

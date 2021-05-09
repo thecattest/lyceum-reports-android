@@ -24,9 +24,6 @@ import com.thecattest.samsung.lyceumreports.Adapters.SummaryAdapter;
 import com.thecattest.samsung.lyceumreports.DataServices.Summary.Summary;
 import com.thecattest.samsung.lyceumreports.DataServices.Summary.SummaryService;
 import com.thecattest.samsung.lyceumreports.DataServices.Summary.SummaryWithPermissions;
-import com.thecattest.samsung.lyceumreports.Fragments.ServerErrorFragment;
-
-import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -151,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateSummary() {
         setLoadingStatus();
-        Call<SummaryWithPermissions> call = summaryService.getSummary(loginManager.getCookies());
+        Call<SummaryWithPermissions> call = summaryService.getSummary(loginManager.getCookie());
         call.enqueue(new DefaultCallback<SummaryWithPermissions>(loginManager, swipeRefreshLayout) {
             @Override
             public void onResponse200(Response<SummaryWithPermissions> response) {

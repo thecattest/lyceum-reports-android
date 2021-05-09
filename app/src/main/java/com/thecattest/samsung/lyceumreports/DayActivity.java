@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -18,7 +17,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.thecattest.samsung.lyceumreports.Adapters.StudentsAdapter;
@@ -26,13 +24,10 @@ import com.thecattest.samsung.lyceumreports.DataServices.Day.Day;
 import com.thecattest.samsung.lyceumreports.DataServices.Day.DayPost;
 import com.thecattest.samsung.lyceumreports.DataServices.Day.DayService;
 import com.thecattest.samsung.lyceumreports.DataServices.Day.Student;
-import com.thecattest.samsung.lyceumreports.Fragments.LoadingFragment;
-import com.thecattest.samsung.lyceumreports.Fragments.ServerErrorFragment;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -45,8 +40,6 @@ public class DayActivity extends AppCompatActivity {
     public static final String GROUP_LABEL = "GROUP_LABEL";
 
     private final static String CURRENT_DAY = "CURRENT_DAY";
-    private final static String CURRENT_SELECTION = "CURRENT_SELECTION";
-    private final static String DATE_PICKER_TRIGGER_TEXT = "DATE_PICKER_TRIGGER_TEXT";
 
     private TextView classLabel;
     private ListView studentsListView;
@@ -57,16 +50,14 @@ public class DayActivity extends AppCompatActivity {
     private RelativeLayout mainLayout;
     private SwipeRefreshLayout swipeRefreshLayout;
 
-    private MaterialDatePicker<Long> datePicker;
-
     private final FragmentManager fragmentManager = getSupportFragmentManager();
 
     private LoginManager loginManager;
     private StatusManager statusManager;
+    private DatePickerManager datePickerManager;
 
     private Day currentDay = new Day(true);
     private StudentsAdapter studentsAdapter;
-    private Long currentSelection;
 
     private DayService dayService;
 
@@ -80,11 +71,8 @@ public class DayActivity extends AppCompatActivity {
 
         initRetrofit();
         findViews();
-        initDatePicker();
         setListeners();
-
-        loginManager = new LoginManager(this);
-        statusManager = new StatusManager(mainLayout, fragmentManager, this::onRetryButtonClick);
+        initManagers();
 
         groupId = getIntent().getIntExtra(GROUP_ID, 6);
         defaultGroupLabel = getIntent().getStringExtra(GROUP_LABEL);
@@ -98,12 +86,7 @@ public class DayActivity extends AppCompatActivity {
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
-        long selection = savedInstanceState.getLong(CURRENT_SELECTION);
-        String datePickerText = savedInstanceState.getString(DATE_PICKER_TRIGGER_TEXT);
-
-        currentSelection = selection;
-        if (datePickerText != null && !datePickerText.isEmpty())
-            datePickerTrigger.setText(datePickerText);
+        datePickerManager.loadFromBundle(savedInstanceState);
         if (statusManager.loadLayoutType(savedInstanceState)) {
             String dayJson = savedInstanceState.getString(CURRENT_DAY);
             if (dayJson != null && !dayJson.isEmpty()) {
@@ -122,9 +105,7 @@ public class DayActivity extends AppCompatActivity {
             Gson gson = new Gson();
             outState.putString(CURRENT_DAY, gson.toJson(currentDay));
         }
-        if (currentSelection != null)
-            outState.putLong(CURRENT_SELECTION, currentSelection);
-        outState.putString(DATE_PICKER_TRIGGER_TEXT, (String) datePickerTrigger.getText());
+        datePickerManager.saveToBundle(outState);
         statusManager.saveLayoutType(outState);
     }
 
@@ -148,26 +129,21 @@ public class DayActivity extends AppCompatActivity {
         dayService = retrofit.create(DayService.class);
     }
 
-    protected void initDatePicker() {
-        datePicker = MaterialDatePicker.Builder.datePicker()
-                .setTitleText(getResources().getString(R.string.select_date_label))
-                .build();
-        datePickerTrigger.setOnClickListener(v -> datePicker.show(getSupportFragmentManager(), "MATERIAL_DATE_PICKER"));
-    }
-
     protected void setListeners() {
-        datePicker.addOnPositiveButtonClickListener(this::onPositiveDatePickerButtonClick);
         studentsListView.setOnItemClickListener(this::onStudentItemClick);
         confirmButton.setOnClickListener(this::onConfirmButtonClick);
         cancelButton.setOnClickListener(this::onCancelButtonClick);
         swipeRefreshLayout.setOnRefreshListener(this::onRefresh);
     }
 
-    // Date picker positive button click
-    public void onPositiveDatePickerButtonClick(Long selection) {
-        datePickerTrigger.setText(datePicker.getHeaderText());
-        currentSelection = selection;
-        updateDay();
+    private void initManagers() {
+        loginManager = new LoginManager(this);
+        statusManager = new StatusManager(mainLayout, fragmentManager, this::onRetryButtonClick);
+        datePickerManager = new DatePickerManager(
+                getResources().getString(R.string.select_date_label),
+                datePickerTrigger,
+                getSupportFragmentManager(),
+                this::updateDay);
     }
 
     // Students list item click
@@ -205,9 +181,9 @@ public class DayActivity extends AppCompatActivity {
     // Confirm button click
     public void onConfirmButtonClick(View v) {
         setLoadingStatus(true);
-        String formattedDate = formatDate(currentSelection);
+        String formattedDate = datePickerManager.getDate();
         String absentStudentsIdsString = currentDay.getAbsentStudentsIdsString();
-        Call<Void> call = dayService.updateDay(loginManager.getCookies(), groupId, new DayPost(formattedDate, absentStudentsIdsString));
+        Call<Void> call = dayService.updateDay(loginManager.getCookie(), groupId, new DayPost(formattedDate, absentStudentsIdsString));
         call.enqueue(new DefaultCallback<Void>(loginManager, mainLayout) {
             @Override
             public void onResponse200(Response<Void> response) {
@@ -237,8 +213,8 @@ public class DayActivity extends AppCompatActivity {
 
     private void updateDay() {
         setLoadingStatus();
-        String formattedDate = formatDate(currentSelection);
-        Call<Day> call = dayService.getDay(loginManager.getCookies(), groupId, formattedDate);
+        String formattedDate = datePickerManager.getDate();
+        Call<Day> call = dayService.getDay(loginManager.getCookie(), groupId, formattedDate);
         call.enqueue(new DefaultCallback<Day>(loginManager, mainLayout) {
             @Override
             public void onResponse200(Response<Day> response) {

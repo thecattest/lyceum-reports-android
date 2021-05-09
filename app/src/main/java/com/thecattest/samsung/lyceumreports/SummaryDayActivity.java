@@ -14,16 +14,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.gson.Gson;
 import com.thecattest.samsung.lyceumreports.Adapters.SummaryDayAdapter;
-import com.thecattest.samsung.lyceumreports.DataServices.Day.Day;
 import com.thecattest.samsung.lyceumreports.DataServices.SummaryDay.SummaryDay;
 import com.thecattest.samsung.lyceumreports.DataServices.SummaryDay.SummaryDayService;
-import com.thecattest.samsung.lyceumreports.Fragments.ServerErrorFragment;
-
-import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -33,22 +27,18 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class SummaryDayActivity extends AppCompatActivity {
 
     private final static String SUMMARY_DAY = "SUMMARY_DAY";
-    private final static String CURRENT_SELECTION = "CURRENT_SELECTION";
-    private final static String DATE_PICKER_TRIGGER_TEXT = "DATE_PICKER_TRIGGER_TEXT";
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private ListView summaryDayListView;
     private TextView datePickerTrigger;
 
-    private MaterialDatePicker<Long> datePicker;
-
     private final FragmentManager fragmentManager = getSupportFragmentManager();
 
     private LoginManager loginManager;
     private StatusManager statusManager;
+    private DatePickerManager datePickerManager;
 
     private SummaryDay summaryDay = new SummaryDay();
-    private Long currentSelection;
 
     private SummaryDayService summaryDayService;
 
@@ -59,11 +49,8 @@ public class SummaryDayActivity extends AppCompatActivity {
 
         initRetrofit();
         findViews();
-        initDatePicker();
         setListeners();
-
-        loginManager = new LoginManager(this);
-        statusManager = new StatusManager(swipeRefreshLayout, fragmentManager, this::onRetryButtonClick);
+        initManagers();
 
         swipeRefreshLayout.setEnabled(false);
     }
@@ -72,12 +59,7 @@ public class SummaryDayActivity extends AppCompatActivity {
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
-        long selection = savedInstanceState.getLong(CURRENT_SELECTION);
-        String datePickerText = savedInstanceState.getString(DATE_PICKER_TRIGGER_TEXT);
-
-        currentSelection = selection;
-        if (datePickerText != null && !datePickerText.isEmpty())
-            datePickerTrigger.setText(datePickerText);
+        datePickerManager.loadFromBundle(savedInstanceState);
         if (statusManager.loadLayoutType(savedInstanceState)) {
             String summaryDayJson = savedInstanceState.getString(SUMMARY_DAY);
             if (summaryDayJson != null && !summaryDayJson.isEmpty()) {
@@ -96,9 +78,7 @@ public class SummaryDayActivity extends AppCompatActivity {
             Gson gson = new Gson();
             outState.putString(SUMMARY_DAY, gson.toJson(summaryDay));
         }
-        if (currentSelection != null)
-            outState.putLong(CURRENT_SELECTION, currentSelection);
-        outState.putString(DATE_PICKER_TRIGGER_TEXT, (String) datePickerTrigger.getText());
+        datePickerManager.saveToBundle(outState);
         statusManager.saveLayoutType(outState);
     }
 
@@ -116,22 +96,18 @@ public class SummaryDayActivity extends AppCompatActivity {
         datePickerTrigger = findViewById(R.id.datePickerTrigger);
     }
 
-    protected void initDatePicker() {
-        datePicker = MaterialDatePicker.Builder.datePicker()
-                .setTitleText(getResources().getString(R.string.select_date_label))
-                .build();
-        datePickerTrigger.setOnClickListener(v -> datePicker.show(getSupportFragmentManager(), "MATERIAL_DATE_PICKER"));
-    }
-
     private void setListeners() {
-        datePicker.addOnPositiveButtonClickListener(this::onPositiveDatePickerButtonClick);
         swipeRefreshLayout.setOnRefreshListener(this::onRefresh);
     }
 
-    public void onPositiveDatePickerButtonClick(Long selection) {
-        datePickerTrigger.setText(datePicker.getHeaderText());
-        currentSelection = selection;
-        updateSummaryDay();
+    private void initManagers() {
+        loginManager = new LoginManager(this);
+        statusManager = new StatusManager(swipeRefreshLayout, fragmentManager, this::onRetryButtonClick);
+        datePickerManager = new DatePickerManager(
+                getResources().getString(R.string.select_date_label),
+                datePickerTrigger,
+                getSupportFragmentManager(),
+                this::updateSummaryDay);
     }
 
     public void onRefresh() {
@@ -152,8 +128,8 @@ public class SummaryDayActivity extends AppCompatActivity {
 
     private void updateSummaryDay() {
         setLoadingStatus();
-        String formattedDate = DayActivity.formatDate(currentSelection);
-        Call<SummaryDay> call = summaryDayService.getSummaryDay(loginManager.getCookies(), formattedDate);
+        String formattedDate = datePickerManager.getDate();
+        Call<SummaryDay> call = summaryDayService.getSummaryDay(loginManager.getCookie(), formattedDate);
         call.enqueue(new DefaultCallback<SummaryDay>(loginManager, swipeRefreshLayout) {
             @Override
             public void onResponse200(Response<SummaryDay> response) {
