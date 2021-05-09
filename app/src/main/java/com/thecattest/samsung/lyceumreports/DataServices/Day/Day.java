@@ -12,13 +12,8 @@ public class Day {
     public boolean canEdit;
     public ArrayList<Student> students = new ArrayList<>();
     private ArrayList<Integer> loadedAbsent = new ArrayList<>();
-    public boolean empty = false;
 
     public Day() {}
-
-    public Day(boolean empty) {
-        this.empty = empty;
-    }
 
     public void updateLoadedAbsent() {
         loadedAbsent = getAbsentStudentsIds();
@@ -46,12 +41,16 @@ public class Day {
             return "";
     }
 
+    public boolean isEmpty() {
+        return students.size() == 0;
+    }
+
     public boolean noInfo() {
-        return !empty && status.equals(STATUS.EMPTY);
+        return !isEmpty() && status.equals(STATUS.EMPTY);
     }
 
     public boolean noAbsent() {
-        return !empty && status.equals(STATUS.OK) && getAbsentStudentsIds().size() == 0;
+        return !isEmpty() && status.equals(STATUS.OK) && getAbsentStudentsIds().size() == 0;
     }
 
     public boolean noChanges() {

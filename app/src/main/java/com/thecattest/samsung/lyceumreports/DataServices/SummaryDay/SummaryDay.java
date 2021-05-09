@@ -6,6 +6,10 @@ public class SummaryDay {
     public String date;
     public ArrayList<SummaryDayRow> groups = new ArrayList<>();
 
+    public boolean isEmpty() {
+        return groups.size() == 0;
+    }
+
     @Override
     public String toString() {
         return "SummaryDay{" +

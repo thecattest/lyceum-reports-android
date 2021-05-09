@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
         loginManager = new LoginManager(this);
         statusManager = new StatusManager(swipeRefreshLayout, fragmentManager, this::onRetryButtonClick);
 
+        Log.d("Summary", "check");
         if (savedInstanceState == null || savedInstanceState.getString(SUMMARY) == null || savedInstanceState.getString(SUMMARY).isEmpty()) {
             updateSummary();
             Log.d("Summary", "Updated");
@@ -92,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("MissingSuperCall")
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
-        if (summaryWithPermissions.summary.size() > 0) {
+        if (!summaryWithPermissions.isEmpty()) {
             Gson gson = new Gson();
             outState.putString(SUMMARY, gson.toJson(summaryWithPermissions.summary));
             outState.putBoolean(CAN_EDIT, summaryWithPermissions.canEdit);

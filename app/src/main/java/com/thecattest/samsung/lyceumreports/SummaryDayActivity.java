@@ -68,7 +68,6 @@ public class SummaryDayActivity extends AppCompatActivity {
             if (summaryDayJson != null && !summaryDayJson.isEmpty()) {
                 Gson gson = new Gson();
                 summaryDay = gson.fromJson(summaryDayJson, SummaryDay.class);
-                swipeRefreshLayout.setEnabled(summaryDay.groups.size() != 0);
             }
             updateSummaryDayView();
         }
@@ -138,7 +137,6 @@ public class SummaryDayActivity extends AppCompatActivity {
             public void onResponse200(Response<SummaryDay> response) {
                 summaryDay = response.body();
                 updateSummaryDayView();
-                swipeRefreshLayout.setEnabled(true);
             }
 
             @Override
@@ -157,6 +155,7 @@ public class SummaryDayActivity extends AppCompatActivity {
         statusManager.setMainLayout();
         Log.d("Update", summaryDay.toString());
         updateSummaryDayAdapterData();
+        swipeRefreshLayout.setEnabled(!summaryDay.groups.isEmpty());
     }
 
     private void updateSummaryDayAdapterData() {

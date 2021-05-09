@@ -12,4 +12,8 @@ public class SummaryWithPermissions {
     public boolean canViewTable = false;
 
     public ArrayList<Summary> summary = new ArrayList<>();
+
+    public boolean isEmpty() {
+        return summary.size() == 0;
+    }
 }

@@ -59,7 +59,7 @@ public class DayActivity extends AppCompatActivity {
     private StatusManager statusManager;
     private DatePickerManager datePickerManager;
 
-    private Day currentDay = new Day(true);
+    private Day currentDay = new Day();
     private StudentsAdapter studentsAdapter;
 
     private DayService dayService;
@@ -95,7 +95,7 @@ public class DayActivity extends AppCompatActivity {
             if (dayJson != null && !dayJson.isEmpty()) {
                 Gson gson = new Gson();
                 currentDay = gson.fromJson(dayJson, Day.class);
-                swipeRefreshLayout.setEnabled(!currentDay.empty);
+                swipeRefreshLayout.setEnabled(!currentDay.isEmpty());
             }
             updateDayView();
         }
@@ -159,7 +159,7 @@ public class DayActivity extends AppCompatActivity {
 
     // Refresh action
     public void onRefresh() {
-        if (!currentDay.empty)
+        if (!currentDay.isEmpty())
             updateDay();
         swipeRefreshLayout.setRefreshing(false);
     }
@@ -257,7 +257,7 @@ public class DayActivity extends AppCompatActivity {
                     Snackbar.LENGTH_LONG
             ).setAnchorView(buttonsGroup).show();
         }
-        buttonsGroup.setVisibility(currentDay.empty ? View.GONE : View.VISIBLE);
+        buttonsGroup.setVisibility(currentDay.isEmpty() ? View.GONE : View.VISIBLE);
         confirmButton.setVisibility(currentDay.canEdit ? View.VISIBLE : View.GONE);
     }
 
@@ -276,7 +276,7 @@ public class DayActivity extends AppCompatActivity {
 
     protected void setLoadingStatus(boolean mainIsVisible) {
         if (!mainIsVisible) {
-            currentDay = new Day(true);
+            currentDay = new Day();
             currentDay.name = defaultGroupLabel;
             updateDayView();
         }
