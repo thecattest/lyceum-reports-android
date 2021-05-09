@@ -48,7 +48,7 @@ public class StatusManager {
         ft.commit();
     }
 
-    public void saveLayoutType(Bundle outState) {
+    public void saveToBundle(Bundle outState) {
         String layout = "";
         if (mainLayout.getVisibility() == View.VISIBLE) {
             layout = LAYOUT_TYPE_MAIN;
@@ -59,7 +59,7 @@ public class StatusManager {
         outState.putString(LAYOUT_TYPE, layout);
     }
 
-    public boolean loadLayoutType(Bundle savedInstanceState) {
+    public boolean loadFromBundle(Bundle savedInstanceState) {
         String layout = savedInstanceState.getString(LAYOUT_TYPE);
         switch (layout) {
             case LAYOUT_TYPE_SERVER_ERROR:

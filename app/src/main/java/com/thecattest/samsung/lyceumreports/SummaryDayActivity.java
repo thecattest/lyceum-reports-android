@@ -29,8 +29,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SummaryDayActivity extends AppCompatActivity {
 
-    private final static String SUMMARY_DAY = "SUMMARY_DAY";
-
     private SwipeRefreshLayout swipeRefreshLayout;
     private ListView summaryDayListView;
     private TextView datePickerTrigger;
@@ -63,12 +61,8 @@ public class SummaryDayActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
 
         datePickerManager.loadFromBundle(savedInstanceState);
-        if (statusManager.loadLayoutType(savedInstanceState)) {
-            String summaryDayJson = savedInstanceState.getString(SUMMARY_DAY);
-            if (summaryDayJson != null && !summaryDayJson.isEmpty()) {
-                Gson gson = new Gson();
-                summaryDay = gson.fromJson(summaryDayJson, SummaryDay.class);
-            }
+        if (statusManager.loadFromBundle(savedInstanceState)) {
+            summaryDay.loadFromBundle(savedInstanceState);
             updateSummaryDayView();
         }
     }
@@ -76,12 +70,9 @@ public class SummaryDayActivity extends AppCompatActivity {
     @SuppressLint("MissingSuperCall")
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        if (summaryDay != null) {
-            Gson gson = new Gson();
-            outState.putString(SUMMARY_DAY, gson.toJson(summaryDay));
-        }
+        summaryDay.saveToBundle(outState);
         datePickerManager.saveToBundle(outState);
-        statusManager.saveLayoutType(outState);
+        statusManager.saveToBundle(outState);
     }
 
     protected void initRetrofit() {

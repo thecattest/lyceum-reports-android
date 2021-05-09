@@ -1,10 +1,17 @@
 package com.thecattest.samsung.lyceumreports.DataServices.Day;
 
+import android.os.Bundle;
+import android.util.Log;
+
+import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
+import com.thecattest.samsung.lyceumreports.BuildConfig;
 
 import java.util.ArrayList;
 
 public class Day {
+    private final static String CURRENT_DAY = "CURRENT_DAY";
+
     public int id;
     public String name = "";
     public String status = STATUS.EMPTY;
@@ -55,6 +62,28 @@ public class Day {
 
     public boolean noChanges() {
         return loadedAbsent.equals(getAbsentStudentsIds());
+    }
+
+    public void saveToBundle(Bundle outState) {
+        if (!isEmpty()) {
+            Gson gson = new Gson();
+            outState.putString(CURRENT_DAY, gson.toJson(this));
+        }
+    }
+
+    public void loadFromBundle(Bundle savedInstanceState) {
+        String dayJson = savedInstanceState.getString(CURRENT_DAY);
+        if (dayJson != null && !dayJson.isEmpty()) {
+            Gson gson = new Gson();
+            Day loadedDay = gson.fromJson(dayJson, Day.class);
+
+            this.id = loadedDay.id;
+            this.name = loadedDay.name;
+            this.status = loadedDay.status;
+            this.canEdit = loadedDay.canEdit;
+            this.students = loadedDay.students;
+            this.loadedAbsent = loadedDay.loadedAbsent;
+        }
     }
 
     @Override

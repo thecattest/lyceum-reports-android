@@ -28,10 +28,6 @@ import com.thecattest.samsung.lyceumreports.Managers.DatePickerManager;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
 import com.thecattest.samsung.lyceumreports.Managers.StatusManager;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -41,8 +37,6 @@ public class DayActivity extends AppCompatActivity {
 
     public static final String GROUP_ID = "GROUP_ID";
     public static final String GROUP_LABEL = "GROUP_LABEL";
-
-    private final static String CURRENT_DAY = "CURRENT_DAY";
 
     private TextView classLabel;
     private ListView studentsListView;
@@ -81,8 +75,6 @@ public class DayActivity extends AppCompatActivity {
         defaultGroupLabel = getIntent().getStringExtra(GROUP_LABEL);
         currentDay.name = defaultGroupLabel;
         updateDayView();
-
-        swipeRefreshLayout.setEnabled(false);
     }
 
     @Override
@@ -90,13 +82,8 @@ public class DayActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
 
         datePickerManager.loadFromBundle(savedInstanceState);
-        if (statusManager.loadLayoutType(savedInstanceState)) {
-            String dayJson = savedInstanceState.getString(CURRENT_DAY);
-            if (dayJson != null && !dayJson.isEmpty()) {
-                Gson gson = new Gson();
-                currentDay = gson.fromJson(dayJson, Day.class);
-                swipeRefreshLayout.setEnabled(!currentDay.isEmpty());
-            }
+        if (statusManager.loadFromBundle(savedInstanceState)) {
+            currentDay.loadFromBundle(savedInstanceState);
             updateDayView();
         }
     }
@@ -104,12 +91,9 @@ public class DayActivity extends AppCompatActivity {
     @SuppressLint("MissingSuperCall")
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        if (currentDay != null) {
-            Gson gson = new Gson();
-            outState.putString(CURRENT_DAY, gson.toJson(currentDay));
-        }
+        currentDay.saveToBundle(outState);
         datePickerManager.saveToBundle(outState);
-        statusManager.saveLayoutType(outState);
+        statusManager.saveToBundle(outState);
     }
 
     protected void findViews() {
@@ -224,7 +208,6 @@ public class DayActivity extends AppCompatActivity {
                 currentDay = response.body();
                 currentDay.updateLoadedAbsent();
                 updateDayView();
-                swipeRefreshLayout.setEnabled(true);
             }
 
             @Override
@@ -259,6 +242,7 @@ public class DayActivity extends AppCompatActivity {
         }
         buttonsGroup.setVisibility(currentDay.isEmpty() ? View.GONE : View.VISIBLE);
         confirmButton.setVisibility(currentDay.canEdit ? View.VISIBLE : View.GONE);
+        swipeRefreshLayout.setEnabled(!currentDay.isEmpty());
     }
 
     private void updateStudentsAdapterData() {

@@ -34,9 +34,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String SUMMARY = "SUMMARY";
-    private static final String CAN_EDIT = "CAN_EDIT";
-    private static final String CAN_VIEW_TABLE = "CAN_VIEW_TABLE";
+
 
     private ListView summaryListView;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -64,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         statusManager = new StatusManager(swipeRefreshLayout, fragmentManager, this::onRetryButtonClick);
 
         Log.d("Summary", "check");
-        if (savedInstanceState == null || savedInstanceState.getString(SUMMARY) == null || savedInstanceState.getString(SUMMARY).isEmpty()) {
+        if (summaryWithPermissions.getSummaryStringFromBundle(savedInstanceState) == null) {
             updateSummary();
             Log.d("Summary", "Updated");
         }
@@ -74,18 +72,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
-        if(statusManager.loadLayoutType(savedInstanceState)) {
-            String summaryJsonString = savedInstanceState.getString(SUMMARY);
-            if (summaryJsonString != null && !summaryJsonString.isEmpty()) {
-                Gson gson = new Gson();
-                JsonElement summaryJsonObject = new JsonParser().parse(summaryJsonString);
-                for (JsonElement s : summaryJsonObject.getAsJsonArray()) {
-                    summaryWithPermissions.summary.add(gson.fromJson(s, Summary.class));
-                }
-            }
-            summaryWithPermissions.canEdit = savedInstanceState.getBoolean(CAN_EDIT);
-            summaryWithPermissions.canViewTable = savedInstanceState.getBoolean(CAN_VIEW_TABLE);
-            Log.d("Summary", "Loaded");
+        if(statusManager.loadFromBundle(savedInstanceState)) {
+            summaryWithPermissions.loadFromBundle(savedInstanceState);
             updateSummaryView();
         }
     }
@@ -93,14 +81,8 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("MissingSuperCall")
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
-        if (!summaryWithPermissions.isEmpty()) {
-            Gson gson = new Gson();
-            outState.putString(SUMMARY, gson.toJson(summaryWithPermissions.summary));
-            outState.putBoolean(CAN_EDIT, summaryWithPermissions.canEdit);
-            outState.putBoolean(CAN_VIEW_TABLE, summaryWithPermissions.canViewTable);
-        }
-
-        statusManager.saveLayoutType(outState);
+        summaryWithPermissions.saveToBundle(outState);
+        statusManager.saveToBundle(outState);
     }
 
     protected void initRetrofit() {
