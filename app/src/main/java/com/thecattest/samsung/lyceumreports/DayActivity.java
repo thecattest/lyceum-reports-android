@@ -274,17 +274,6 @@ public class DayActivity extends AppCompatActivity {
             confirmButton.setText(getResources().getString(R.string.confirm_button_default));
     }
 
-    public static String formatDate(Long selection) {
-        Date selectedDate = new Date(selection);
-        String serverDateFormat = "yyyy-MM-dd";
-        @SuppressLint("SimpleDateFormat")
-        DateFormat df = new SimpleDateFormat(serverDateFormat);
-        String formattedDate = df.format(selectedDate);
-
-        Log.d("DatePicker", formattedDate);
-        return formattedDate;
-    }
-
     protected void setLoadingStatus(boolean mainIsVisible) {
         if (!mainIsVisible) {
             currentDay = new Day(true);
