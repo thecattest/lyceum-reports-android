@@ -47,9 +47,6 @@ public class DayActivity extends AppCompatActivity {
     private final static String CURRENT_DAY = "CURRENT_DAY";
     private final static String CURRENT_SELECTION = "CURRENT_SELECTION";
     private final static String DATE_PICKER_TRIGGER_TEXT = "DATE_PICKER_TRIGGER_TEXT";
-    private static final String LAYOUT_TYPE = "LAYOUT_TYPE";
-    private static final String LAYOUT_TYPE_MAIN = "LAYOUT_TYPE_MAIN";
-    private static final String LAYOUT_TYPE_SERVER_ERROR = "LAYOUT_TYPE_SERVER_ERROR";
 
     private TextView classLabel;
     private ListView studentsListView;
