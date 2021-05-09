@@ -8,7 +8,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="absent">#EAC1C1</color>
-    <color name="header">#E6E6E6</color>
+    <color name="header">#F7F7F7</color>
     <color name="status_bar_night">#EEEEEE</color>
     <color name="status_bar">#AAAAAA</color>
     <color name="link_color">#007bff</color>
@@ -16,4 +16,5 @@
     <color name="hr">#E5E5E5</color>
     <color name="main">#c6c1ea</color>
     <color name="main_text_color">#212529</color>
+    <color name="card_border_color">#dfdfdf</color>
 </resources>

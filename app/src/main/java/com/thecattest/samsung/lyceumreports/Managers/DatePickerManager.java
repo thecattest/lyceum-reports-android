@@ -3,6 +3,7 @@ package com.thecattest.samsung.lyceumreports.Managers;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.fragment.app.FragmentManager;
@@ -14,6 +15,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class DatePickerManager {
+
+    private final static String TAG = "MATERIAL_DATE_PICKER";
 
     private final static String CURRENT_SELECTION = "CURRENT_SELECTION";
     private final static String DATE_PICKER_TRIGGER_TEXT = "DATE_PICKER_TRIGGER_TEXT";
@@ -42,8 +45,16 @@ public class DatePickerManager {
         datePicker = MaterialDatePicker.Builder.datePicker()
                 .setTitleText(defaultTitle)
                 .build();
-        datePickerTrigger.setOnClickListener(v -> datePicker.show(fragmentManager, "MATERIAL_DATE_PICKER"));
+        datePickerTrigger.setOnClickListener(this::showDatePicker);
         datePicker.addOnPositiveButtonClickListener(this::onPositiveDatePickerButtonClick);
+    }
+
+    public void showDatePicker() {
+        datePicker.show(fragmentManager, TAG);
+    }
+
+    public void showDatePicker(View v) {
+        showDatePicker();
     }
 
     private void onPositiveDatePickerButtonClick(Long selection) {

@@ -54,6 +54,7 @@ public class SummaryDayActivity extends AppCompatActivity {
         initManagers();
 
         swipeRefreshLayout.setEnabled(false);
+        updateSummaryDayView();
     }
 
     @Override
@@ -99,7 +100,7 @@ public class SummaryDayActivity extends AppCompatActivity {
         datePickerManager = new DatePickerManager(
                 getResources().getString(R.string.select_date_label),
                 datePickerTrigger,
-                getSupportFragmentManager(),
+                fragmentManager,
                 this::updateSummaryDay);
     }
 
@@ -144,9 +145,8 @@ public class SummaryDayActivity extends AppCompatActivity {
 
     private void updateSummaryDayView() {
         statusManager.setMainLayout();
-        Log.d("Update", summaryDay.toString());
         updateSummaryDayAdapterData();
-        swipeRefreshLayout.setEnabled(!summaryDay.groups.isEmpty());
+        swipeRefreshLayout.setEnabled(!summaryDay.isEmpty());
     }
 
     private void updateSummaryDayAdapterData() {
