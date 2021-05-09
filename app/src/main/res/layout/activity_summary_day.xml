@@ -50,7 +50,7 @@
             android:id="@+id/summaryDayList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:listitem="@android:layout/simple_list_item_2"/>
+            tools:listitem="@layout/summary_day_row"/>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <LinearLayout
