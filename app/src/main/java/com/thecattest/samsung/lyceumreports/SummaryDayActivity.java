@@ -124,17 +124,23 @@ public class SummaryDayActivity extends AppCompatActivity {
             @Override
             public void onResponse200(Response<SummaryDay> response) {
                 summaryDay = response.body();
-                updateSummaryDayView();
+                try {
+                    updateSummaryDayView();
+                } catch (IllegalStateException e) {
+                    Log.d("Updated", summaryDay.toString());
+                }
             }
 
             public void onResponseFailure(Call<SummaryDay> call, Throwable t) {
-                Log.d("DayCall", t.toString());
-                Snackbar.make(
-                        swipeRefreshLayout,
-                        "Ошибка, попробуйте ещё раз позднее",
-                        Snackbar.LENGTH_LONG
-                ).show();
-                statusManager.setServerErrorLayout();
+                try {
+                    Log.d("DayCall", t.toString());
+                    Snackbar.make(
+                            swipeRefreshLayout,
+                            "Ошибка, попробуйте ещё раз позднее",
+                            Snackbar.LENGTH_LONG
+                    ).show();
+                    statusManager.setServerErrorLayout();
+                } catch (IllegalStateException ignored) {}
             }
         });
     }

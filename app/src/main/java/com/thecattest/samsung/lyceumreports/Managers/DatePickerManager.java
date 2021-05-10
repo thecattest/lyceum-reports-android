@@ -88,13 +88,15 @@ public class DatePickerManager {
     }
 
     public void saveToBundle(Bundle outState) {
-        if (currentSelection != null)
+        if (!isEmpty())
             outState.putLong(CURRENT_SELECTION, currentSelection);
         outState.putString(DATE_PICKER_TRIGGER_TEXT, (String) datePickerTrigger.getText());
     }
 
     public void loadFromBundle(Bundle savedInstanceState) {
-        currentSelection = savedInstanceState.getLong(CURRENT_SELECTION);
+        currentSelection = savedInstanceState.getLong(CURRENT_SELECTION, -1);
+        if (currentSelection < 0)
+            currentSelection = null;
 
         String datePickerText = savedInstanceState.getString(DATE_PICKER_TRIGGER_TEXT);
         if (datePickerText != null && !datePickerText.isEmpty())
