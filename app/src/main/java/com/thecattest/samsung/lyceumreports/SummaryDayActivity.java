@@ -50,7 +50,6 @@ public class SummaryDayActivity extends AppCompatActivity {
         setListeners();
         initManagers();
 
-        swipeRefreshLayout.setEnabled(false);
         updateSummaryDayView();
     }
 
