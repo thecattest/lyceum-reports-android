@@ -62,6 +62,8 @@ public class SummaryDayActivity extends AppCompatActivity {
         if (statusManager.loadFromBundle(savedInstanceState)) {
             summaryDay.loadFromBundle(savedInstanceState);
             updateSummaryDayView();
+        } else {
+            updateSwipeRefreshLayout();
         }
     }
 
@@ -140,7 +142,11 @@ public class SummaryDayActivity extends AppCompatActivity {
     private void updateSummaryDayView() {
         statusManager.setMainLayout();
         updateSummaryDayAdapterData();
-        swipeRefreshLayout.setEnabled(!summaryDay.isEmpty());
+        updateSwipeRefreshLayout();
+    }
+
+    private void updateSwipeRefreshLayout() {
+        swipeRefreshLayout.setEnabled(!datePickerManager.isEmpty());
     }
 
     private void updateSummaryDayAdapterData() {

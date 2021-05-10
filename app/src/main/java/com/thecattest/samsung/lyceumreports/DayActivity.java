@@ -81,10 +81,11 @@ public class DayActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
 
         datePickerManager.loadFromBundle(savedInstanceState);
-        updateDayView();
         if (statusManager.loadFromBundle(savedInstanceState)) {
             currentDay.loadFromBundle(savedInstanceState);
             updateDayView();
+        } else {
+            updateSwipeRefreshLayout();
         }
     }
 
@@ -303,7 +304,10 @@ public class DayActivity extends AppCompatActivity {
         statusManager.setMainLayout();
         classLabel.setText(currentDay.name);
         updateStudentsAdapterData();
+
         updateConfirmButton();
+        updateSwipeRefreshLayout();
+
         if (currentDay.noInfo()) {
             Snackbar.make(
                     mainLayout,
@@ -318,8 +322,6 @@ public class DayActivity extends AppCompatActivity {
             ).setAnchorView(buttonsGroup).show();
         }
         buttonsGroup.setVisibility(currentDay.isEmpty() ? View.GONE : View.VISIBLE);
-        confirmButton.setVisibility(currentDay.canEdit ? View.VISIBLE : View.GONE);
-        swipeRefreshLayout.setEnabled(!datePickerManager.isEmpty());
     }
 
     private void updateStudentsAdapterData() {
@@ -327,7 +329,12 @@ public class DayActivity extends AppCompatActivity {
         studentsListView.setAdapter(studentsAdapter);
     }
 
+    private void updateSwipeRefreshLayout() {
+        swipeRefreshLayout.setEnabled(!datePickerManager.isEmpty());
+    }
+
     private void updateConfirmButton() {
+        confirmButton.setVisibility(currentDay.canEdit ? View.VISIBLE : View.GONE);
         confirmButton.setEnabled(!currentDay.noChanges() || currentDay.noInfo());
         if (currentDay.noAbsent() || currentDay.noInfo() && currentDay.getAbsentStudentsIds().size() == 0)
             confirmButton.setText(getResources().getString(R.string.confirm_button_no_one_absent));
