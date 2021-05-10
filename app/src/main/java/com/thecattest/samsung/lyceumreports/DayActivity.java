@@ -187,7 +187,7 @@ public class DayActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onResponse401() {}
+            public void onResponse401(Response<Void> response) {}
         });
     }
 
@@ -211,7 +211,7 @@ public class DayActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onResponse401() {}
+            public void onResponse401(Response<Day> response) {}
         });
     }
 

@@ -132,7 +132,7 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onResponse401() {
+            public void onResponse401(Response<Void> response) {
                 Snackbar.make(
                         scrollView,
                         "Неправильный логин или пароль",

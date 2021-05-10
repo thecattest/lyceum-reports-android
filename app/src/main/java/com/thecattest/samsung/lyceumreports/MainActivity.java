@@ -29,8 +29,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
-
-
     private ListView summaryListView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private MaterialToolbar toolbar;
@@ -140,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onResponse401() {}
+            public void onResponse401(Response<SummaryWithPermissions> response) {}
         });
     }
 

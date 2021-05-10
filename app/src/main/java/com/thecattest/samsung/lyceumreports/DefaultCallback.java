@@ -27,7 +27,7 @@ public abstract class DefaultCallback<T> implements Callback<T> {
                 break;
                 
             case 401:
-                onResponse401();
+                onResponse401(response);
                 break;
 
             case 403:
@@ -46,5 +46,5 @@ public abstract class DefaultCallback<T> implements Callback<T> {
 
     public abstract void onResponse200(Response<T> response);
 
-    public abstract void onResponse401();
+    public abstract void onResponse401(Response<T> response);
 }

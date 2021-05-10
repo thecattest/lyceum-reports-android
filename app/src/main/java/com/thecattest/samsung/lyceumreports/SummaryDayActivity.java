@@ -125,7 +125,7 @@ public class SummaryDayActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onResponse401() {}
+            public void onResponse401(Response<SummaryDay> response) {}
 
             @Override
             public void onFailure(Call<SummaryDay> call, Throwable t) {
