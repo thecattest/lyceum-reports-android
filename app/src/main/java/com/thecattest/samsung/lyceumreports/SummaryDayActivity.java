@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.thecattest.samsung.lyceumreports.Adapters.SummaryDayAdapter;
 import com.thecattest.samsung.lyceumreports.DataServices.SummaryDay.SummaryDay;
 import com.thecattest.samsung.lyceumreports.DataServices.SummaryDay.SummaryDayService;
@@ -124,13 +125,13 @@ public class SummaryDayActivity extends AppCompatActivity {
                 updateSummaryDayView();
             }
 
-            @Override
-            public void onResponse401(Response<SummaryDay> response) {}
-
-            @Override
-            public void onFailure(Call<SummaryDay> call, Throwable t) {
+            public void onResponseFailure(Call<SummaryDay> call, Throwable t) {
                 Log.d("DayCall", t.toString());
-                Toast.makeText(SummaryDayActivity.this, "Error accessing server", Toast.LENGTH_SHORT).show();
+                Snackbar.make(
+                        swipeRefreshLayout,
+                        "Ошибка, попробуйте ещё раз позднее",
+                        Snackbar.LENGTH_LONG
+                ).show();
                 statusManager.setServerErrorLayout();
             }
         });

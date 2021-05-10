@@ -142,8 +142,7 @@ public class LoginActivity extends AppCompatActivity {
                 statusManager.setMainLayout();
             }
 
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
+            public void onResponseFailure(Call<Void> call, Throwable t) {
                 Log.d("LoginCall", t.toString());
                 Snackbar.make(
                         scrollView,

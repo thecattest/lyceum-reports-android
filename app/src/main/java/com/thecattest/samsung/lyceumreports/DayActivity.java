@@ -54,6 +54,8 @@ public class DayActivity extends AppCompatActivity {
     private StudentsAdapter studentsAdapter;
 
     private DayService dayService;
+    private Call<Void> updateCall = null;
+    private Call<Day> getCall = null;
 
     private int groupId;
     private String defaultGroupLabel;
@@ -79,6 +81,7 @@ public class DayActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
 
         datePickerManager.loadFromBundle(savedInstanceState);
+        updateDayView();
         if (statusManager.loadFromBundle(savedInstanceState)) {
             currentDay.loadFromBundle(savedInstanceState);
             updateDayView();
@@ -88,6 +91,8 @@ public class DayActivity extends AppCompatActivity {
     @SuppressLint("MissingSuperCall")
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
+//        cancelGetCall();
+//        cancelUpdateCall();
         currentDay.saveToBundle(outState);
         datePickerManager.saveToBundle(outState);
         statusManager.saveToBundle(outState);
@@ -141,16 +146,17 @@ public class DayActivity extends AppCompatActivity {
 
     // Refresh action
     public void onRefresh() {
-        if (!currentDay.isEmpty())
-            updateDay();
+        updateDay();
         swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
     public void onBackPressed() {
-        Intent i = new Intent(DayActivity.this, MainActivity.class);
-        startActivity(i);
-        finish();
+        if (!cancelGetCall() && !cancelUpdateCall()) {
+            Intent i = new Intent(DayActivity.this, MainActivity.class);
+            startActivity(i);
+            finish();
+        }
     }
 
     // Cancel button click
@@ -160,59 +166,137 @@ public class DayActivity extends AppCompatActivity {
 
     // Confirm button click
     public void onConfirmButtonClick(View v) {
+        v.setEnabled(false);
+        datePickerManager.setEnabled(false);
         setLoadingStatus(true);
+
         String formattedDate = datePickerManager.getDate();
         String absentStudentsIdsString = currentDay.getAbsentStudentsIdsString();
         Call<Void> call = dayService.updateDay(loginManager.getCookie(), groupId, new DayPost(formattedDate, absentStudentsIdsString));
+        updateCall = call;
         call.enqueue(new DefaultCallback<Void>(loginManager, mainLayout) {
             @Override
             public void onResponse200(Response<Void> response) {
-                Snackbar.make(
-                        mainLayout,
-                        "Сработало :) код " + response.code(),
-                        Snackbar.LENGTH_SHORT
-                ).setAnchorView(buttonsGroup).show();
-                updateDay();
+                try {
+                    Snackbar.make(
+                            mainLayout,
+                            "Сработало :) код " + response.code(),
+                            Snackbar.LENGTH_SHORT
+                    ).setAnchorView(buttonsGroup).show();
+                    updateDay();
+                    Log.d("Update", "Updated");
+                } catch (IllegalStateException exception) {
+                    // notify new activity to update
+                    Log.d("Update", "updated but exc");
+                }
+            }
+
+            public void onResponseFailure(Call<Void> call, Throwable t) {
+                if (call.isCanceled()) {
+                    try {
+                        statusManager.setMainLayout();
+                        Snackbar.make(
+                                mainLayout,
+                                "Отмена",
+                                Snackbar.LENGTH_LONG
+                        ).setAnchorView(buttonsGroup).show();
+                    } catch (IllegalStateException ignored) {}
+                } else {
+                    try {
+//                        statusManager.setServerErrorLayout();
+                        Log.d("UpdateDayCall", call.toString());
+                        Snackbar.make(
+                                mainLayout,
+                                "Ошибка, попробуйте ещё раз позднее",
+                                Snackbar.LENGTH_LONG
+                        ).show();
+                    } catch (IllegalStateException ignored) {}
+                }
             }
 
             @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                Log.d("UpdateDayCall", call.toString());
-                Snackbar.make(
-                        mainLayout,
-                        "Ошибка, попробуйте ещё раз позднее",
-                        Snackbar.LENGTH_LONG
-                ).setAnchorView(buttonsGroup).show();
-                statusManager.setMainLayout();
+            public void onPostExecute() {
+                v.setEnabled(true);
+                datePickerManager.setEnabled(true);
+                updateCall = null;
             }
-
-            @Override
-            public void onResponse401(Response<Void> response) {}
         });
+    }
+
+    private boolean cancelUpdateCall() {
+        if (updateCall == null)
+            return false;
+        updateCall.cancel();
+        updateCall = null;
+        String formattedDate = datePickerManager.getDate();
+        String absentStudentsIdsString = currentDay.getLoadedAbsentStudentsIdsString();
+        Call<Void> call = dayService.updateDay(loginManager.getCookie(), groupId, new DayPost(formattedDate, absentStudentsIdsString));
+        call.enqueue(new DefaultCallback<Void>(loginManager, mainLayout) {
+            @Override
+            public void onResponse200(Response<Void> response) {}
+
+            @Override
+            public void onResponseFailure(Call<Void> call, Throwable t) {}
+        });
+        return true;
     }
 
     private void updateDay() {
         setLoadingStatus();
+        datePickerManager.setEnabled(false);
         String formattedDate = datePickerManager.getDate();
         Call<Day> call = dayService.getDay(loginManager.getCookie(), groupId, formattedDate);
+        getCall = call;
         call.enqueue(new DefaultCallback<Day>(loginManager, mainLayout) {
             @Override
             public void onResponse200(Response<Day> response) {
                 currentDay = response.body();
                 currentDay.updateLoadedAbsent();
-                updateDayView();
+                try {
+                    updateDayView();
+                } catch (IllegalStateException e) {
+                    // notify new activity to update
+                    Log.d("Updated", currentDay.toString());
+                }
+            }
+
+            public void onResponseFailure(Call<Day> call, Throwable t) {
+                if (call.isCanceled()) {
+                    try {
+                        statusManager.setMainLayout();
+                        Snackbar.make(
+                                mainLayout,
+                                "Отмена",
+                                Snackbar.LENGTH_LONG
+                        ).show();
+                    } catch (IllegalStateException ignore) {}
+                } else {
+                    try {
+                        statusManager.setServerErrorLayout();
+                        Log.d("DayCall", t.toString());
+                        Snackbar.make(
+                                mainLayout,
+                                "Ошибка, попробуйте ещё раз позднее",
+                                Snackbar.LENGTH_LONG
+                        ).show();
+                    } catch (IllegalStateException ignored) {}
+                }
             }
 
             @Override
-            public void onFailure(Call<Day> call, Throwable t) {
-                Log.d("DayCall", t.toString());
-                Toast.makeText(DayActivity.this, "Error accessing server", Toast.LENGTH_SHORT).show();
-                statusManager.setServerErrorLayout();
+            public void onPostExecute() {
+                getCall = null;
+                datePickerManager.setEnabled(true);
             }
-
-            @Override
-            public void onResponse401(Response<Day> response) {}
         });
+    }
+
+    private boolean cancelGetCall() {
+        if (getCall == null)
+            return false;
+        getCall.cancel();
+        getCall = null;
+        return true;
     }
 
     private void updateDayView() {
@@ -235,7 +319,7 @@ public class DayActivity extends AppCompatActivity {
         }
         buttonsGroup.setVisibility(currentDay.isEmpty() ? View.GONE : View.VISIBLE);
         confirmButton.setVisibility(currentDay.canEdit ? View.VISIBLE : View.GONE);
-        swipeRefreshLayout.setEnabled(!currentDay.isEmpty());
+        swipeRefreshLayout.setEnabled(!datePickerManager.isEmpty());
     }
 
     private void updateStudentsAdapterData() {

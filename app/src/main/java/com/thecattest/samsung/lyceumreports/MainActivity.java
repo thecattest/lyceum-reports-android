@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.snackbar.Snackbar;
 import com.thecattest.samsung.lyceumreports.Adapters.SummaryAdapter;
 import com.thecattest.samsung.lyceumreports.DataServices.Summary.SummaryService;
 import com.thecattest.samsung.lyceumreports.DataServices.Summary.SummaryWithPermissions;
@@ -130,15 +131,15 @@ public class MainActivity extends AppCompatActivity {
                 updateSummaryView();
             }
 
-            @Override
-            public void onFailure(Call<SummaryWithPermissions> call, Throwable t) {
+            public void onResponseFailure(Call<SummaryWithPermissions> call, Throwable t) {
                 Log.d("SummaryCall", t.toString());
-                Toast.makeText(MainActivity.this, "Error loading summary", Toast.LENGTH_SHORT).show();
+                Snackbar.make(
+                        swipeRefreshLayout,
+                        "Ошибка, попробуйте ещё раз позднее",
+                        Snackbar.LENGTH_LONG
+                ).show();
                 statusManager.setServerErrorLayout();
             }
-
-            @Override
-            public void onResponse401(Response<SummaryWithPermissions> response) {}
         });
     }
 

@@ -42,9 +42,20 @@ public abstract class DefaultCallback<T> implements Callback<T> {
                 ).show();
                 break;
         }
+        onPostExecute();
+    }
+
+    @Override
+    public void onFailure(Call<T> call, Throwable t) {
+        onResponseFailure(call, t);
+        onPostExecute();
     }
 
     public abstract void onResponse200(Response<T> response);
 
-    public abstract void onResponse401(Response<T> response);
+    public void onResponse401(Response<T> response) {};
+
+    public abstract void onResponseFailure(Call<T> call, Throwable t);
+
+    public void onPostExecute() {}
 }

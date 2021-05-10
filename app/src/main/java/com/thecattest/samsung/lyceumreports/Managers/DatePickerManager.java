@@ -22,7 +22,9 @@ public class DatePickerManager {
     private final static String DATE_PICKER_TRIGGER_TEXT = "DATE_PICKER_TRIGGER_TEXT";
 
     private MaterialDatePicker<Long> datePicker;
-    private Long currentSelection;
+    private Long currentSelection = null;
+
+    private boolean enabled = true;
 
     private final String defaultTitle;
     private final TextView datePickerTrigger;
@@ -50,7 +52,8 @@ public class DatePickerManager {
     }
 
     public void showDatePicker() {
-        datePicker.show(fragmentManager, TAG);
+        if (enabled)
+            datePicker.show(fragmentManager, TAG);
     }
 
     public void showDatePicker(View v) {
@@ -63,7 +66,13 @@ public class DatePickerManager {
         callback.onPositiveButtonClick();
     }
 
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
     public String getDate() {
+        if (currentSelection == null)
+            return null;
         Date selectedDate = new Date(currentSelection);
         String serverDateFormat = "yyyy-MM-dd";
         @SuppressLint("SimpleDateFormat")
@@ -72,6 +81,10 @@ public class DatePickerManager {
 
         Log.d("DatePicker", formattedDate);
         return formattedDate;
+    }
+
+    public boolean isEmpty() {
+        return getDate() == null;
     }
 
     public void saveToBundle(Bundle outState) {

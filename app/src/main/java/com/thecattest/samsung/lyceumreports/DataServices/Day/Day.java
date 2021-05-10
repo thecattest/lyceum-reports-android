@@ -26,7 +26,7 @@ public class Day {
         loadedAbsent = getAbsentStudentsIds();
     }
 
-    public ArrayList<Integer> getAbsentStudentsIds(){
+    public ArrayList<Integer> getStudentsIds(ArrayList<Student> students){
         ArrayList<Integer> absentStudents = new ArrayList<>();
         for (Student st : students)
             if (st.absent)
@@ -34,18 +34,34 @@ public class Day {
         return absentStudents;
     }
 
-    public String getAbsentStudentsIdsString() {
-        ArrayList<Integer> absentStudentIds = getAbsentStudentsIds();
-        if (absentStudentIds.size() != 0) {
+    public String getStudentsIdsString(ArrayList<Integer> students) {
+        if (students.size() != 0) {
             StringBuilder ids = new StringBuilder();
-            ids.append(absentStudentIds.get(0));
-            for (Integer id : absentStudentIds.subList(1, absentStudentIds.size())) {
+            ids.append(students.get(0));
+            for (Integer id : students.subList(1, students.size())) {
                 ids.append(",");
                 ids.append(id.toString());
             }
             return ids.toString();
         } else
             return "";
+    }
+
+    public ArrayList<Integer> getAbsentStudentsIds(){
+        return getStudentsIds(students);
+    }
+
+    public String getAbsentStudentsIdsString() {
+        ArrayList<Integer> absentStudentIds = getStudentsIds(students);
+        return getStudentsIdsString(absentStudentIds);
+    }
+
+    public ArrayList<Integer> getLoadedAbsentStudentsIds(){
+        return loadedAbsent;
+    }
+
+    public String getLoadedAbsentStudentsIdsString() {
+        return getStudentsIdsString(loadedAbsent);
     }
 
     public boolean isEmpty() {
@@ -57,7 +73,7 @@ public class Day {
     }
 
     public boolean noAbsent() {
-        return !isEmpty() && status.equals(STATUS.OK) && getAbsentStudentsIds().size() == 0;
+        return !isEmpty() && status.equals(STATUS.OK) && getLoadedAbsentStudentsIds().size() == 0;
     }
 
     public boolean noChanges() {
