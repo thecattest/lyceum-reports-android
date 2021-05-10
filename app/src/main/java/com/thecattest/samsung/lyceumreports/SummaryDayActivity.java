@@ -150,6 +150,7 @@ public class SummaryDayActivity extends AppCompatActivity {
 
     private void setLoadingStatus() {
         summaryDay = new SummaryDay();
+        updateSummaryDayView();
         statusManager.setLoadingLayout();
     }
 }

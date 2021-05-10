@@ -24,12 +24,19 @@ public class StatusManager {
 
     private final View mainLayout;
 
-    public final View.OnClickListener onServerErrorRetryButtonClick;
+    private View.OnClickListener onServerErrorRetryButtonClick = v -> {};
+    private boolean serverErrorUsed = false;
 
     public StatusManager(View mainLayout, FragmentManager fragmentManager, View.OnClickListener onServerErrorRetryButtonClick) {
+        this(mainLayout, fragmentManager);
+        this.onServerErrorRetryButtonClick = onServerErrorRetryButtonClick;
+        serverErrorUsed = true;
+        createFragments();
+    }
+
+    public StatusManager(View mainLayout, FragmentManager fragmentManager) {
         this.mainLayout = mainLayout;
         this.fragmentManager = fragmentManager;
-        this.onServerErrorRetryButtonClick = onServerErrorRetryButtonClick;
         createFragments();
     }
 
@@ -41,9 +48,11 @@ public class StatusManager {
         ft.add(R.id.loadingLayout, loadingFragment, LoadingFragment.TAG);
         ft.hide(loadingFragment);
 
-        serverErrorFragment = new ServerErrorFragment(this.onServerErrorRetryButtonClick);
-        ft.add(R.id.serverErrorLayout, serverErrorFragment, ServerErrorFragment.TAG);
-        ft.hide(serverErrorFragment);
+        if (serverErrorUsed) {
+            serverErrorFragment = new ServerErrorFragment(this.onServerErrorRetryButtonClick);
+            ft.add(R.id.serverErrorLayout, serverErrorFragment, ServerErrorFragment.TAG);
+            ft.hide(serverErrorFragment);
+        }
 
         ft.commit();
     }
@@ -53,7 +62,7 @@ public class StatusManager {
         if (mainLayout.getVisibility() == View.VISIBLE) {
             layout = LAYOUT_TYPE_MAIN;
         }
-        else if (!Objects.requireNonNull(fragmentManager.findFragmentByTag(ServerErrorFragment.TAG)).isHidden()) {
+        else if (serverErrorUsed && !Objects.requireNonNull(fragmentManager.findFragmentByTag(ServerErrorFragment.TAG)).isHidden()) {
             layout = LAYOUT_TYPE_SERVER_ERROR;
         }
         outState.putString(LAYOUT_TYPE, layout);
@@ -73,6 +82,8 @@ public class StatusManager {
     }
 
     public void setServerErrorLayout() {
+        if (!serverErrorUsed)
+            return;
         mainLayout.setVisibility(View.GONE);
         setLoadingFragmentVisibility(false);
         setServerErrorFragmentVisibility(true);
@@ -81,7 +92,8 @@ public class StatusManager {
     public void setLoadingLayout(boolean mainIsVisible) {
         mainLayout.setVisibility(mainIsVisible ? View.VISIBLE : View.GONE);
         setLoadingFragmentVisibility(true);
-        setServerErrorFragmentVisibility(false);
+        if (serverErrorUsed)
+            setServerErrorFragmentVisibility(false);
     }
 
     public void setLoadingLayout() {
@@ -91,7 +103,8 @@ public class StatusManager {
     public void setMainLayout() {
         mainLayout.setVisibility(View.VISIBLE);
         setLoadingFragmentVisibility(false);
-        setServerErrorFragmentVisibility(false);
+        if (serverErrorUsed)
+            setServerErrorFragmentVisibility(false);
     }
 
     private void setLoadingFragmentVisibility(boolean visible) {
@@ -105,6 +118,8 @@ public class StatusManager {
     }
 
     private void setServerErrorFragmentVisibility(boolean visible) {
+        if (!serverErrorUsed)
+            return;
         FragmentTransaction ft = fragmentManager.beginTransaction();
         if (visible) {
             ft.show(serverErrorFragment);

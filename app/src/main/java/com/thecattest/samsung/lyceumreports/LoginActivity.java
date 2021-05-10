@@ -11,12 +11,14 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.thecattest.samsung.lyceumreports.DataServices.Login.LoginService;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
+import com.thecattest.samsung.lyceumreports.Managers.StatusManager;
 
 import java.util.Objects;
 
@@ -27,12 +29,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private RelativeLayout loginFormLayout;
     private TextInputEditText login;
     private TextInputEditText password;
     private Button loginButton;
     private ScrollView scrollView;
 
     private LoginManager loginManager;
+    private StatusManager statusManager;
 
     private LoginService loginService;
 
@@ -44,12 +48,13 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        loginManager = new LoginManager(this);
-
         initRetrofit();
         findViews();
         setListeners();
         updateButtonState();
+
+        loginManager = new LoginManager(this);
+        statusManager = new StatusManager(loginFormLayout, getSupportFragmentManager());
     }
 
     private void initRetrofit() {
@@ -61,6 +66,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void findViews() {
+        loginFormLayout = findViewById(R.id.loginFormLayout);
         login = findViewById(R.id.login);
         password = findViewById(R.id.password);
         loginButton = findViewById(R.id.loginButton);
@@ -102,7 +108,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void login(View v) {
 //        hideKeyboard();
-
+        statusManager.setLoadingLayout(true);
         String loginString = Objects.requireNonNull(login.getText()).toString();
         String passwordString = Objects.requireNonNull(password.getText()).toString();
         Call<Void> call = loginService.login(loginString, passwordString);
@@ -133,6 +139,7 @@ public class LoginActivity extends AppCompatActivity {
                         Snackbar.LENGTH_LONG
                 ).show();
                 Log.d("Login", "wrong credentials");
+                statusManager.setMainLayout();
             }
 
             @Override
@@ -143,6 +150,7 @@ public class LoginActivity extends AppCompatActivity {
                         "Ошибка: сервер недоступен",
                         Snackbar.LENGTH_LONG
                 ).show();
+                statusManager.setMainLayout();
             }
         });
     }

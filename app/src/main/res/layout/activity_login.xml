@@ -2,7 +2,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/loginFormLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".LoginActivity">
@@ -22,55 +21,68 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/loginLayout"
+    <RelativeLayout
+        android:id="@+id/loginFormLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/topBar"
-        android:hint="@string/login_hint">
+        android:layout_below="@id/topBar">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/login"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/loginLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"
-            android:imeOptions="actionNext"/>
-    </com.google.android.material.textfield.TextInputLayout>
+            android:hint="@string/login_hint">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/passwordLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/loginLayout"
-        android:hint="@string/password_hint"
-        app:endIconMode="password_toggle">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:imeOptions="actionNext"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/password"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/passwordLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_below="@id/loginLayout"
+            android:hint="@string/password_hint"
+            app:endIconMode="password_toggle">
 
-    <Button
-        android:id="@+id/loginButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/passwordLayout"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="10dp"
-        android:text="@string/login_button"
-        android:paddingHorizontal="30dp"
-        android:paddingVertical="10dp"
-        android:layout_alignParentRight="true"
-        android:layout_marginHorizontal="10dp"/>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-    <ScrollView
-        android:id="@+id/scrollView"
-        android:layout_below="@id/loginButton"
+        <Button
+            android:id="@+id/loginButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/passwordLayout"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="10dp"
+            android:text="@string/login_button"
+            android:paddingHorizontal="30dp"
+            android:paddingVertical="10dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginHorizontal="10dp"/>
+
+        <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_below="@id/loginButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </ScrollView>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/loadingLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-    </ScrollView>
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"/>
 
 </RelativeLayout>

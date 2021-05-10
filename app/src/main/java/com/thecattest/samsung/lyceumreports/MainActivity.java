@@ -159,6 +159,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setLoadingStatus() {
         summaryWithPermissions = new SummaryWithPermissions();
+        updateSummaryView();
         statusManager.setLoadingLayout();
     }
 }
