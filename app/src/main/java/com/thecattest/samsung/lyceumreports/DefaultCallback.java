@@ -46,5 +46,5 @@ public abstract class DefaultCallback<T> implements Callback<T> {
 
     public abstract void onResponse200(Response<T> response);
 
-    protected abstract void onResponse401();
+    public abstract void onResponse401();
 }

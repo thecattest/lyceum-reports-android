@@ -12,16 +12,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import com.thecattest.samsung.lyceumreports.Adapters.SummaryAdapter;
-import com.thecattest.samsung.lyceumreports.DataServices.Summary.Summary;
 import com.thecattest.samsung.lyceumreports.DataServices.Summary.SummaryService;
 import com.thecattest.samsung.lyceumreports.DataServices.Summary.SummaryWithPermissions;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
@@ -40,8 +35,6 @@ public class MainActivity extends AppCompatActivity {
     private SwipeRefreshLayout swipeRefreshLayout;
     private MaterialToolbar toolbar;
 
-    private final FragmentManager fragmentManager = getSupportFragmentManager();
-
     private LoginManager loginManager;
     private StatusManager statusManager;
 
@@ -58,8 +51,9 @@ public class MainActivity extends AppCompatActivity {
         findViews();
         setListeners();
 
+        FragmentManager fragmentManager = getSupportFragmentManager();
         loginManager = new LoginManager(this);
-        statusManager = new StatusManager(swipeRefreshLayout, fragmentManager, this::onRetryButtonClick);
+        statusManager = new StatusManager(swipeRefreshLayout, fragmentManager, v -> {updateSummary();});
 
         Log.d("Summary", "check");
         if (summaryWithPermissions.getSummaryStringFromBundle(savedInstanceState) == null) {
@@ -85,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         statusManager.saveToBundle(outState);
     }
 
-    protected void initRetrofit() {
+    private void initRetrofit() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Config.URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -104,12 +98,12 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setOnMenuItemClickListener(this::onMenuItemClick);
     }
 
-    public void onRefresh() {
+    private void onRefresh() {
         updateSummary();
         swipeRefreshLayout.setRefreshing(false);
     }
 
-    public boolean onMenuItemClick(MenuItem item) {
+    private boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.logout:
                 loginManager.logout();
@@ -118,14 +112,10 @@ public class MainActivity extends AppCompatActivity {
                 Intent i = new Intent(MainActivity.this, SummaryDayActivity.class);
                 startActivity(i);
                 finish();
+                Log.d("LoginManager", MainActivity.this.isFinishing() ? "true" : "false");
                 return true;
         }
         return false;
-    }
-
-    // Retry button click
-    public void onRetryButtonClick(View v) {
-        updateSummary();
     }
 
     @Override
@@ -150,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            protected void onResponse401() {}
+            public void onResponse401() {}
         });
     }
 

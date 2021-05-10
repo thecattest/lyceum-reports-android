@@ -52,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
         updateButtonState();
     }
 
-    protected void initRetrofit() {
+    private void initRetrofit() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Config.URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -126,7 +126,7 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             @Override
-            protected void onResponse401() {
+            public void onResponse401() {
                 Snackbar.make(
                         scrollView,
                         "Неправильный логин или пароль",

@@ -18,7 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.google.gson.Gson;
 import com.thecattest.samsung.lyceumreports.Adapters.StudentsAdapter;
 import com.thecattest.samsung.lyceumreports.DataServices.Day.Day;
 import com.thecattest.samsung.lyceumreports.DataServices.Day.DayPost;
@@ -46,8 +45,6 @@ public class DayActivity extends AppCompatActivity {
     private RelativeLayout buttonsGroup;
     private RelativeLayout mainLayout;
     private SwipeRefreshLayout swipeRefreshLayout;
-
-    private final FragmentManager fragmentManager = getSupportFragmentManager();
 
     private LoginManager loginManager;
     private StatusManager statusManager;
@@ -90,13 +87,13 @@ public class DayActivity extends AppCompatActivity {
 
     @SuppressLint("MissingSuperCall")
     @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         currentDay.saveToBundle(outState);
         datePickerManager.saveToBundle(outState);
         statusManager.saveToBundle(outState);
     }
 
-    protected void findViews() {
+    private void findViews() {
         classLabel = findViewById(R.id.classLabel);
         studentsListView = findViewById(R.id.studentsList);
         confirmButton = findViewById(R.id.confirmButton);
@@ -108,7 +105,7 @@ public class DayActivity extends AppCompatActivity {
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
     }
 
-    protected void initRetrofit() {
+    private void initRetrofit() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Config.URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -116,7 +113,7 @@ public class DayActivity extends AppCompatActivity {
         dayService = retrofit.create(DayService.class);
     }
 
-    protected void setListeners() {
+    private void setListeners() {
         studentsListView.setOnItemClickListener(this::onStudentItemClick);
         confirmButton.setOnClickListener(this::onConfirmButtonClick);
         cancelButton.setOnClickListener(this::onCancelButtonClick);
@@ -124,8 +121,9 @@ public class DayActivity extends AppCompatActivity {
     }
 
     private void initManagers() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
         loginManager = new LoginManager(this);
-        statusManager = new StatusManager(mainLayout, fragmentManager, this::onRetryButtonClick);
+        statusManager = new StatusManager(mainLayout, fragmentManager, v -> {updateDay();});
         datePickerManager = new DatePickerManager(
                 getResources().getString(R.string.select_date_label),
                 datePickerTrigger,
@@ -146,11 +144,6 @@ public class DayActivity extends AppCompatActivity {
         if (!currentDay.isEmpty())
             updateDay();
         swipeRefreshLayout.setRefreshing(false);
-    }
-
-    // Retry button click
-    public void onRetryButtonClick(View v) {
-        updateDay();
     }
 
     @Override
@@ -194,7 +187,7 @@ public class DayActivity extends AppCompatActivity {
             }
 
             @Override
-            protected void onResponse401() {}
+            public void onResponse401() {}
         });
     }
 
@@ -218,11 +211,11 @@ public class DayActivity extends AppCompatActivity {
             }
 
             @Override
-            protected void onResponse401() {}
+            public void onResponse401() {}
         });
     }
 
-    protected void updateDayView() {
+    private void updateDayView() {
         statusManager.setMainLayout();
         classLabel.setText(currentDay.name);
         updateStudentsAdapterData();
@@ -250,7 +243,7 @@ public class DayActivity extends AppCompatActivity {
         studentsListView.setAdapter(studentsAdapter);
     }
 
-    protected void updateConfirmButton() {
+    private void updateConfirmButton() {
         confirmButton.setEnabled(!currentDay.noChanges() || currentDay.noInfo());
         if (currentDay.noAbsent() || currentDay.noInfo() && currentDay.getAbsentStudentsIds().size() == 0)
             confirmButton.setText(getResources().getString(R.string.confirm_button_no_one_absent));
@@ -258,7 +251,7 @@ public class DayActivity extends AppCompatActivity {
             confirmButton.setText(getResources().getString(R.string.confirm_button_default));
     }
 
-    protected void setLoadingStatus(boolean mainIsVisible) {
+    private void setLoadingStatus(boolean mainIsVisible) {
         if (!mainIsVisible) {
             currentDay = new Day();
             currentDay.name = defaultGroupLabel;
@@ -267,7 +260,7 @@ public class DayActivity extends AppCompatActivity {
         statusManager.setLoadingLayout(mainIsVisible);
     }
 
-    protected void setLoadingStatus() {
+    private void setLoadingStatus() {
         setLoadingStatus(false);
     }
 }

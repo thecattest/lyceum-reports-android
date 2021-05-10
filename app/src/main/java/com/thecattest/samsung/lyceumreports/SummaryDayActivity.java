@@ -14,7 +14,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.thecattest.samsung.lyceumreports.Adapters.SummaryDayAdapter;
 import com.thecattest.samsung.lyceumreports.DataServices.SummaryDay.SummaryDay;
 import com.thecattest.samsung.lyceumreports.DataServices.SummaryDay.SummaryDayService;
@@ -32,8 +31,6 @@ public class SummaryDayActivity extends AppCompatActivity {
     private SwipeRefreshLayout swipeRefreshLayout;
     private ListView summaryDayListView;
     private TextView datePickerTrigger;
-
-    private final FragmentManager fragmentManager = getSupportFragmentManager();
 
     private LoginManager loginManager;
     private StatusManager statusManager;
@@ -70,13 +67,13 @@ public class SummaryDayActivity extends AppCompatActivity {
 
     @SuppressLint("MissingSuperCall")
     @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         summaryDay.saveToBundle(outState);
         datePickerManager.saveToBundle(outState);
         statusManager.saveToBundle(outState);
     }
 
-    protected void initRetrofit() {
+    private void initRetrofit() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Config.URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -95,8 +92,9 @@ public class SummaryDayActivity extends AppCompatActivity {
     }
 
     private void initManagers() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
         loginManager = new LoginManager(this);
-        statusManager = new StatusManager(swipeRefreshLayout, fragmentManager, this::onRetryButtonClick);
+        statusManager = new StatusManager(swipeRefreshLayout, fragmentManager, v -> {updateSummaryDay();});
         datePickerManager = new DatePickerManager(
                 getResources().getString(R.string.select_date_label),
                 datePickerTrigger,
@@ -107,10 +105,6 @@ public class SummaryDayActivity extends AppCompatActivity {
     public void onRefresh() {
         updateSummaryDay();
         swipeRefreshLayout.setRefreshing(false);
-    }
-
-    public void onRetryButtonClick(View v) {
-        updateSummaryDay();
     }
 
     @Override
@@ -132,7 +126,7 @@ public class SummaryDayActivity extends AppCompatActivity {
             }
 
             @Override
-            protected void onResponse401() {}
+            public void onResponse401() {}
 
             @Override
             public void onFailure(Call<SummaryDay> call, Throwable t) {
