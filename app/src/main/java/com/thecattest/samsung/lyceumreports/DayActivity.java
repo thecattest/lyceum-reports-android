@@ -15,7 +15,6 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.thecattest.samsung.lyceumreports.Adapters.StudentsAdapter;
@@ -314,7 +313,7 @@ public class DayActivity extends AppCompatActivity {
                     getResources().getString(R.string.no_info_for_day),
                     Snackbar.LENGTH_LONG
             ).setAnchorView(buttonsGroup).show();
-        } else if (currentDay.noAbsent()) {
+        } else if (currentDay.noLoadedAbsent()) {
             Snackbar.make(
                     mainLayout,
                     getResources().getString(R.string.no_absent),
@@ -336,7 +335,7 @@ public class DayActivity extends AppCompatActivity {
     private void updateConfirmButton() {
         confirmButton.setVisibility(currentDay.canEdit ? View.VISIBLE : View.GONE);
         confirmButton.setEnabled(!currentDay.noChanges() || currentDay.noInfo());
-        if (currentDay.noAbsent() || currentDay.noInfo() && currentDay.getAbsentStudentsIds().size() == 0)
+        if (currentDay.noCurrentAbsent())
             confirmButton.setText(getResources().getString(R.string.confirm_button_no_one_absent));
         else
             confirmButton.setText(getResources().getString(R.string.confirm_button_default));

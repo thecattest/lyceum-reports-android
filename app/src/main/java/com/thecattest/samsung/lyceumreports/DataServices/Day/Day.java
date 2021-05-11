@@ -1,11 +1,9 @@
 package com.thecattest.samsung.lyceumreports.DataServices.Day;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
-import com.thecattest.samsung.lyceumreports.BuildConfig;
 
 import java.util.ArrayList;
 
@@ -18,12 +16,12 @@ public class Day {
     @SerializedName("can_edit")
     public boolean canEdit;
     public ArrayList<Student> students = new ArrayList<>();
-    private ArrayList<Integer> loadedAbsent = new ArrayList<>();
+    private ArrayList<Integer> loadedAbsentStudentsIds = new ArrayList<>();
 
     public Day() {}
 
     public void updateLoadedAbsent() {
-        loadedAbsent = getAbsentStudentsIds();
+        loadedAbsentStudentsIds = getAbsentStudentsIds();
     }
 
     public ArrayList<Integer> getStudentsIds(ArrayList<Student> students){
@@ -57,11 +55,11 @@ public class Day {
     }
 
     public ArrayList<Integer> getLoadedAbsentStudentsIds(){
-        return loadedAbsent;
+        return loadedAbsentStudentsIds;
     }
 
     public String getLoadedAbsentStudentsIdsString() {
-        return getStudentsIdsString(loadedAbsent);
+        return getStudentsIdsString(loadedAbsentStudentsIds);
     }
 
     public boolean isEmpty() {
@@ -72,12 +70,16 @@ public class Day {
         return !isEmpty() && status.equals(STATUS.EMPTY);
     }
 
-    public boolean noAbsent() {
-        return !isEmpty() && status.equals(STATUS.OK) && getLoadedAbsentStudentsIds().size() == 0;
+    public boolean noLoadedAbsent() {
+        return !isEmpty() && status.equals(STATUS.OK) && getLoadedAbsentStudentsIds().isEmpty();
+    }
+
+    public boolean noCurrentAbsent() {
+        return !isEmpty() && getAbsentStudentsIds().isEmpty();
     }
 
     public boolean noChanges() {
-        return loadedAbsent.equals(getAbsentStudentsIds());
+        return loadedAbsentStudentsIds.equals(getAbsentStudentsIds());
     }
 
     public void saveToBundle(Bundle outState) {
@@ -98,7 +100,7 @@ public class Day {
             this.status = loadedDay.status;
             this.canEdit = loadedDay.canEdit;
             this.students = loadedDay.students;
-            this.loadedAbsent = loadedDay.loadedAbsent;
+            this.loadedAbsentStudentsIds = loadedDay.loadedAbsentStudentsIds;
         }
     }
 
