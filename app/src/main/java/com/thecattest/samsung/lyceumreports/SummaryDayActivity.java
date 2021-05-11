@@ -40,6 +40,7 @@ public class SummaryDayActivity extends AppCompatActivity {
     private SummaryDay summaryDay = new SummaryDay();
 
     private SummaryDayService summaryDayService;
+    private Call<SummaryDay> getCall;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,15 +112,19 @@ public class SummaryDayActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Intent i = new Intent(SummaryDayActivity.this, MainActivity.class);
-        startActivity(i);
-        finish();
+        if (!cancelGetCall()) {
+            Intent i = new Intent(SummaryDayActivity.this, MainActivity.class);
+            startActivity(i);
+            finish();
+        }
     }
 
     private void updateSummaryDay() {
         setLoadingStatus();
+        datePickerManager.setEnabled(false);
         String formattedDate = datePickerManager.getDate();
         Call<SummaryDay> call = summaryDayService.getSummaryDay(loginManager.getCookie(), formattedDate);
+        getCall = call;
         call.enqueue(new DefaultCallback<SummaryDay>(loginManager, swipeRefreshLayout) {
             @Override
             public void onResponse200(Response<SummaryDay> response) {
@@ -132,17 +137,43 @@ public class SummaryDayActivity extends AppCompatActivity {
             }
 
             public void onResponseFailure(Call<SummaryDay> call, Throwable t) {
-                try {
-                    Log.d("DayCall", t.toString());
-                    Snackbar.make(
-                            swipeRefreshLayout,
-                            "Ошибка, попробуйте ещё раз позднее",
-                            Snackbar.LENGTH_LONG
-                    ).show();
-                    statusManager.setServerErrorLayout();
-                } catch (IllegalStateException ignored) {}
+                if (call.isCanceled()) {
+                    try {
+                        statusManager.setMainLayout();
+                        Snackbar.make(
+                                swipeRefreshLayout,
+                                "Отмена",
+                                Snackbar.LENGTH_LONG
+                        ).show();
+                    } catch (IllegalStateException ignored) {}
+                } else {
+                    try {
+                        Log.d("DayCall", t.toString());
+                        Snackbar.make(
+                                swipeRefreshLayout,
+                                "Ошибка, попробуйте ещё раз позднее",
+                                Snackbar.LENGTH_LONG
+                        ).show();
+                        statusManager.setServerErrorLayout();
+                    } catch (IllegalStateException ignored) {
+                    }
+                }
+            }
+
+            @Override
+            public void onPostExecute() {
+                getCall = null;
+                datePickerManager.setEnabled(true);
             }
         });
+    }
+
+    private boolean cancelGetCall() {
+        if (getCall == null)
+            return false;
+        getCall.cancel();
+        getCall = null;
+        return true;
     }
 
     private void updateSummaryDayView() {
