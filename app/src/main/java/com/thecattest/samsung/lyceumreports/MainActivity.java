@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         loginManager = new LoginManager(this);
-        statusManager = new StatusManager(swipeRefreshLayout, fragmentManager, v -> {updateSummary();});
+        statusManager = new StatusManager(this, swipeRefreshLayout, v -> {updateSummary();});
 
         Log.d("Summary", "check");
         if (summaryWithPermissions.getSummaryStringFromBundle(savedInstanceState) == null) {

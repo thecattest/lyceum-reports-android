@@ -1,8 +1,13 @@
 package com.thecattest.samsung.lyceumreports.Managers;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -17,44 +22,23 @@ public class StatusManager {
     private static final String LAYOUT_TYPE_MAIN = "LAYOUT_TYPE_MAIN";
     private static final String LAYOUT_TYPE_SERVER_ERROR = "LAYOUT_TYPE_SERVER_ERROR";
 
-    private final FragmentManager fragmentManager;
-
-    private LoadingFragment loadingFragment;
-    private ServerErrorFragment serverErrorFragment;
-
     private final View mainLayout;
+    private final View loadingLayout;
+    private View serverErrorLayout;
 
     private View.OnClickListener onServerErrorRetryButtonClick = v -> {};
     private boolean serverErrorUsed = false;
 
-    public StatusManager(View mainLayout, FragmentManager fragmentManager, View.OnClickListener onServerErrorRetryButtonClick) {
-        this(mainLayout, fragmentManager);
-        this.onServerErrorRetryButtonClick = onServerErrorRetryButtonClick;
+    public StatusManager(AppCompatActivity activity, View mainLayout, View.OnClickListener onServerErrorRetryButtonClick) {
+        this(activity, mainLayout);
+        this.serverErrorLayout = activity.findViewById(R.id.serverErrorLayout);
         serverErrorUsed = true;
-        createFragments();
+        serverErrorLayout.findViewById(R.id.retry).setOnClickListener(onServerErrorRetryButtonClick);
     }
 
-    public StatusManager(View mainLayout, FragmentManager fragmentManager) {
+    public StatusManager(AppCompatActivity activity, View mainLayout) {
         this.mainLayout = mainLayout;
-        this.fragmentManager = fragmentManager;
-        createFragments();
-    }
-
-    private void createFragments() {
-        FragmentTransaction ft = fragmentManager.beginTransaction();
-        ft.disallowAddToBackStack();
-
-        loadingFragment = new LoadingFragment();
-        ft.add(R.id.loadingLayout, loadingFragment, LoadingFragment.TAG);
-        ft.hide(loadingFragment);
-
-        if (serverErrorUsed) {
-            serverErrorFragment = new ServerErrorFragment(this.onServerErrorRetryButtonClick);
-            ft.add(R.id.serverErrorLayout, serverErrorFragment, ServerErrorFragment.TAG);
-            ft.hide(serverErrorFragment);
-        }
-
-        ft.commit();
+        this.loadingLayout = activity.findViewById(R.id.loadingLayout);
     }
 
     public void saveToBundle(Bundle outState) {
@@ -62,7 +46,7 @@ public class StatusManager {
         if (mainLayout.getVisibility() == View.VISIBLE) {
             layout = LAYOUT_TYPE_MAIN;
         }
-        else if (serverErrorUsed && !Objects.requireNonNull(fragmentManager.findFragmentByTag(ServerErrorFragment.TAG)).isHidden()) {
+        else if (serverErrorUsed && serverErrorLayout.getVisibility() == View.VISIBLE) {
             layout = LAYOUT_TYPE_SERVER_ERROR;
         }
         outState.putString(LAYOUT_TYPE, layout);
@@ -85,15 +69,15 @@ public class StatusManager {
         if (!serverErrorUsed)
             return;
         mainLayout.setVisibility(View.GONE);
-        setLoadingFragmentVisibility(false);
-        setServerErrorFragmentVisibility(true);
+        loadingLayout.setVisibility(View.GONE);
+        serverErrorLayout.setVisibility(View.VISIBLE);
     }
 
     public void setLoadingLayout(boolean mainIsVisible) {
         mainLayout.setVisibility(mainIsVisible ? View.VISIBLE : View.GONE);
-        setLoadingFragmentVisibility(true);
+        loadingLayout.setVisibility(View.VISIBLE);
         if (serverErrorUsed)
-            setServerErrorFragmentVisibility(false);
+            serverErrorLayout.setVisibility(View.GONE);
     }
 
     public void setLoadingLayout() {
@@ -102,30 +86,8 @@ public class StatusManager {
 
     public void setMainLayout() {
         mainLayout.setVisibility(View.VISIBLE);
-        setLoadingFragmentVisibility(false);
+        loadingLayout.setVisibility(View.GONE);
         if (serverErrorUsed)
-            setServerErrorFragmentVisibility(false);
-    }
-
-    private void setLoadingFragmentVisibility(boolean visible) {
-        FragmentTransaction ft = fragmentManager.beginTransaction();
-        if (visible) {
-            ft.show(loadingFragment);
-        } else {
-            ft.hide(loadingFragment);
-        }
-        ft.commit();
-    }
-
-    private void setServerErrorFragmentVisibility(boolean visible) {
-        if (!serverErrorUsed)
-            return;
-        FragmentTransaction ft = fragmentManager.beginTransaction();
-        if (visible) {
-            ft.show(serverErrorFragment);
-        } else {
-            ft.hide(serverErrorFragment);
-        }
-        ft.commit();
+            serverErrorLayout.setVisibility(View.GONE);
     }
 }

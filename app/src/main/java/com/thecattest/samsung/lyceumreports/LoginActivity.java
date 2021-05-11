@@ -54,7 +54,7 @@ public class LoginActivity extends AppCompatActivity {
         updateButtonState();
 
         loginManager = new LoginManager(this);
-        statusManager = new StatusManager(loginFormLayout, getSupportFragmentManager());
+        statusManager = new StatusManager(this, loginFormLayout);
     }
 
     private void initRetrofit() {

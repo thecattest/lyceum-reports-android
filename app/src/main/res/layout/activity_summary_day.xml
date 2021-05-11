@@ -24,7 +24,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="20dp"
             android:layout_marginStart="20dp"
-            android:text="День"/>
+            android:text="@string/day_title"/>
 
         <Button
             android:id="@+id/datePickerTrigger"
@@ -53,18 +53,8 @@
             tools:listitem="@layout/summary_day_row"/>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <LinearLayout
-        android:id="@+id/loadingLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:orientation="vertical"/>
+    <include layout="@layout/fragment_loading"/>
 
-    <LinearLayout
-        android:id="@+id/serverErrorLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:orientation="vertical" />
+    <include layout="@layout/fragment_server_error"/>
 
 </RelativeLayout>

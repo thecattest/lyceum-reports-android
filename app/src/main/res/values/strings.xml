@@ -22,4 +22,5 @@
     <string name="logout">Выйти</string>
     <string name="summary_day_title">Отсутствующие: день</string>
     <string name="daySummaryTable">Таблица: День</string>
+    <string name="day_title">День</string>
 </resources>

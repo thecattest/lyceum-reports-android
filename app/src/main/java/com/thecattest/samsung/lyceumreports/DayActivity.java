@@ -129,7 +129,7 @@ public class DayActivity extends AppCompatActivity {
     private void initManagers() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         loginManager = new LoginManager(this);
-        statusManager = new StatusManager(mainLayout, fragmentManager, v -> {updateDay();});
+        statusManager = new StatusManager(this, mainLayout, v -> {updateDay();});
         datePickerManager = new DatePickerManager(
                 getResources().getString(R.string.select_date_label),
                 datePickerTrigger,

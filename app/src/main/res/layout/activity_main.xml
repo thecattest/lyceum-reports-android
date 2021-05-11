@@ -35,18 +35,8 @@
             android:divider="@null"/>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <LinearLayout
-        android:id="@+id/loadingLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:orientation="vertical"/>
+    <include layout="@layout/fragment_loading"/>
 
-    <LinearLayout
-        android:id="@+id/serverErrorLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:orientation="vertical" />
+    <include layout="@layout/fragment_server_error"/>
 
 </RelativeLayout>

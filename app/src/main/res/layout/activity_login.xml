@@ -78,11 +78,6 @@
         </ScrollView>
     </RelativeLayout>
 
-    <LinearLayout
-        android:id="@+id/loadingLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:orientation="vertical"/>
+    <include layout="@layout/fragment_loading"/>
 
 </RelativeLayout>

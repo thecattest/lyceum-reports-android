@@ -97,7 +97,7 @@ public class SummaryDayActivity extends AppCompatActivity {
     private void initManagers() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         loginManager = new LoginManager(this);
-        statusManager = new StatusManager(swipeRefreshLayout, fragmentManager, v -> {updateSummaryDay();});
+        statusManager = new StatusManager(this, swipeRefreshLayout, v -> {updateSummaryDay();});
         datePickerManager = new DatePickerManager(
                 getResources().getString(R.string.select_date_label),
                 datePickerTrigger,
