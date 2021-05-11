@@ -1,21 +1,11 @@
 package com.thecattest.samsung.lyceumreports.Managers;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
-import com.thecattest.samsung.lyceumreports.Fragments.LoadingFragment;
-import com.thecattest.samsung.lyceumreports.Fragments.ServerErrorFragment;
 import com.thecattest.samsung.lyceumreports.R;
-
-import java.util.Objects;
 
 public class StatusManager {
     private static final String LAYOUT_TYPE = "LAYOUT_TYPE";
