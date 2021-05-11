@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private SummaryWithPermissions summaryWithPermissions = new SummaryWithPermissions();
 
     SummaryService summaryService;
+    Call<SummaryWithPermissions> getCall;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -120,11 +121,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {}
+    public void onBackPressed() {
+        cancelGetCall();
+    }
 
     private void updateSummary() {
         setLoadingStatus();
         Call<SummaryWithPermissions> call = summaryService.getSummary(loginManager.getCookie());
+        getCall = call;
         call.enqueue(new DefaultCallback<SummaryWithPermissions>(loginManager, swipeRefreshLayout) {
             @Override
             public void onResponse200(Response<SummaryWithPermissions> response) {
@@ -144,15 +148,37 @@ public class MainActivity extends AppCompatActivity {
             }
 
             public void onResponseFailure(Call<SummaryWithPermissions> call, Throwable t) {
-                Log.d("SummaryCall", t.toString());
-                Snackbar.make(
-                        swipeRefreshLayout,
-                        "Ошибка, попробуйте ещё раз позднее",
-                        Snackbar.LENGTH_LONG
-                ).show();
-                statusManager.setServerErrorLayout();
+                if (call.isCanceled()) {
+                    statusManager.setMainLayout();
+                    Snackbar.make(
+                            swipeRefreshLayout,
+                            "Отмена",
+                            Snackbar.LENGTH_LONG
+                    ).show();
+                } else {
+                    Log.d("SummaryCall", t.toString());
+                    Snackbar.make(
+                            swipeRefreshLayout,
+                            "Ошибка, попробуйте ещё раз позднее",
+                            Snackbar.LENGTH_LONG
+                    ).show();
+                    statusManager.setServerErrorLayout();
+                }
+            }
+
+            @Override
+            public void onPostExecute() {
+                getCall = null;
             }
         });
+    }
+
+    private boolean cancelGetCall() {
+        if (getCall == null)
+            return false;
+        getCall.cancel();
+        getCall = null;
+        return true;
     }
 
     private void updateSummaryView() {
