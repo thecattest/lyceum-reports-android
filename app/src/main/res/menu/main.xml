@@ -5,6 +5,7 @@
         android:id="@+id/daySummaryTable"
         android:title="@string/daySummaryTable"
         android:icon="@drawable/ic_table_24"
+        android:visible="false"
         android:contentDescription="@string/daySummaryTable"
         app:showAsAction="ifRoom" />
 
