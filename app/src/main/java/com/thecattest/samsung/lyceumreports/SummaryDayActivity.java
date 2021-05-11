@@ -129,34 +129,35 @@ public class SummaryDayActivity extends AppCompatActivity {
             @Override
             public void onResponse200(Response<SummaryDay> response) {
                 summaryDay = response.body();
-                try {
-                    updateSummaryDayView();
-                } catch (IllegalStateException e) {
-                    Log.d("Updated", summaryDay.toString());
-                }
+                updateSummaryDayView();
+            }
+
+            @Override
+            public void onResponse500(Response<SummaryDay> response) {
+                statusManager.setServerErrorLayout();
+                Snackbar.make(
+                        swipeRefreshLayout,
+                        "Сервер выдал ошибку 500, попробуйте позднее",
+                        Snackbar.LENGTH_LONG
+                ).show();
             }
 
             public void onResponseFailure(Call<SummaryDay> call, Throwable t) {
                 if (call.isCanceled()) {
-                    try {
-                        statusManager.setMainLayout();
-                        Snackbar.make(
-                                swipeRefreshLayout,
-                                "Отмена",
-                                Snackbar.LENGTH_LONG
-                        ).show();
-                    } catch (IllegalStateException ignored) {}
+                    statusManager.setMainLayout();
+                    Snackbar.make(
+                            swipeRefreshLayout,
+                            "Отмена",
+                            Snackbar.LENGTH_LONG
+                    ).show();
                 } else {
-                    try {
-                        Log.d("DayCall", t.toString());
-                        Snackbar.make(
-                                swipeRefreshLayout,
-                                "Ошибка, попробуйте ещё раз позднее",
-                                Snackbar.LENGTH_LONG
-                        ).show();
-                        statusManager.setServerErrorLayout();
-                    } catch (IllegalStateException ignored) {
-                    }
+                    Log.d("DayCall", t.toString());
+                    Snackbar.make(
+                            swipeRefreshLayout,
+                            "Ошибка, попробуйте ещё раз позднее",
+                            Snackbar.LENGTH_LONG
+                    ).show();
+                    statusManager.setServerErrorLayout();
                 }
             }
 

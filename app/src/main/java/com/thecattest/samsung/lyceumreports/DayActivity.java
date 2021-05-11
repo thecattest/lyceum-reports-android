@@ -22,6 +22,7 @@ import com.thecattest.samsung.lyceumreports.DataServices.Day.Day;
 import com.thecattest.samsung.lyceumreports.DataServices.Day.DayPost;
 import com.thecattest.samsung.lyceumreports.DataServices.Day.DayService;
 import com.thecattest.samsung.lyceumreports.DataServices.Day.Student;
+import com.thecattest.samsung.lyceumreports.DataServices.Summary.SummaryWithPermissions;
 import com.thecattest.samsung.lyceumreports.Managers.DatePickerManager;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
 import com.thecattest.samsung.lyceumreports.Managers.StatusManager;
@@ -177,40 +178,30 @@ public class DayActivity extends AppCompatActivity {
         call.enqueue(new DefaultCallback<Void>(loginManager, mainLayout) {
             @Override
             public void onResponse200(Response<Void> response) {
-                try {
-                    Snackbar.make(
-                            mainLayout,
-                            "Сработало :) код " + response.code(),
-                            Snackbar.LENGTH_SHORT
-                    ).setAnchorView(buttonsGroup).show();
-                    updateDay();
-                    Log.d("Update", "Updated");
-                } catch (IllegalStateException exception) {
-                    // notify new activity to update
-                    Log.d("Update", "updated but exc");
-                }
+                Snackbar.make(
+                        mainLayout,
+                        "Сработало :) код " + response.code(),
+                        Snackbar.LENGTH_SHORT
+                ).setAnchorView(buttonsGroup).show();
+                updateDay();
+                Log.d("Update", "Updated");
             }
 
             public void onResponseFailure(Call<Void> call, Throwable t) {
                 if (call.isCanceled()) {
-                    try {
-                        statusManager.setMainLayout();
-                        Snackbar.make(
-                                mainLayout,
-                                "Отмена",
-                                Snackbar.LENGTH_LONG
-                        ).setAnchorView(buttonsGroup).show();
-                    } catch (IllegalStateException ignored) {}
+                    statusManager.setMainLayout();
+                    Snackbar.make(
+                            mainLayout,
+                            "Отмена",
+                            Snackbar.LENGTH_LONG
+                    ).setAnchorView(buttonsGroup).show();
                 } else {
-                    try {
-//                        statusManager.setServerErrorLayout();
-                        Log.d("UpdateDayCall", call.toString());
-                        Snackbar.make(
-                                mainLayout,
-                                "Ошибка, попробуйте ещё раз позднее",
-                                Snackbar.LENGTH_LONG
-                        ).show();
-                    } catch (IllegalStateException ignored) {}
+                    Log.d("UpdateDayCall", call.toString());
+                    Snackbar.make(
+                            mainLayout,
+                            "Ошибка, попробуйте ещё раз позднее",
+                            Snackbar.LENGTH_LONG
+                    ).show();
                 }
             }
 
@@ -252,34 +243,35 @@ public class DayActivity extends AppCompatActivity {
             public void onResponse200(Response<Day> response) {
                 currentDay = response.body();
                 currentDay.updateLoadedAbsent();
-                try {
-                    updateDayView();
-                } catch (IllegalStateException e) {
-                    // notify new activity to update
-                    Log.d("Updated", currentDay.toString());
-                }
+                updateDayView();
+            }
+
+            @Override
+            public void onResponse500(Response<Day> response) {
+                statusManager.setServerErrorLayout();
+                Snackbar.make(
+                        mainLayout,
+                        "Сервер выдал ошибку 500, попробуйте позднее",
+                        Snackbar.LENGTH_LONG
+                ).show();
             }
 
             public void onResponseFailure(Call<Day> call, Throwable t) {
                 if (call.isCanceled()) {
-                    try {
-                        statusManager.setMainLayout();
-                        Snackbar.make(
-                                mainLayout,
-                                "Отмена",
-                                Snackbar.LENGTH_LONG
-                        ).show();
-                    } catch (IllegalStateException ignore) {}
+                    statusManager.setMainLayout();
+                    Snackbar.make(
+                            mainLayout,
+                            "Отмена",
+                            Snackbar.LENGTH_LONG
+                    ).show();
                 } else {
-                    try {
-                        statusManager.setServerErrorLayout();
-                        Log.d("DayCall", t.toString());
-                        Snackbar.make(
-                                mainLayout,
-                                "Ошибка, попробуйте ещё раз позднее",
-                                Snackbar.LENGTH_LONG
-                        ).show();
-                    } catch (IllegalStateException ignored) {}
+                    statusManager.setServerErrorLayout();
+                    Log.d("DayCall", t.toString());
+                    Snackbar.make(
+                            mainLayout,
+                            "Ошибка, попробуйте ещё раз позднее",
+                            Snackbar.LENGTH_LONG
+                    ).show();
                 }
             }
 

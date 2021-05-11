@@ -21,39 +21,49 @@ public abstract class DefaultCallback<T> implements Callback<T> {
     @Override
     public void onResponse(Call<T> call, Response<T> response) {
         int code = response.code();
-        switch (code) {
-            case 200:
-                onResponse200(response);
-                break;
-                
-            case 401:
-                onResponse401(response);
-                break;
+        try {
+            switch (code) {
+                case 200:
+                    onResponse200(response);
+                    break;
 
-            case 403:
-                loginManager.handleNotAuthorized();
-                break;
+                case 401:
+                    onResponse401(response);
+                    break;
 
-            default:
-                Snackbar.make(
-                        mainLayout,
-                        "Ошибка при выполнении запроса :( код " + code,
-                        Snackbar.LENGTH_SHORT
-                ).show();
-                break;
-        }
+                case 403:
+                    loginManager.handleNotAuthorized();
+                    break;
+
+                case 500:
+                    onResponse500(response);
+                    break;
+
+                default:
+                    Snackbar.make(
+                            mainLayout,
+                            "Ошибка при выполнении запроса :( код " + code,
+                            Snackbar.LENGTH_SHORT
+                    ).show();
+                    break;
+            }
+        } catch (IllegalStateException ignored) {}
         onPostExecute();
     }
 
     @Override
     public void onFailure(Call<T> call, Throwable t) {
-        onResponseFailure(call, t);
+        try {
+            onResponseFailure(call, t);
+        } catch (IllegalStateException ignored) {}
         onPostExecute();
     }
 
     public abstract void onResponse200(Response<T> response);
 
     public void onResponse401(Response<T> response) {};
+
+    public void onResponse500(Response<T> response) {}
 
     public abstract void onResponseFailure(Call<T> call, Throwable t);
 

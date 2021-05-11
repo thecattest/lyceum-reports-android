@@ -18,8 +18,10 @@ import android.widget.Toast;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.snackbar.Snackbar;
 import com.thecattest.samsung.lyceumreports.Adapters.SummaryAdapter;
+import com.thecattest.samsung.lyceumreports.DataServices.Summary.Summary;
 import com.thecattest.samsung.lyceumreports.DataServices.Summary.SummaryService;
 import com.thecattest.samsung.lyceumreports.DataServices.Summary.SummaryWithPermissions;
+import com.thecattest.samsung.lyceumreports.DataServices.SummaryDay.SummaryDay;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
 import com.thecattest.samsung.lyceumreports.Managers.StatusManager;
 
@@ -129,6 +131,16 @@ public class MainActivity extends AppCompatActivity {
                 summaryWithPermissions = response.body();
                 Log.d("Summary", summaryWithPermissions.toString());
                 updateSummaryView();
+            }
+
+            @Override
+            public void onResponse500(Response<SummaryWithPermissions> response) {
+                statusManager.setServerErrorLayout();
+                Snackbar.make(
+                        swipeRefreshLayout,
+                        "Сервер выдал ошибку 500, попробуйте позднее",
+                        Snackbar.LENGTH_LONG
+                ).show();
             }
 
             public void onResponseFailure(Call<SummaryWithPermissions> call, Throwable t) {
