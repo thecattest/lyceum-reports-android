@@ -16,7 +16,6 @@ public class StatusManager {
     private final View loadingLayout;
     private View serverErrorLayout;
 
-    private View.OnClickListener onServerErrorRetryButtonClick = v -> {};
     private boolean serverErrorUsed = false;
 
     public StatusManager(AppCompatActivity activity, View mainLayout, View.OnClickListener onServerErrorRetryButtonClick) {
