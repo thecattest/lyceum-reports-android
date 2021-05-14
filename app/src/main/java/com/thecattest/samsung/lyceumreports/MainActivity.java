@@ -49,10 +49,8 @@ public class MainActivity extends AppCompatActivity {
         initRetrofit();
         findViews();
         setListeners();
+        initManagers();
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        loginManager = new LoginManager(this);
-        statusManager = new StatusManager(this, swipeRefreshLayout, v -> {updateSummary();});
 
         Log.d("Summary", "check");
         if (summaryWithPermissions.getSummaryStringFromBundle(savedInstanceState) == null) {
@@ -95,6 +93,11 @@ public class MainActivity extends AppCompatActivity {
     private void setListeners() {
         swipeRefreshLayout.setOnRefreshListener(this::onRefresh);
         toolbar.setOnMenuItemClickListener(this::onMenuItemClick);
+    }
+
+    private void initManagers() {
+        loginManager = new LoginManager(this);
+        statusManager = new StatusManager(this, swipeRefreshLayout, v -> {updateSummary();});
     }
 
     private void onRefresh() {

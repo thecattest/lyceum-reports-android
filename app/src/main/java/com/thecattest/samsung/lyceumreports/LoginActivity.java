@@ -51,10 +51,8 @@ public class LoginActivity extends AppCompatActivity {
         initRetrofit();
         findViews();
         setListeners();
+        initManagers();
         updateButtonState();
-
-        loginManager = new LoginManager(this);
-        statusManager = new StatusManager(this, loginFormLayout);
     }
 
     private void initRetrofit() {
@@ -101,6 +99,11 @@ public class LoginActivity extends AppCompatActivity {
                 updateButtonState();
             }
         });
+    }
+
+    private void initManagers() {
+        loginManager = new LoginManager(this);
+        statusManager = new StatusManager(this, loginFormLayout);
     }
 
     @Override
