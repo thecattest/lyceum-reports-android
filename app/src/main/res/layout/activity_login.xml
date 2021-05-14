@@ -15,7 +15,7 @@
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="@string/authorization_title"
+            app:title="@string/title_authorization"
             style="@style/Widget.MaterialComponents.Toolbar.Primary"
             />
 
@@ -31,7 +31,7 @@
             android:id="@+id/loginLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/login_hint">
+            android:hint="@string/hint_login">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/login"
@@ -46,7 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/loginLayout"
-            android:hint="@string/password_hint"
+            android:hint="@string/hint_password"
             app:endIconMode="password_toggle">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -63,7 +63,7 @@
             android:layout_below="@id/passwordLayout"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="10dp"
-            android:text="@string/login_button"
+            android:text="@string/button_login"
             android:paddingHorizontal="30dp"
             android:paddingVertical="10dp"
             android:layout_alignParentRight="true"

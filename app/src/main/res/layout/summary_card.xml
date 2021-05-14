@@ -34,7 +34,7 @@
                 android:id="@+id/addButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/add"
+                android:text="@string/button_edit"
                 android:textColor="@color/link_color"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_alignParentEnd="true"
@@ -76,7 +76,7 @@
                         android:textColor="#222"
                         android:textStyle="bold"
                         android:textSize="18sp"
-                        android:text="@string/today"/>
+                        android:text="@string/summary_card_today"/>
 
                     <TextView
                         android:id="@+id/todayDate"
@@ -133,7 +133,7 @@
                         android:textColor="#222"
                         android:textStyle="bold"
                         android:textSize="18sp"
-                        android:text="@string/yesterday"/>
+                        android:text="@string/summary_card_yesterday"/>
 
                     <TextView
                         android:id="@+id/yesterdayDate"

@@ -1,11 +1,13 @@
 package com.thecattest.samsung.lyceumreports.DataModels.Summary;
 
+import android.content.Context;
+
 public interface SummaryRowInterface {
-    String getTodayDate();
+    String getTodayDate(Context context);
 
-    String getTodayAbsentStudentsString();
+    String getTodayAbsentStudentsString(Context context);
 
-    String getYesterdayDate();
+    String getYesterdayDate(Context context);
 
-    String getYesterdayAbsentStudentsString();
+    String getYesterdayAbsentStudentsString(Context context);
 }

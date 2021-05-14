@@ -1,5 +1,7 @@
 package com.thecattest.samsung.lyceumreports.DataModels.Summary;
 
+import android.content.Context;
+
 public class Summary implements SummaryRowInterface {
     public int id;
     public String letter;
@@ -15,23 +17,23 @@ public class Summary implements SummaryRowInterface {
     }
 
     @Override
-    public String getTodayDate() {
-        return days.getTodayDate();
+    public String getTodayDate(Context context) {
+        return days.getTodayDate(context);
     }
 
     @Override
-    public String getTodayAbsentStudentsString() {
-        return days.getTodayAbsentStudentsString();
+    public String getTodayAbsentStudentsString(Context context) {
+        return days.getTodayAbsentStudentsString(context);
     }
 
     @Override
-    public String getYesterdayDate() {
-        return days.getYesterdayDate();
+    public String getYesterdayDate(Context context) {
+        return days.getYesterdayDate(context);
     }
 
     @Override
-    public String getYesterdayAbsentStudentsString() {
-        return days.getYesterdayAbsentStudentsString();
+    public String getYesterdayAbsentStudentsString(Context context) {
+        return days.getYesterdayAbsentStudentsString(context);
     }
 
     @Override

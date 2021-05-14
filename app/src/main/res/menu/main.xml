@@ -3,17 +3,17 @@
 
     <item
         android:id="@+id/daySummaryTable"
-        android:title="@string/daySummaryTable"
+        android:title="@string/title_summary_day"
         android:icon="@drawable/ic_table_24"
         android:visible="false"
-        android:contentDescription="@string/daySummaryTable"
+        android:contentDescription="@string/title_summary_day"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/logout"
-        android:title="@string/logout"
+        android:title="@string/button_logout"
         android:icon="@drawable/ic_logout_24"
-        android:contentDescription="@string/logout"
+        android:contentDescription="@string/button_logout"
         app:showAsAction="ifRoom" />
 
 </menu>

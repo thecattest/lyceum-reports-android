@@ -15,7 +15,7 @@
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="@string/main_page_title"
+            app:title="@string/title_main"
             app:menu="@menu/main"
             style="@style/Widget.MaterialComponents.Toolbar.Primary"
             />

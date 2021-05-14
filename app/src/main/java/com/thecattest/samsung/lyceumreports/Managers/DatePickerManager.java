@@ -1,6 +1,7 @@
 package com.thecattest.samsung.lyceumreports.Managers;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
+import com.thecattest.samsung.lyceumreports.R;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -27,15 +29,17 @@ public class DatePickerManager {
     private boolean enabled = true;
 
     private final String defaultTitle;
+    private final String serverDateFormat;
     private final TextView datePickerTrigger;
     private final FragmentManager fragmentManager;
     private final DatePickerListener callback;
 
-    public DatePickerManager(String titleText,
+    public DatePickerManager(Context context,
                              TextView datePickerTrigger,
                              FragmentManager fragmentManager,
                              DatePickerListener callback) {
-        defaultTitle = titleText;
+        defaultTitle = context.getResources().getString(R.string.button_date_picker_trigger);
+        serverDateFormat = context.getResources().getString(R.string.date_format);
         this.datePickerTrigger = datePickerTrigger;
         this.fragmentManager = fragmentManager;
         this.callback = callback;
@@ -74,7 +78,6 @@ public class DatePickerManager {
         if (currentSelection == null)
             return null;
         Date selectedDate = new Date(currentSelection);
-        String serverDateFormat = "yyyy-MM-dd";
         @SuppressLint("SimpleDateFormat")
         DateFormat df = new SimpleDateFormat(serverDateFormat);
         String formattedDate = df.format(selectedDate);

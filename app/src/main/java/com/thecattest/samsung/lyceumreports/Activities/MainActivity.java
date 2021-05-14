@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
 
         Call<SummaryWithPermissions> call = summaryService.getSummary(loginManager.getCookie());
         getCall = call;
-        call.enqueue(new DefaultCallback<SummaryWithPermissions>(loginManager, swipeRefreshLayout) {
+        call.enqueue(new DefaultCallback<SummaryWithPermissions>(this, loginManager, swipeRefreshLayout) {
             @Override
             public void onResponse200(Response<SummaryWithPermissions> response) {
                 summaryWithPermissions = response.body();
@@ -151,14 +151,14 @@ public class MainActivity extends AppCompatActivity {
                     statusManager.setMainLayout();
                     Snackbar.make(
                             swipeRefreshLayout,
-                            "Отмена",
+                            R.string.snackbar_request_cancelled,
                             Snackbar.LENGTH_LONG
                     ).show();
                 } else {
                     Log.d("SummaryCall", t.toString());
                     Snackbar.make(
                             swipeRefreshLayout,
-                            "Ошибка, попробуйте ещё раз позднее",
+                            R.string.snackbar_server_error,
                             Snackbar.LENGTH_LONG
                     ).show();
                     statusManager.setServerErrorLayout();

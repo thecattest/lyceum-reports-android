@@ -24,13 +24,13 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="20dp"
             android:layout_marginStart="20dp"
-            android:text="@string/day_title"/>
+            android:text="@string/title_day"/>
 
         <Button
             android:id="@+id/datePickerTrigger"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/select_date_label"
+            android:text="@string/button_date_picker_trigger"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_alignParentEnd="true"
             android:textSize="14sp"

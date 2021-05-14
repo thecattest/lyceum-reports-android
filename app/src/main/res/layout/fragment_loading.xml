@@ -7,8 +7,7 @@
     android:orientation="vertical"
     android:visibility="gone"
     android:layout_centerInParent="true"
-    android:gravity="center"
-    tools:context=".Fragments.LoadingFragment">
+    android:gravity="center">
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:layout_width="wrap_content"
@@ -19,7 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/loading_label"
+        android:text="@string/loading_title"
         android:textSize="16sp"/>
 
 </LinearLayout>

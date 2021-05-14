@@ -1,26 +1,65 @@
 <resources>
     <string name="app_name">Lyceum Reports</string>
-    <string name="confirm_button_default">Отправить</string>
-    <string name="confirm_button_no_one_absent">Все в классе</string>
-    <string name="select_date_label">Выбрать дату</string>
-    <string name="server_date_format">yyyy-MM-dd</string>
-    <string name="loading_label">Загрузка…</string>
-    <string name="oops">Ой</string>
-    <string name="something_gone_wrong">Что-то пошло не так</string>
-    <string name="retry"><u>Попробовать снова</u></string>
-    <string name="no_info_for_day">За этот день данных нет</string>
-    <string name="no_absent">Все в классе</string>
-    <string name="cancel">Назад</string>
-    <string name="add">редактировать</string>
-    <string name="yesterday">Вчера</string>
-    <string name="today">Сегодня</string>
-    <string name="login_hint">Логин</string>
-    <string name="password_hint">Пароль</string>
-    <string name="login_button">Войти</string>
-    <string name="authorization_title">Авторизация</string>
-    <string name="main_page_title">Отсутствующие</string>
-    <string name="logout">Выйти</string>
-    <string name="summary_day_title">Отсутствующие: день</string>
-    <string name="daySummaryTable">Таблица: День</string>
-    <string name="day_title">День</string>
+
+    <!-- Page titles -->
+    <string name="title_main">Отсутствующие</string>
+    <string name="title_summary_day">Отсутствующие: день</string>
+    <string name="title_authorization">Авторизация</string>
+    <string name="title_day">День</string>
+
+    <!-- Snackbars titles -->
+    <string name="snackbar_no_info">За этот день данных нет</string>
+    <string name="snackbar_no_absent">Все в классе</string>
+    <string name="snackbar_request_cancelled">Отмена</string>
+    <string name="snackbar_server_error">Ошибка, попробуйте ещё раз позднее</string>
+    <string name="snackbar_server_error_code">Ошибка при выполнении запроса :( код </string>
+    <string name="snackbar_server_error_code_500">Сервер выдал ошибку 500, попробуйте позднее</string>
+    <string name="snackbar_server_ok">Сработало :)</string>
+    <string name="snackbar_wrong_login_password">Неправильный логин или пароль</string>
+    <string name="snackbar_authorization_successful">Авторизация прошла успешно</string>
+
+    <!-- Buttons -->
+    <string name="button_edit">редактировать</string>
+    <string name="button_submit_day_default">отправить</string>
+    <string name="button_submit_day_no_one_absent">все в классе</string>
+    <string name="button_cancel">назад</string>
+    <string name="button_date_picker_trigger">выбрать дату</string>
+    <string name="button_login">Войти</string>
+    <string name="button_logout">Выйти</string>
+
+    <!-- Summary -->
+    <string name="summary_card_yesterday">Вчера</string>
+    <string name="summary_card_today">Сегодня</string>
+    <string name="summary_status_no_info">Нет данных</string>
+    <string name="summary_status_no_absent">@string/snackbar_no_absent</string>
+
+    <!-- Hints -->
+    <string name="hint_login">Логин</string>
+    <string name="hint_password">Пароль</string>
+
+    <!-- Loading Layout -->
+    <string name="loading_title">Загрузка…</string>
+
+    <!-- Server Error Layout -->
+    <string name="server_error_title">Ой</string>
+    <string name="server_error_subtitle">Что-то пошло не так</string>
+    <string name="server_error_button"><u>Попробовать снова</u></string>
+
+    <!-- Date -->
+    <string name="date_format">yyyy-MM-dd</string>
+    <string-array name="date_months_shortened">
+        <item />
+        <item>янв</item>
+        <item>фев</item>
+        <item>мар</item>
+        <item>апр</item>
+        <item>мая</item>
+        <item>июн</item>
+        <item>июл</item>
+        <item>авг</item>
+        <item>сен</item>
+        <item>окт</item>
+        <item>ноя</item>
+        <item>дек</item>
+    </string-array>
 </resources>

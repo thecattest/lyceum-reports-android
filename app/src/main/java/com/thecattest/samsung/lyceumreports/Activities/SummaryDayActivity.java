@@ -100,7 +100,7 @@ public class SummaryDayActivity extends AppCompatActivity {
         loginManager = new LoginManager(this);
         statusManager = new StatusManager(this, swipeRefreshLayout, v -> {updateSummaryDay();});
         datePickerManager = new DatePickerManager(
-                getResources().getString(R.string.select_date_label),
+                this,
                 datePickerTrigger,
                 fragmentManager,
                 this::updateSummaryDay);
@@ -128,7 +128,7 @@ public class SummaryDayActivity extends AppCompatActivity {
 
         Call<SummaryDay> call = summaryDayService.getSummaryDay(loginManager.getCookie(), formattedDate);
         getCall = call;
-        call.enqueue(new DefaultCallback<SummaryDay>(loginManager, swipeRefreshLayout) {
+        call.enqueue(new DefaultCallback<SummaryDay>(this, loginManager, swipeRefreshLayout) {
             @Override
             public void onResponse200(Response<SummaryDay> response) {
                 summaryDay = response.body();
@@ -146,14 +146,14 @@ public class SummaryDayActivity extends AppCompatActivity {
                     statusManager.setMainLayout();
                     Snackbar.make(
                             swipeRefreshLayout,
-                            "Отмена",
+                            R.string.snackbar_request_cancelled,
                             Snackbar.LENGTH_LONG
                     ).show();
                 } else {
                     Log.d("DayCall", t.toString());
                     Snackbar.make(
                             swipeRefreshLayout,
-                            "Ошибка, попробуйте ещё раз позднее",
+                            R.string.snackbar_server_error,
                             Snackbar.LENGTH_LONG
                     ).show();
                     statusManager.setServerErrorLayout();

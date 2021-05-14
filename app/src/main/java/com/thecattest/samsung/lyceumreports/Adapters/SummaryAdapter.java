@@ -57,11 +57,11 @@ public class SummaryAdapter extends ArrayAdapter<Summary> {
             convertView.setEnabled(false);
         }
 
-        todayDate.setText(summary.getTodayDate());
-        todayAbsent.setText(summary.getTodayAbsentStudentsString());
+        todayDate.setText(summary.getTodayDate(getContext()));
+        todayAbsent.setText(summary.getTodayAbsentStudentsString(getContext()));
 
-        yesterdayDate.setText(summary.getYesterdayDate());
-        yesterdayAbsent.setText(summary.getYesterdayAbsentStudentsString());
+        yesterdayDate.setText(summary.getYesterdayDate(getContext()));
+        yesterdayAbsent.setText(summary.getYesterdayAbsentStudentsString(getContext()));
 
         return convertView;
     }

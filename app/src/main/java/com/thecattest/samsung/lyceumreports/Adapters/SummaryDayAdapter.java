@@ -29,7 +29,7 @@ public class SummaryDayAdapter extends ArrayAdapter<SummaryDayRow> {
         }
 
         ((TextView) convertView.findViewById(R.id.text1)).setText(summaryDayRow.name);
-        ((TextView) convertView.findViewById(R.id.text2)).setText(summaryDayRow.getAbsentStudentsString());
+        ((TextView) convertView.findViewById(R.id.text2)).setText(summaryDayRow.getAbsentStudentsString(getContext()));
 
         convertView.setEnabled(false);
 

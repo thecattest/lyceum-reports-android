@@ -133,7 +133,7 @@ public class DayActivity extends AppCompatActivity {
         loginManager = new LoginManager(this);
         statusManager = new StatusManager(this, mainLayout, v -> {updateDay();});
         datePickerManager = new DatePickerManager(
-                getResources().getString(R.string.select_date_label),
+                this,
                 datePickerTrigger,
                 fragmentManager,
                 this::updateDay);
@@ -178,12 +178,12 @@ public class DayActivity extends AppCompatActivity {
 
         Call<Void> call = dayService.updateDay(loginManager.getCookie(), groupId, new DayPost(formattedDate, absentStudentsIdsString));
         updateCall = call;
-        call.enqueue(new DefaultCallback<Void>(loginManager, mainLayout) {
+        call.enqueue(new DefaultCallback<Void>(this, loginManager, mainLayout) {
             @Override
             public void onResponse200(Response<Void> response) {
                 Snackbar.make(
                         mainLayout,
-                        "Сработало :) код " + response.code(),
+                        R.string.snackbar_server_ok,
                         Snackbar.LENGTH_SHORT
                 ).setAnchorView(buttonsGroup).show();
                 updateDay();
@@ -194,7 +194,7 @@ public class DayActivity extends AppCompatActivity {
             public void onResponse500(Response<Void> response) {
                 Snackbar.make(
                         mainLayout,
-                        "Сервер выдал ошибку 500, попробуйте позднее",
+                        R.string.snackbar_server_error_code_500,
                         Snackbar.LENGTH_LONG
                 ).setAnchorView(buttonsGroup).show();
                 statusManager.setMainLayout();
@@ -205,14 +205,14 @@ public class DayActivity extends AppCompatActivity {
                     statusManager.setMainLayout();
                     Snackbar.make(
                             mainLayout,
-                            "Отмена",
+                            R.string.snackbar_request_cancelled,
                             Snackbar.LENGTH_LONG
                     ).setAnchorView(buttonsGroup).show();
                 } else {
                     Log.d("UpdateDayCall", call.toString());
                     Snackbar.make(
                             mainLayout,
-                            "Ошибка, попробуйте ещё раз позднее",
+                            R.string.snackbar_server_error,
                             Snackbar.LENGTH_LONG
                     ).show();
                 }
@@ -235,7 +235,7 @@ public class DayActivity extends AppCompatActivity {
         String formattedDate = datePickerManager.getDate();
         String absentStudentsIdsString = currentDay.getLoadedAbsentStudentsIdsString();
         Call<Void> call = dayService.updateDay(loginManager.getCookie(), groupId, new DayPost(formattedDate, absentStudentsIdsString));
-        call.enqueue(new DefaultCallback<Void>(loginManager, mainLayout) {
+        call.enqueue(new DefaultCallback<Void>(this, loginManager, mainLayout) {
             @Override
             public void onResponse200(Response<Void> response) {}
 
@@ -253,7 +253,7 @@ public class DayActivity extends AppCompatActivity {
 
         Call<Day> call = dayService.getDay(loginManager.getCookie(), groupId, formattedDate);
         getCall = call;
-        call.enqueue(new DefaultCallback<Day>(loginManager, mainLayout) {
+        call.enqueue(new DefaultCallback<Day>(this, loginManager, mainLayout) {
             @Override
             public void onResponse200(Response<Day> response) {
                 currentDay = response.body();
@@ -272,7 +272,7 @@ public class DayActivity extends AppCompatActivity {
                     statusManager.setMainLayout();
                     Snackbar.make(
                             mainLayout,
-                            "Отмена",
+                            R.string.snackbar_request_cancelled,
                             Snackbar.LENGTH_LONG
                     ).show();
                 } else {
@@ -280,7 +280,7 @@ public class DayActivity extends AppCompatActivity {
                     Log.d("DayCall", t.toString());
                     Snackbar.make(
                             mainLayout,
-                            "Ошибка, попробуйте ещё раз позднее",
+                            R.string.snackbar_server_error,
                             Snackbar.LENGTH_LONG
                     ).show();
                 }
@@ -313,13 +313,13 @@ public class DayActivity extends AppCompatActivity {
         if (currentDay.noInfo()) {
             Snackbar.make(
                     mainLayout,
-                    getResources().getString(R.string.no_info_for_day),
+                    R.string.snackbar_no_info,
                     Snackbar.LENGTH_LONG
             ).setAnchorView(buttonsGroup).show();
         } else if (currentDay.noLoadedAbsent()) {
             Snackbar.make(
                     mainLayout,
-                    getResources().getString(R.string.no_absent),
+                    R.string.snackbar_no_absent,
                     Snackbar.LENGTH_LONG
             ).setAnchorView(buttonsGroup).show();
         }
@@ -339,9 +339,9 @@ public class DayActivity extends AppCompatActivity {
         confirmButton.setVisibility(currentDay.canEdit ? View.VISIBLE : View.GONE);
         confirmButton.setEnabled(!currentDay.noChanges() || currentDay.noInfo());
         if (currentDay.noCurrentAbsent())
-            confirmButton.setText(getResources().getString(R.string.confirm_button_no_one_absent));
+            confirmButton.setText(getResources().getString(R.string.button_submit_day_no_one_absent));
         else
-            confirmButton.setText(getResources().getString(R.string.confirm_button_default));
+            confirmButton.setText(getResources().getString(R.string.button_submit_day_default));
     }
 
     private void setLoadingStatus(boolean mainIsVisible) {

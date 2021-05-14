@@ -1,5 +1,6 @@
 package com.thecattest.samsung.lyceumreports;
 
+import android.content.Context;
 import android.view.View;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -10,12 +11,14 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public abstract class DefaultCallback<T> implements Callback<T> {
+    private final String defaultCodeMessage;
     private final LoginManager loginManager;
     private final View mainLayout;
 
-    public DefaultCallback(LoginManager loginManager, View mainLayout) {
+    public DefaultCallback(Context context, LoginManager loginManager, View mainLayout) {
         this.loginManager = loginManager;
         this.mainLayout = mainLayout;
+        defaultCodeMessage = context.getResources().getString(R.string.snackbar_server_error_code);
     }
 
     @Override
@@ -42,7 +45,7 @@ public abstract class DefaultCallback<T> implements Callback<T> {
                 default:
                     Snackbar.make(
                             mainLayout,
-                            "Ошибка при выполнении запроса :( код " + code,
+                            defaultCodeMessage + code,
                             Snackbar.LENGTH_SHORT
                     ).show();
                     break;
@@ -66,7 +69,7 @@ public abstract class DefaultCallback<T> implements Callback<T> {
     public void onResponse500(Response<T> response) {
         Snackbar.make(
                 mainLayout,
-                "Сервер выдал ошибку 500, попробуйте позднее",
+                R.string.snackbar_server_error_code_500,
                 Snackbar.LENGTH_LONG
         ).show();
     }

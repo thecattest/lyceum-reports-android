@@ -1,5 +1,9 @@
 package com.thecattest.samsung.lyceumreports.DataModels.SummaryDay;
 
+import android.content.Context;
+
+import com.thecattest.samsung.lyceumreports.R;
+
 import java.util.ArrayList;
 
 public class SummaryDayRow {
@@ -12,7 +16,7 @@ public class SummaryDayRow {
         return name;
     }
 
-    public String getAbsentStudentsString() {
+    public String getAbsentStudentsString(Context context) {
         if (status.equals(STATUS.OK)) {
             if (students.size() != 0) {
                 StringBuilder absentStudentsString = new StringBuilder();
@@ -22,10 +26,10 @@ public class SummaryDayRow {
                 }
                 return absentStudentsString.substring(0, absentStudentsString.length() - 2);
             } else {
-                return "Все в классе";
+                return context.getResources().getString(R.string.summary_status_no_absent);
             }
         } else {
-            return "Нет данных";
+            return context.getResources().getString(R.string.summary_status_no_info);
         }
     }
 
@@ -38,8 +42,9 @@ public class SummaryDayRow {
     public String toString() {
         return "SummaryDayRow{" +
                 "id=" + id +
+                ", status='" + status + '\'' +
                 ", name='" + name + '\'' +
-                ", students=" + getAbsentStudentsString() +
+                ", students=" + students.toString() +
                 '}';
     }
 }

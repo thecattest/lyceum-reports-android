@@ -120,12 +120,12 @@ public class LoginActivity extends AppCompatActivity {
         String passwordString = Objects.requireNonNull(password.getText()).toString();
 
         Call<Void> call = loginService.login(loginString, passwordString);
-        call.enqueue(new DefaultCallback<Void>(loginManager, scrollView) {
+        call.enqueue(new DefaultCallback<Void>(this, loginManager, scrollView) {
             @Override
             public void onResponse200(Response<Void> response) {
                 Snackbar.make(
                         scrollView,
-                        "Авторизован",
+                        R.string.snackbar_authorization_successful,
                         Snackbar.LENGTH_LONG
                 ).show();
                 Log.d("Login", "ok");
@@ -143,7 +143,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse401(Response<Void> response) {
                 Snackbar.make(
                         scrollView,
-                        "Неправильный логин или пароль",
+                        R.string.snackbar_wrong_login_password,
                         Snackbar.LENGTH_LONG
                 ).show();
                 Log.d("Login", "wrong credentials");
@@ -153,7 +153,7 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d("LoginCall", t.toString());
                 Snackbar.make(
                         scrollView,
-                        "Ошибка: сервер недоступен",
+                        R.string.snackbar_server_error,
                         Snackbar.LENGTH_LONG
                 ).show();
             }
