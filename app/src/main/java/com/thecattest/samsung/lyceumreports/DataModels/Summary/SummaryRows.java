@@ -1,8 +1,8 @@
 package com.thecattest.samsung.lyceumreports.DataModels.Summary;
 
-public class SummaryDays implements SummaryDayInterface {
-    public SummaryDay today;
-    public SummaryDay yesterday;
+public class SummaryRows implements SummaryRowInterface {
+    public SummaryRow today;
+    public SummaryRow yesterday;
 
     public String getTodayDate() {
         return today.getHumanDate();

@@ -22,7 +22,7 @@ public class SummaryAdapter extends ArrayAdapter<Summary> {
     private boolean canEdit;
 
     public SummaryAdapter(Context context, ArrayList<Summary> summaries, boolean canEdit) {
-        super(context, R.layout.card_list_item, summaries);
+        super(context, R.layout.summary_card, summaries);
         this.canEdit = canEdit;
     }
 
@@ -31,7 +31,7 @@ public class SummaryAdapter extends ArrayAdapter<Summary> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         final Summary summary = getItem(position);
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.card_list_item, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.summary_card, parent, false);
         }
 
         TextView classLabel = convertView.findViewById(R.id.cardClassLabel);

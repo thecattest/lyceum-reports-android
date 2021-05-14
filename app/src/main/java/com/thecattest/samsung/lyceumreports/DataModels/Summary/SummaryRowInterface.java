@@ -1,6 +1,6 @@
 package com.thecattest.samsung.lyceumreports.DataModels.Summary;
 
-public interface SummaryDayInterface {
+public interface SummaryRowInterface {
     String getTodayDate();
 
     String getTodayAbsentStudentsString();

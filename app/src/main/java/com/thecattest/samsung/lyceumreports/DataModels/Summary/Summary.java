@@ -1,10 +1,10 @@
 package com.thecattest.samsung.lyceumreports.DataModels.Summary;
 
-public class Summary implements SummaryDayInterface {
+public class Summary implements SummaryRowInterface {
     public int id;
     public String letter;
     public short number;
-    public SummaryDays days;
+    public SummaryRows days;
 
     public int getId() {
         return id;

@@ -4,7 +4,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-public class SummaryDay {
+public class SummaryRow {
     public String date;
     public String status;
     public ArrayList<String> students;
