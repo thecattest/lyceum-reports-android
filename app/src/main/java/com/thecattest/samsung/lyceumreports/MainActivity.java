@@ -13,15 +13,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.snackbar.Snackbar;
 import com.thecattest.samsung.lyceumreports.Adapters.SummaryAdapter;
-import com.thecattest.samsung.lyceumreports.DataServices.Summary.Summary;
 import com.thecattest.samsung.lyceumreports.DataServices.Summary.SummaryService;
 import com.thecattest.samsung.lyceumreports.DataServices.Summary.SummaryWithPermissions;
-import com.thecattest.samsung.lyceumreports.DataServices.SummaryDay.SummaryDay;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
 import com.thecattest.samsung.lyceumreports.Managers.StatusManager;
 
@@ -83,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initRetrofit() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Config.URL)
+                .baseUrl(URLConfig.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         summaryService = retrofit.create(SummaryService.class);

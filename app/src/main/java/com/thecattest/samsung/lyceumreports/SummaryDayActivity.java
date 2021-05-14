@@ -9,10 +9,8 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.thecattest.samsung.lyceumreports.Adapters.SummaryDayAdapter;
@@ -78,7 +76,7 @@ public class SummaryDayActivity extends AppCompatActivity {
 
     private void initRetrofit() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Config.URL)
+                .baseUrl(URLConfig.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         summaryDayService = retrofit.create(SummaryDayService.class);

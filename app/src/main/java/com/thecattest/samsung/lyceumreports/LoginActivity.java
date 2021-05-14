@@ -59,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void initRetrofit() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Config.URL)
+                .baseUrl(URLConfig.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         loginService = retrofit.create(LoginService.class);

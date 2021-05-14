@@ -22,7 +22,6 @@ import com.thecattest.samsung.lyceumreports.DataServices.Day.Day;
 import com.thecattest.samsung.lyceumreports.DataServices.Day.DayPost;
 import com.thecattest.samsung.lyceumreports.DataServices.Day.DayService;
 import com.thecattest.samsung.lyceumreports.DataServices.Day.Student;
-import com.thecattest.samsung.lyceumreports.DataServices.Summary.SummaryWithPermissions;
 import com.thecattest.samsung.lyceumreports.Managers.DatePickerManager;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
 import com.thecattest.samsung.lyceumreports.Managers.StatusManager;
@@ -113,7 +112,7 @@ public class DayActivity extends AppCompatActivity {
 
     private void initRetrofit() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Config.URL)
+                .baseUrl(URLConfig.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         dayService = retrofit.create(DayService.class);

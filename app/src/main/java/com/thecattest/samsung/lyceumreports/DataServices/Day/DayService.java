@@ -1,6 +1,6 @@
 package com.thecattest.samsung.lyceumreports.DataServices.Day;
-import com.thecattest.samsung.lyceumreports.DataServices.Day.Day;
-import com.thecattest.samsung.lyceumreports.DataServices.Day.DayPost;
+
+import com.thecattest.samsung.lyceumreports.URLConfig;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -11,9 +11,15 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface DayService {
-    @GET("/api/day/{groupId}")
-    Call<Day> getDay(@Header("Cookie") String cookie, @Path("groupId") Integer groupId, @Query("date") String date);
+    @GET(URLConfig.DAY_ENDPOINT)
+    Call<Day> getDay(
+            @Header("Cookie") String cookie,
+            @Path("groupId") Integer groupId,
+            @Query("date") String date);
 
-    @POST("/api/day/{groupId}")
-    Call<Void> updateDay(@Header("Cookie") String cookie, @Path("groupId") Integer groupId, @Body DayPost day);
+    @POST(URLConfig.DAY_ENDPOINT)
+    Call<Void> updateDay(
+            @Header("Cookie") String cookie,
+            @Path("groupId") Integer groupId,
+            @Body DayPost day);
 }
