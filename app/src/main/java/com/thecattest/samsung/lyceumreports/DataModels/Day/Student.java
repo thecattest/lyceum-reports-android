@@ -1,4 +1,4 @@
-package com.thecattest.samsung.lyceumreports.DataServices.Day;
+package com.thecattest.samsung.lyceumreports.DataModels.Day;
 
 public class Student {
     public int id;

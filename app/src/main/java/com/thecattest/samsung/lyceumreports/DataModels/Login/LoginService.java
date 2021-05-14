@@ -1,4 +1,4 @@
-package com.thecattest.samsung.lyceumreports.DataServices.Login;
+package com.thecattest.samsung.lyceumreports.DataModels.Login;
 
 import com.thecattest.samsung.lyceumreports.URLConfig;
 

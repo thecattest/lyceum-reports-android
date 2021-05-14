@@ -18,10 +18,10 @@ import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.thecattest.samsung.lyceumreports.Adapters.StudentsAdapter;
-import com.thecattest.samsung.lyceumreports.DataServices.Day.Day;
-import com.thecattest.samsung.lyceumreports.DataServices.Day.DayPost;
-import com.thecattest.samsung.lyceumreports.DataServices.Day.DayService;
-import com.thecattest.samsung.lyceumreports.DataServices.Day.Student;
+import com.thecattest.samsung.lyceumreports.DataModels.Day.Day;
+import com.thecattest.samsung.lyceumreports.DataModels.Day.DayPost;
+import com.thecattest.samsung.lyceumreports.DataModels.Day.DayService;
+import com.thecattest.samsung.lyceumreports.DataModels.Day.Student;
 import com.thecattest.samsung.lyceumreports.Managers.DatePickerManager;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
 import com.thecattest.samsung.lyceumreports.Managers.StatusManager;

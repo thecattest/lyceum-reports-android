@@ -1,4 +1,4 @@
-package com.thecattest.samsung.lyceumreports.DataServices.Summary;
+package com.thecattest.samsung.lyceumreports.DataModels.Summary;
 
 import com.thecattest.samsung.lyceumreports.URLConfig;
 

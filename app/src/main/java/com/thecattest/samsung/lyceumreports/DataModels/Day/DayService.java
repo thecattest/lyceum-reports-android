@@ -1,4 +1,4 @@
-package com.thecattest.samsung.lyceumreports.DataServices.Day;
+package com.thecattest.samsung.lyceumreports.DataModels.Day;
 
 import com.thecattest.samsung.lyceumreports.URLConfig;
 

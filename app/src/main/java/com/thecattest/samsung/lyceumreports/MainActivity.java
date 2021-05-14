@@ -3,7 +3,6 @@ package com.thecattest.samsung.lyceumreports;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.annotation.SuppressLint;
@@ -17,8 +16,8 @@ import android.widget.ListView;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.snackbar.Snackbar;
 import com.thecattest.samsung.lyceumreports.Adapters.SummaryAdapter;
-import com.thecattest.samsung.lyceumreports.DataServices.Summary.SummaryService;
-import com.thecattest.samsung.lyceumreports.DataServices.Summary.SummaryWithPermissions;
+import com.thecattest.samsung.lyceumreports.DataModels.Summary.SummaryService;
+import com.thecattest.samsung.lyceumreports.DataModels.Summary.SummaryWithPermissions;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
 import com.thecattest.samsung.lyceumreports.Managers.StatusManager;
 

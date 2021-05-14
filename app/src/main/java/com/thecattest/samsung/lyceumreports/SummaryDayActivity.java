@@ -14,8 +14,8 @@ import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.thecattest.samsung.lyceumreports.Adapters.SummaryDayAdapter;
-import com.thecattest.samsung.lyceumreports.DataServices.SummaryDay.SummaryDay;
-import com.thecattest.samsung.lyceumreports.DataServices.SummaryDay.SummaryDayService;
+import com.thecattest.samsung.lyceumreports.DataModels.SummaryDay.SummaryDay;
+import com.thecattest.samsung.lyceumreports.DataModels.SummaryDay.SummaryDayService;
 import com.thecattest.samsung.lyceumreports.Managers.DatePickerManager;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
 import com.thecattest.samsung.lyceumreports.Managers.StatusManager;

@@ -1,6 +1,5 @@
 package com.thecattest.samsung.lyceumreports.Adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -13,7 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.thecattest.samsung.lyceumreports.DataServices.Summary.Summary;
+import com.thecattest.samsung.lyceumreports.DataModels.Summary.Summary;
 import com.thecattest.samsung.lyceumreports.DayActivity;
 import com.thecattest.samsung.lyceumreports.R;
 

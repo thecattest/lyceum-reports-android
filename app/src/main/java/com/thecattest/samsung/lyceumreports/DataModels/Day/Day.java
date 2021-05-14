@@ -1,4 +1,4 @@
-package com.thecattest.samsung.lyceumreports.DataServices.Day;
+package com.thecattest.samsung.lyceumreports.DataModels.Day;
 
 import android.os.Bundle;
 
@@ -32,15 +32,15 @@ public class Day {
         return absentStudents;
     }
 
-    public String getStudentsIdsString(ArrayList<Integer> students) {
-        if (students.size() != 0) {
-            StringBuilder ids = new StringBuilder();
-            ids.append(students.get(0));
-            for (Integer id : students.subList(1, students.size())) {
-                ids.append(",");
-                ids.append(id.toString());
+    public String getStudentsIdsString(ArrayList<Integer> studentsIds) {
+        if (studentsIds.size() != 0) {
+            StringBuilder idsStringBuilder = new StringBuilder();
+            idsStringBuilder.append(studentsIds.get(0));
+            for (Integer id : studentsIds.subList(1, studentsIds.size())) {
+                idsStringBuilder.append(",");
+                idsStringBuilder.append(id.toString());
             }
-            return ids.toString();
+            return idsStringBuilder.toString();
         } else
             return "";
     }

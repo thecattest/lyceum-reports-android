@@ -16,7 +16,7 @@ import android.widget.ScrollView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
-import com.thecattest.samsung.lyceumreports.DataServices.Login.LoginService;
+import com.thecattest.samsung.lyceumreports.DataModels.Login.LoginService;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
 import com.thecattest.samsung.lyceumreports.Managers.StatusManager;
 

@@ -1,4 +1,4 @@
-package com.thecattest.samsung.lyceumreports.DataServices.SummaryDay;
+package com.thecattest.samsung.lyceumreports.DataModels.SummaryDay;
 
 import android.os.Bundle;
 

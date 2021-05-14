@@ -1,33 +1,13 @@
-package com.thecattest.samsung.lyceumreports.DataServices.Summary;
+package com.thecattest.samsung.lyceumreports.DataModels.Summary;
 
-import android.annotation.SuppressLint;
 import android.util.Log;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class SummaryDay {
     public String date;
     public String status;
     public ArrayList<String> students;
-
-    public long getUnix() {
-        @SuppressLint("SimpleDateFormat")
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        Log.d("Date", date);
-        Date date;
-        try {
-            date = df.parse(getDate());
-        } catch (ParseException e) {
-            date = null;
-        }
-        long unix = (date != null ? date.getTime() : 0) / 1000;
-        Log.d("Date Unix", String.valueOf(unix));
-        return unix;
-    }
 
     public String getDate() {
         return date;
