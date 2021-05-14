@@ -1,20 +1,19 @@
 package com.thecattest.samsung.lyceumreports.Activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.fragment.app.FragmentManager;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.thecattest.samsung.lyceumreports.Adapters.StudentsAdapter;
@@ -187,7 +186,6 @@ public class DayActivity extends AppCompatActivity {
                         Snackbar.LENGTH_SHORT
                 ).setAnchorView(buttonsGroup).show();
                 updateDay();
-                Log.d("Update", "Updated");
             }
 
             @Override
@@ -209,7 +207,6 @@ public class DayActivity extends AppCompatActivity {
                             Snackbar.LENGTH_LONG
                     ).setAnchorView(buttonsGroup).show();
                 } else {
-                    Log.d("UpdateDayCall", call.toString());
                     Snackbar.make(
                             mainLayout,
                             R.string.snackbar_server_error,
@@ -277,7 +274,6 @@ public class DayActivity extends AppCompatActivity {
                     ).show();
                 } else {
                     statusManager.setServerErrorLayout();
-                    Log.d("DayCall", t.toString());
                     Snackbar.make(
                             mainLayout,
                             R.string.snackbar_server_error,

@@ -1,16 +1,15 @@
 package com.thecattest.samsung.lyceumreports.Activities;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.ListView;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.thecattest.samsung.lyceumreports.Adapters.SummaryDayAdapter;
@@ -150,7 +149,6 @@ public class SummaryDayActivity extends AppCompatActivity {
                             Snackbar.LENGTH_LONG
                     ).show();
                 } else {
-                    Log.d("DayCall", t.toString());
                     Snackbar.make(
                             swipeRefreshLayout,
                             R.string.snackbar_server_error,

@@ -1,22 +1,20 @@
 package com.thecattest.samsung.lyceumreports.Activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
-import com.thecattest.samsung.lyceumreports.DataModels.Day.Day;
 import com.thecattest.samsung.lyceumreports.DataModels.Login.LoginService;
 import com.thecattest.samsung.lyceumreports.DefaultCallback;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
@@ -128,7 +126,6 @@ public class LoginActivity extends AppCompatActivity {
                         R.string.snackbar_authorization_successful,
                         Snackbar.LENGTH_LONG
                 ).show();
-                Log.d("Login", "ok");
 
                 String cookies = response.headers().get("Set-Cookie");
                 if(!cookies.isEmpty())
@@ -146,11 +143,9 @@ public class LoginActivity extends AppCompatActivity {
                         R.string.snackbar_wrong_login_password,
                         Snackbar.LENGTH_LONG
                 ).show();
-                Log.d("Login", "wrong credentials");
             }
 
             public void onResponseFailure(Call<Void> call, Throwable t) {
-                Log.d("LoginCall", t.toString());
                 Snackbar.make(
                         scrollView,
                         R.string.snackbar_server_error,

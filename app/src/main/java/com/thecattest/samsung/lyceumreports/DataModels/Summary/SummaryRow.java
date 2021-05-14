@@ -1,7 +1,6 @@
 package com.thecattest.samsung.lyceumreports.DataModels.Summary;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.thecattest.samsung.lyceumreports.R;
 
@@ -26,7 +25,6 @@ public class SummaryRow {
         String month = months[Integer.parseInt(dateArr[1])];
 
         String formattedDate = day + " " + month;
-        Log.d("Formatted date", formattedDate);
         return formattedDate;
     }
 

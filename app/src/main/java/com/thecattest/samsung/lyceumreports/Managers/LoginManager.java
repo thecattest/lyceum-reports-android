@@ -6,8 +6,8 @@ import android.content.SharedPreferences;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.thecattest.samsung.lyceumreports.URLConfig;
 import com.thecattest.samsung.lyceumreports.Activities.LoginActivity;
+import com.thecattest.samsung.lyceumreports.URLConfig;
 
 public class LoginManager {
     private static final String KEY_COOKIES = "COOKIES";

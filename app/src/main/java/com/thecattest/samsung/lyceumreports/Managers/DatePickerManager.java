@@ -3,7 +3,6 @@ package com.thecattest.samsung.lyceumreports.Managers;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -80,10 +79,8 @@ public class DatePickerManager {
         Date selectedDate = new Date(currentSelection);
         @SuppressLint("SimpleDateFormat")
         DateFormat df = new SimpleDateFormat(serverDateFormat);
-        String formattedDate = df.format(selectedDate);
 
-        Log.d("DatePicker", formattedDate);
-        return formattedDate;
+        return df.format(selectedDate);
     }
 
     public boolean isEmpty() {

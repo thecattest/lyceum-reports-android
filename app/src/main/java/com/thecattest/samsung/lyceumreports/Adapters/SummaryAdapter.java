@@ -12,8 +12,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.thecattest.samsung.lyceumreports.DataModels.Summary.Summary;
 import com.thecattest.samsung.lyceumreports.Activities.DayActivity;
+import com.thecattest.samsung.lyceumreports.DataModels.Summary.Summary;
 import com.thecattest.samsung.lyceumreports.R;
 
 import java.util.ArrayList;

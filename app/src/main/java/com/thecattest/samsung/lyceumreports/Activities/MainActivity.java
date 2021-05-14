@@ -1,17 +1,16 @@
 package com.thecattest.samsung.lyceumreports.Activities;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.ListView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.ListView;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.snackbar.Snackbar;
@@ -53,12 +52,8 @@ public class MainActivity extends AppCompatActivity {
         setListeners();
         initManagers();
 
-
-        Log.d("Summary", "check");
-        if (summaryWithPermissions.getSummaryStringFromBundle(savedInstanceState) == null) {
+        if (summaryWithPermissions.getSummaryStringFromBundle(savedInstanceState) == null)
             updateSummary();
-            Log.d("Summary", "Updated");
-        }
     }
 
     @Override
@@ -116,7 +111,6 @@ public class MainActivity extends AppCompatActivity {
                 Intent i = new Intent(MainActivity.this, SummaryDayActivity.class);
                 startActivity(i);
                 finish();
-                Log.d("LoginManager", MainActivity.this.isFinishing() ? "true" : "false");
                 return true;
         }
         return false;
@@ -136,7 +130,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse200(Response<SummaryWithPermissions> response) {
                 summaryWithPermissions = response.body();
-                Log.d("Summary", summaryWithPermissions.toString());
                 updateSummaryView();
             }
 
@@ -155,7 +148,6 @@ public class MainActivity extends AppCompatActivity {
                             Snackbar.LENGTH_LONG
                     ).show();
                 } else {
-                    Log.d("SummaryCall", t.toString());
                     Snackbar.make(
                             swipeRefreshLayout,
                             R.string.snackbar_server_error,

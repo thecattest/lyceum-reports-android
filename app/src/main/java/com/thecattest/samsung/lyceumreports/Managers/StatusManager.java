@@ -1,10 +1,10 @@
 package com.thecattest.samsung.lyceumreports.Managers;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.thecattest.samsung.lyceumreports.R;
 
 public class StatusManager {
