@@ -25,20 +25,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginStart="20dp" />
 
-        <Button
-            android:id="@+id/datePickerTrigger"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/button_date_picker_trigger"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_alignParentEnd="true"
-            android:textSize="14sp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="20dp"
-            android:layout_marginRight="20dp" />
-<!--        style="@style/Widget.MaterialComponents.Button.TextButton"-->
-<!--        style="?attr/materialButtonOutlinedStyle"-->
+        <include layout="@layout/date_picker_trigger"/>
 
     </RelativeLayout>
 
