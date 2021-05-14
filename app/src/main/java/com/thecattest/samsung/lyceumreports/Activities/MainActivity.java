@@ -129,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateSummary() {
         setLoadingStatus();
+
         Call<SummaryWithPermissions> call = summaryService.getSummary(loginManager.getCookie());
         getCall = call;
         call.enqueue(new DefaultCallback<SummaryWithPermissions>(loginManager, swipeRefreshLayout) {
@@ -141,12 +142,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onResponse500(Response<SummaryWithPermissions> response) {
+                super.onResponse500(response);
                 statusManager.setServerErrorLayout();
-                Snackbar.make(
-                        swipeRefreshLayout,
-                        "Сервер выдал ошибку 500, попробуйте позднее",
-                        Snackbar.LENGTH_LONG
-                ).show();
             }
 
             public void onResponseFailure(Call<SummaryWithPermissions> call, Throwable t) {

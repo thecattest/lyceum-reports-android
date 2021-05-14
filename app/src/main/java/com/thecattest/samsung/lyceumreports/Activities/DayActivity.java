@@ -175,6 +175,7 @@ public class DayActivity extends AppCompatActivity {
 
         String formattedDate = datePickerManager.getDate();
         String absentStudentsIdsString = currentDay.getAbsentStudentsIdsString();
+
         Call<Void> call = dayService.updateDay(loginManager.getCookie(), groupId, new DayPost(formattedDate, absentStudentsIdsString));
         updateCall = call;
         call.enqueue(new DefaultCallback<Void>(loginManager, mainLayout) {
@@ -187,6 +188,16 @@ public class DayActivity extends AppCompatActivity {
                 ).setAnchorView(buttonsGroup).show();
                 updateDay();
                 Log.d("Update", "Updated");
+            }
+
+            @Override
+            public void onResponse500(Response<Void> response) {
+                Snackbar.make(
+                        mainLayout,
+                        "Сервер выдал ошибку 500, попробуйте позднее",
+                        Snackbar.LENGTH_LONG
+                ).setAnchorView(buttonsGroup).show();
+                statusManager.setMainLayout();
             }
 
             public void onResponseFailure(Call<Void> call, Throwable t) {
@@ -237,7 +248,9 @@ public class DayActivity extends AppCompatActivity {
     private void updateDay() {
         setLoadingStatus();
         datePickerManager.setEnabled(false);
+
         String formattedDate = datePickerManager.getDate();
+
         Call<Day> call = dayService.getDay(loginManager.getCookie(), groupId, formattedDate);
         getCall = call;
         call.enqueue(new DefaultCallback<Day>(loginManager, mainLayout) {
@@ -250,12 +263,8 @@ public class DayActivity extends AppCompatActivity {
 
             @Override
             public void onResponse500(Response<Day> response) {
+                super.onResponse500(response);
                 statusManager.setServerErrorLayout();
-                Snackbar.make(
-                        mainLayout,
-                        "Сервер выдал ошибку 500, попробуйте позднее",
-                        Snackbar.LENGTH_LONG
-                ).show();
             }
 
             public void onResponseFailure(Call<Day> call, Throwable t) {

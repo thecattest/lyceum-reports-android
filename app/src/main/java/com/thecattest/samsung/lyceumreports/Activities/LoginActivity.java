@@ -16,6 +16,7 @@ import android.widget.ScrollView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
+import com.thecattest.samsung.lyceumreports.DataModels.Day.Day;
 import com.thecattest.samsung.lyceumreports.DataModels.Login.LoginService;
 import com.thecattest.samsung.lyceumreports.DefaultCallback;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
@@ -113,10 +114,11 @@ public class LoginActivity extends AppCompatActivity {
     public void onBackPressed() {}
 
     public void login(View v) {
-//        hideKeyboard();
         statusManager.setLoadingLayout(true);
+
         String loginString = Objects.requireNonNull(login.getText()).toString();
         String passwordString = Objects.requireNonNull(password.getText()).toString();
+
         Call<Void> call = loginService.login(loginString, passwordString);
         call.enqueue(new DefaultCallback<Void>(loginManager, scrollView) {
             @Override
@@ -145,7 +147,6 @@ public class LoginActivity extends AppCompatActivity {
                         Snackbar.LENGTH_LONG
                 ).show();
                 Log.d("Login", "wrong credentials");
-                statusManager.setMainLayout();
             }
 
             public void onResponseFailure(Call<Void> call, Throwable t) {
@@ -155,6 +156,10 @@ public class LoginActivity extends AppCompatActivity {
                         "Ошибка: сервер недоступен",
                         Snackbar.LENGTH_LONG
                 ).show();
+            }
+
+            @Override
+            public void onPostExecute() {
                 statusManager.setMainLayout();
             }
         });

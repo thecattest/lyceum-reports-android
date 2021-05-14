@@ -63,7 +63,13 @@ public abstract class DefaultCallback<T> implements Callback<T> {
 
     public void onResponse401(Response<T> response) {};
 
-    public void onResponse500(Response<T> response) {}
+    public void onResponse500(Response<T> response) {
+        Snackbar.make(
+                mainLayout,
+                "Сервер выдал ошибку 500, попробуйте позднее",
+                Snackbar.LENGTH_LONG
+        ).show();
+    }
 
     public abstract void onResponseFailure(Call<T> call, Throwable t);
 

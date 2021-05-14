@@ -123,7 +123,9 @@ public class SummaryDayActivity extends AppCompatActivity {
     private void updateSummaryDay() {
         setLoadingStatus();
         datePickerManager.setEnabled(false);
+
         String formattedDate = datePickerManager.getDate();
+
         Call<SummaryDay> call = summaryDayService.getSummaryDay(loginManager.getCookie(), formattedDate);
         getCall = call;
         call.enqueue(new DefaultCallback<SummaryDay>(loginManager, swipeRefreshLayout) {
@@ -135,12 +137,8 @@ public class SummaryDayActivity extends AppCompatActivity {
 
             @Override
             public void onResponse500(Response<SummaryDay> response) {
+                super.onResponse500(response);
                 statusManager.setServerErrorLayout();
-                Snackbar.make(
-                        swipeRefreshLayout,
-                        "Сервер выдал ошибку 500, попробуйте позднее",
-                        Snackbar.LENGTH_LONG
-                ).show();
             }
 
             public void onResponseFailure(Call<SummaryDay> call, Throwable t) {
