@@ -1,4 +1,4 @@
-package com.thecattest.samsung.lyceumreports;
+package com.thecattest.samsung.lyceumreports.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,8 +17,11 @@ import android.widget.ScrollView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.thecattest.samsung.lyceumreports.DataModels.Login.LoginService;
+import com.thecattest.samsung.lyceumreports.DefaultCallback;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
 import com.thecattest.samsung.lyceumreports.Managers.StatusManager;
+import com.thecattest.samsung.lyceumreports.R;
+import com.thecattest.samsung.lyceumreports.URLConfig;
 
 import java.util.Objects;
 

@@ -1,4 +1,4 @@
-package com.thecattest.samsung.lyceumreports;
+package com.thecattest.samsung.lyceumreports.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,8 +18,11 @@ import com.google.android.material.snackbar.Snackbar;
 import com.thecattest.samsung.lyceumreports.Adapters.SummaryAdapter;
 import com.thecattest.samsung.lyceumreports.DataModels.Summary.SummaryService;
 import com.thecattest.samsung.lyceumreports.DataModels.Summary.SummaryWithPermissions;
+import com.thecattest.samsung.lyceumreports.DefaultCallback;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
 import com.thecattest.samsung.lyceumreports.Managers.StatusManager;
+import com.thecattest.samsung.lyceumreports.R;
+import com.thecattest.samsung.lyceumreports.URLConfig;
 
 import retrofit2.Call;
 import retrofit2.Response;

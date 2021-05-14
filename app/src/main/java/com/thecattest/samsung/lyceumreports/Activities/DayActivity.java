@@ -1,4 +1,4 @@
-package com.thecattest.samsung.lyceumreports;
+package com.thecattest.samsung.lyceumreports.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,9 +22,12 @@ import com.thecattest.samsung.lyceumreports.DataModels.Day.Day;
 import com.thecattest.samsung.lyceumreports.DataModels.Day.DayPost;
 import com.thecattest.samsung.lyceumreports.DataModels.Day.DayService;
 import com.thecattest.samsung.lyceumreports.DataModels.Day.Student;
+import com.thecattest.samsung.lyceumreports.DefaultCallback;
 import com.thecattest.samsung.lyceumreports.Managers.DatePickerManager;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
 import com.thecattest.samsung.lyceumreports.Managers.StatusManager;
+import com.thecattest.samsung.lyceumreports.R;
+import com.thecattest.samsung.lyceumreports.URLConfig;
 
 import retrofit2.Call;
 import retrofit2.Response;
