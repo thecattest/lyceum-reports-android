@@ -25,12 +25,14 @@
         android:id="@+id/loginFormLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="10dp"
         android:layout_below="@id/topBar">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/loginLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:hint="@string/hint_login">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -45,6 +47,7 @@
             android:id="@+id/passwordLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_below="@id/loginLayout"
             android:hint="@string/hint_password"
             app:endIconMode="password_toggle">
