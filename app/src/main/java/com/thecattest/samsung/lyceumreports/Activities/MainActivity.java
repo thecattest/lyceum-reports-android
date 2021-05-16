@@ -19,6 +19,7 @@ import com.thecattest.samsung.lyceumreports.DataModels.Summary.SummaryService;
 import com.thecattest.samsung.lyceumreports.DataModels.Summary.SummaryWithPermissions;
 import com.thecattest.samsung.lyceumreports.DefaultCallback;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
+import com.thecattest.samsung.lyceumreports.Managers.RetrofitManager;
 import com.thecattest.samsung.lyceumreports.Managers.StatusManager;
 import com.thecattest.samsung.lyceumreports.R;
 import com.thecattest.samsung.lyceumreports.URLConfig;
@@ -47,10 +48,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initRetrofit();
         findViews();
         setListeners();
         initManagers();
+        initRetrofit();
 
         if (summaryWithPermissions.getSummaryStringFromBundle(savedInstanceState) == null)
             updateSummary();
@@ -74,10 +75,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initRetrofit() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(URLConfig.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        Retrofit retrofit = (new RetrofitManager(loginManager)).getInstance();
         summaryService = retrofit.create(SummaryService.class);
     }
 
@@ -124,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
     private void updateSummary() {
         setLoadingStatus();
 
-        Call<SummaryWithPermissions> call = summaryService.getSummary(loginManager.getCookie());
+        Call<SummaryWithPermissions> call = summaryService.getSummary();
         getCall = call;
         call.enqueue(new DefaultCallback<SummaryWithPermissions>(this, loginManager, swipeRefreshLayout) {
             @Override

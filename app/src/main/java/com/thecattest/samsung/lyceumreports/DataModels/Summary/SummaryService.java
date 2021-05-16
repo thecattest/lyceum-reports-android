@@ -8,6 +8,5 @@ import retrofit2.http.Header;
 
 public interface SummaryService {
     @GET(URLConfig.SUMMARY_ENDPOINT)
-    Call<SummaryWithPermissions> getSummary(
-            @Header("Cookie") String cookies);
+    Call<SummaryWithPermissions> getSummary();
 }

@@ -18,6 +18,7 @@ import com.thecattest.samsung.lyceumreports.DataModels.SummaryDay.SummaryDayServ
 import com.thecattest.samsung.lyceumreports.DefaultCallback;
 import com.thecattest.samsung.lyceumreports.Managers.DatePickerManager;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
+import com.thecattest.samsung.lyceumreports.Managers.RetrofitManager;
 import com.thecattest.samsung.lyceumreports.Managers.StatusManager;
 import com.thecattest.samsung.lyceumreports.R;
 import com.thecattest.samsung.lyceumreports.URLConfig;
@@ -47,10 +48,10 @@ public class SummaryDayActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_summary_day);
 
-        initRetrofit();
         findViews();
         setListeners();
         initManagers();
+        initRetrofit();
 
         updateSummaryDayView();
     }
@@ -77,10 +78,7 @@ public class SummaryDayActivity extends AppCompatActivity {
     }
 
     private void initRetrofit() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(URLConfig.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        Retrofit retrofit = new RetrofitManager(loginManager).getInstance();
         summaryDayService = retrofit.create(SummaryDayService.class);
     }
 
@@ -125,7 +123,7 @@ public class SummaryDayActivity extends AppCompatActivity {
 
         String formattedDate = datePickerManager.getDate();
 
-        Call<SummaryDay> call = summaryDayService.getSummaryDay(loginManager.getCookie(), formattedDate);
+        Call<SummaryDay> call = summaryDayService.getSummaryDay(formattedDate);
         getCall = call;
         call.enqueue(new DefaultCallback<SummaryDay>(this, loginManager, swipeRefreshLayout) {
             @Override

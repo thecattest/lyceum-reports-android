@@ -24,6 +24,7 @@ import com.thecattest.samsung.lyceumreports.DataModels.Day.Student;
 import com.thecattest.samsung.lyceumreports.DefaultCallback;
 import com.thecattest.samsung.lyceumreports.Managers.DatePickerManager;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
+import com.thecattest.samsung.lyceumreports.Managers.RetrofitManager;
 import com.thecattest.samsung.lyceumreports.Managers.StatusManager;
 import com.thecattest.samsung.lyceumreports.R;
 import com.thecattest.samsung.lyceumreports.URLConfig;
@@ -66,10 +67,10 @@ public class DayActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_day);
 
-        initRetrofit();
         findViews();
         setListeners();
         initManagers();
+        initRetrofit();
 
         groupId = getIntent().getIntExtra(GROUP_ID, 6);
         defaultGroupLabel = getIntent().getStringExtra(GROUP_LABEL);
@@ -93,8 +94,6 @@ public class DayActivity extends AppCompatActivity {
     @SuppressLint("MissingSuperCall")
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
-//        cancelGetCall();
-//        cancelUpdateCall();
         currentDay.saveToBundle(outState);
         datePickerManager.saveToBundle(outState);
         statusManager.saveToBundle(outState);
@@ -113,10 +112,7 @@ public class DayActivity extends AppCompatActivity {
     }
 
     private void initRetrofit() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(URLConfig.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        Retrofit retrofit = new RetrofitManager(loginManager).getInstance();
         dayService = retrofit.create(DayService.class);
     }
 
@@ -175,7 +171,7 @@ public class DayActivity extends AppCompatActivity {
         String formattedDate = datePickerManager.getDate();
         String absentStudentsIdsString = currentDay.getAbsentStudentsIdsString();
 
-        Call<Void> call = dayService.updateDay(loginManager.getCookie(), groupId, new DayPost(formattedDate, absentStudentsIdsString));
+        Call<Void> call = dayService.updateDay(groupId, new DayPost(formattedDate, absentStudentsIdsString));
         updateCall = call;
         call.enqueue(new DefaultCallback<Void>(this, loginManager, mainLayout) {
             @Override
@@ -231,7 +227,7 @@ public class DayActivity extends AppCompatActivity {
         updateCall = null;
         String formattedDate = datePickerManager.getDate();
         String absentStudentsIdsString = currentDay.getLoadedAbsentStudentsIdsString();
-        Call<Void> call = dayService.updateDay(loginManager.getCookie(), groupId, new DayPost(formattedDate, absentStudentsIdsString));
+        Call<Void> call = dayService.updateDay(groupId, new DayPost(formattedDate, absentStudentsIdsString));
         call.enqueue(new DefaultCallback<Void>(this, loginManager, mainLayout) {
             @Override
             public void onResponse200(Response<Void> response) {}
@@ -248,7 +244,7 @@ public class DayActivity extends AppCompatActivity {
 
         String formattedDate = datePickerManager.getDate();
 
-        Call<Day> call = dayService.getDay(loginManager.getCookie(), groupId, formattedDate);
+        Call<Day> call = dayService.getDay(groupId, formattedDate);
         getCall = call;
         call.enqueue(new DefaultCallback<Day>(this, loginManager, mainLayout) {
             @Override

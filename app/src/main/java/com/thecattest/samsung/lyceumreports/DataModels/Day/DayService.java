@@ -13,13 +13,11 @@ import retrofit2.http.Query;
 public interface DayService {
     @GET(URLConfig.DAY_ENDPOINT)
     Call<Day> getDay(
-            @Header("Cookie") String cookie,
             @Path("groupId") Integer groupId,
             @Query("date") String date);
 
     @POST(URLConfig.DAY_ENDPOINT)
     Call<Void> updateDay(
-            @Header("Cookie") String cookie,
             @Path("groupId") Integer groupId,
             @Body DayPost day);
 }

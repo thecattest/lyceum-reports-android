@@ -18,6 +18,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.thecattest.samsung.lyceumreports.DataModels.Login.LoginService;
 import com.thecattest.samsung.lyceumreports.DefaultCallback;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
+import com.thecattest.samsung.lyceumreports.Managers.RetrofitManager;
 import com.thecattest.samsung.lyceumreports.Managers.StatusManager;
 import com.thecattest.samsung.lyceumreports.R;
 import com.thecattest.samsung.lyceumreports.URLConfig;
@@ -50,18 +51,15 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        initRetrofit();
         findViews();
         setListeners();
         initManagers();
+        initRetrofit();
         updateButtonState();
     }
 
     private void initRetrofit() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(URLConfig.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        Retrofit retrofit = new RetrofitManager().getInstance();
         loginService = retrofit.create(LoginService.class);
     }
 
