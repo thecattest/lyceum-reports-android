@@ -27,12 +27,10 @@ import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
 import com.thecattest.samsung.lyceumreports.Managers.RetrofitManager;
 import com.thecattest.samsung.lyceumreports.Managers.StatusManager;
 import com.thecattest.samsung.lyceumreports.R;
-import com.thecattest.samsung.lyceumreports.URLConfig;
 
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DayActivity extends AppCompatActivity {
 
@@ -56,8 +54,8 @@ public class DayActivity extends AppCompatActivity {
     private StudentsAdapter studentsAdapter;
 
     private DayService dayService;
-    private Call<Void> updateCall = null;
-    private Call<Day> getCall = null;
+    private Call<Void> dataUpdateCall = null;
+    private Call<Day> dataGetCall = null;
 
     private int groupId;
     private String defaultGroupLabel;
@@ -150,7 +148,7 @@ public class DayActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (!cancelGetCall() && !cancelUpdateCall()) {
+        if (!cancelDataGetCall() && !cancelDataUpdateCall()) {
             Intent i = new Intent(DayActivity.this, MainActivity.class);
             startActivity(i);
             finish();
@@ -172,7 +170,7 @@ public class DayActivity extends AppCompatActivity {
         String absentStudentsIdsString = currentDay.getAbsentStudentsIdsString();
 
         Call<Void> call = dayService.updateDay(groupId, new DayPost(formattedDate, absentStudentsIdsString));
-        updateCall = call;
+        dataUpdateCall = call;
         call.enqueue(new DefaultCallback<Void>(this, loginManager, mainLayout) {
             @Override
             public void onResponse200(Response<Void> response) {
@@ -215,16 +213,16 @@ public class DayActivity extends AppCompatActivity {
             public void onPostExecute() {
                 v.setEnabled(true);
                 datePickerManager.setEnabled(true);
-                updateCall = null;
+                dataUpdateCall = null;
             }
         });
     }
 
-    private boolean cancelUpdateCall() {
-        if (updateCall == null)
+    private boolean cancelDataUpdateCall() {
+        if (dataUpdateCall == null)
             return false;
-        updateCall.cancel();
-        updateCall = null;
+        dataUpdateCall.cancel();
+        dataUpdateCall = null;
         String formattedDate = datePickerManager.getDate();
         String absentStudentsIdsString = currentDay.getLoadedAbsentStudentsIdsString();
         Call<Void> call = dayService.updateDay(groupId, new DayPost(formattedDate, absentStudentsIdsString));
@@ -245,7 +243,7 @@ public class DayActivity extends AppCompatActivity {
         String formattedDate = datePickerManager.getDate();
 
         Call<Day> call = dayService.getDay(groupId, formattedDate);
-        getCall = call;
+        dataGetCall = call;
         call.enqueue(new DefaultCallback<Day>(this, loginManager, mainLayout) {
             @Override
             public void onResponse200(Response<Day> response) {
@@ -280,17 +278,17 @@ public class DayActivity extends AppCompatActivity {
 
             @Override
             public void onPostExecute() {
-                getCall = null;
+                dataGetCall = null;
                 datePickerManager.setEnabled(true);
             }
         });
     }
 
-    private boolean cancelGetCall() {
-        if (getCall == null)
+    private boolean cancelDataGetCall() {
+        if (dataGetCall == null)
             return false;
-        getCall.cancel();
-        getCall = null;
+        dataGetCall.cancel();
+        dataGetCall = null;
         return true;
     }
 

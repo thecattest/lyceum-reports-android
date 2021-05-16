@@ -21,12 +21,10 @@ import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
 import com.thecattest.samsung.lyceumreports.Managers.RetrofitManager;
 import com.thecattest.samsung.lyceumreports.Managers.StatusManager;
 import com.thecattest.samsung.lyceumreports.R;
-import com.thecattest.samsung.lyceumreports.URLConfig;
 
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SummaryDayActivity extends AppCompatActivity {
 
@@ -41,7 +39,7 @@ public class SummaryDayActivity extends AppCompatActivity {
     private SummaryDay summaryDay = new SummaryDay();
 
     private SummaryDayService summaryDayService;
-    private Call<SummaryDay> getCall;
+    private Call<SummaryDay> dataGetCall;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +108,7 @@ public class SummaryDayActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (!cancelGetCall()) {
+        if (!cancelDataGetCall()) {
             Intent i = new Intent(SummaryDayActivity.this, MainActivity.class);
             startActivity(i);
             finish();
@@ -124,7 +122,7 @@ public class SummaryDayActivity extends AppCompatActivity {
         String formattedDate = datePickerManager.getDate();
 
         Call<SummaryDay> call = summaryDayService.getSummaryDay(formattedDate);
-        getCall = call;
+        dataGetCall = call;
         call.enqueue(new DefaultCallback<SummaryDay>(this, loginManager, swipeRefreshLayout) {
             @Override
             public void onResponse200(Response<SummaryDay> response) {
@@ -158,17 +156,17 @@ public class SummaryDayActivity extends AppCompatActivity {
 
             @Override
             public void onPostExecute() {
-                getCall = null;
+                dataGetCall = null;
                 datePickerManager.setEnabled(true);
             }
         });
     }
 
-    private boolean cancelGetCall() {
-        if (getCall == null)
+    private boolean cancelDataGetCall() {
+        if (dataGetCall == null)
             return false;
-        getCall.cancel();
-        getCall = null;
+        dataGetCall.cancel();
+        dataGetCall = null;
         return true;
     }
 

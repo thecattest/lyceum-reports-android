@@ -22,12 +22,10 @@ import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
 import com.thecattest.samsung.lyceumreports.Managers.RetrofitManager;
 import com.thecattest.samsung.lyceumreports.Managers.StatusManager;
 import com.thecattest.samsung.lyceumreports.R;
-import com.thecattest.samsung.lyceumreports.URLConfig;
 
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private SummaryWithPermissions summaryWithPermissions = new SummaryWithPermissions();
 
     SummaryService summaryService;
-    Call<SummaryWithPermissions> getCall;
+    Call<SummaryWithPermissions> dataGetCall;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -116,14 +114,14 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        cancelGetCall();
+        cancelDataGetCall();
     }
 
     private void updateSummary() {
         setLoadingStatus();
 
         Call<SummaryWithPermissions> call = summaryService.getSummary();
-        getCall = call;
+        dataGetCall = call;
         call.enqueue(new DefaultCallback<SummaryWithPermissions>(this, loginManager, swipeRefreshLayout) {
             @Override
             public void onResponse200(Response<SummaryWithPermissions> response) {
@@ -157,16 +155,16 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPostExecute() {
-                getCall = null;
+                dataGetCall = null;
             }
         });
     }
 
-    private boolean cancelGetCall() {
-        if (getCall == null)
+    private boolean cancelDataGetCall() {
+        if (dataGetCall == null)
             return false;
-        getCall.cancel();
-        getCall = null;
+        dataGetCall.cancel();
+        dataGetCall = null;
         return true;
     }
 
