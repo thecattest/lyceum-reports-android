@@ -12,9 +12,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 
 public class SummaryWithPermissions {
-    private static final String SUMMARY = "SUMMARY";
-    private static final String CAN_EDIT = "CAN_EDIT";
-    private static final String CAN_VIEW_TABLE = "CAN_VIEW_TABLE";
+    private static final String SUMMARY_WITH_PERMISSION = "SUMMARY_WITH_PERMISSION";
 
     @SerializedName("can_edit")
     public boolean canEdit = false;
@@ -29,31 +27,27 @@ public class SummaryWithPermissions {
     public void saveToBundle(Bundle outState) {
         if (!isEmpty()) {
             Gson gson = new Gson();
-            outState.putString(SUMMARY, gson.toJson(summary));
-            outState.putBoolean(CAN_EDIT, canEdit);
-            outState.putBoolean(CAN_VIEW_TABLE, canViewTable);
+            outState.putString(SUMMARY_WITH_PERMISSION, gson.toJson(this));
         }
     }
 
     public void loadFromBundle(Bundle savedInstanceState) {
-        String summaryJsonString = getSummaryStringFromBundle(savedInstanceState);
-        if (summaryJsonString != null) {
+        String summaryString = getSummaryStringFromBundle(savedInstanceState);
+        if (summaryString != null) {
             Gson gson = new Gson();
-            JsonElement summaryJsonObject = new JsonParser().parse(summaryJsonString);
-            for (JsonElement s : summaryJsonObject.getAsJsonArray()) {
-                summary.add(gson.fromJson(s, Summary.class));
-            }
+            SummaryWithPermissions summaryFromBundle = gson.fromJson(summaryString, SummaryWithPermissions.class);
+            summary = summaryFromBundle.summary;
+            canEdit = summaryFromBundle.canEdit;
+            canViewTable = summaryFromBundle.canViewTable;
         }
-        canEdit = savedInstanceState.getBoolean(CAN_EDIT, false);
-        canViewTable = savedInstanceState.getBoolean(CAN_VIEW_TABLE, false);
     }
 
     @Nullable
     public String getSummaryStringFromBundle(@Nullable Bundle savedInstanceState) {
         if (savedInstanceState != null) {
-            String summaryJsonString = savedInstanceState.getString(SUMMARY);
-            if (summaryJsonString != null && !summaryJsonString.isEmpty()) {
-                return summaryJsonString;
+            String summaryString = savedInstanceState.getString(SUMMARY_WITH_PERMISSION);
+            if (summaryString != null && !summaryString.isEmpty()) {
+                return summaryString;
             }
         }
         return null;
