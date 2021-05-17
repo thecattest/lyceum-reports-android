@@ -1,4 +1,4 @@
-package com.thecattest.samsung.lyceumreports.DataModels.Summary;
+package com.thecattest.samsung.lyceumreports.DataModels.Legacy.Summary;
 
 import android.content.Context;
 

@@ -1,10 +1,9 @@
-package com.thecattest.samsung.lyceumreports.DataModels.Summary;
+package com.thecattest.samsung.lyceumreports.DataModels.Legacy.Summary;
 
 import com.thecattest.samsung.lyceumreports.URLConfig;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
-import retrofit2.http.Header;
 
 public interface SummaryService {
     @GET(URLConfig.SUMMARY_ENDPOINT)

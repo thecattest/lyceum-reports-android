@@ -1,4 +1,4 @@
-package com.thecattest.samsung.lyceumreports.DataModels.Day;
+package com.thecattest.samsung.lyceumreports.DataModels.Legacy.Day;
 
 import android.os.Bundle;
 

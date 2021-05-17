@@ -1,4 +1,4 @@
-package com.thecattest.samsung.lyceumreports.DataModels.Summary;
+package com.thecattest.samsung.lyceumreports.DataModels.Legacy.SummaryDay;
 
 import android.content.Context;
 
@@ -6,26 +6,14 @@ import com.thecattest.samsung.lyceumreports.R;
 
 import java.util.ArrayList;
 
-public class SummaryRow {
-    public String date;
+public class SummaryDayRow {
+    public int id;
+    public String name;
     public String status;
     public ArrayList<String> students;
 
-    public String getDate() {
-        return date;
-    }
-
-    public String getHumanDate(Context context) {
-        String[] months = context.getResources().getStringArray(R.array.date_months_shortened);
-        String[] dateArr = getDate().split("-");
-
-        String day = dateArr[2];
-        if (day.charAt(0) == '0')
-            day = String.valueOf(day.charAt(1));
-        String month = months[Integer.parseInt(dateArr[1])];
-
-        String formattedDate = day + " " + month;
-        return formattedDate;
+    public String getName() {
+        return name;
     }
 
     public String getAbsentStudentsString(Context context) {
@@ -52,10 +40,11 @@ public class SummaryRow {
 
     @Override
     public String toString() {
-        return "SummaryDay{" +
-                "date='" + date + '\'' +
+        return "SummaryDayRow{" +
+                "id=" + id +
                 ", status='" + status + '\'' +
-                ", students=" + students +
+                ", name='" + name + '\'' +
+                ", students=" + students.toString() +
                 '}';
     }
 }

@@ -13,8 +13,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.thecattest.samsung.lyceumreports.Adapters.SummaryDayAdapter;
-import com.thecattest.samsung.lyceumreports.DataModels.SummaryDay.SummaryDay;
-import com.thecattest.samsung.lyceumreports.DataModels.SummaryDay.SummaryDayService;
+import com.thecattest.samsung.lyceumreports.DataModels.Legacy.SummaryDay.SummaryDay;
+import com.thecattest.samsung.lyceumreports.DataModels.Legacy.SummaryDay.SummaryDayService;
 import com.thecattest.samsung.lyceumreports.DefaultCallback;
 import com.thecattest.samsung.lyceumreports.Managers.DatePickerManager;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;

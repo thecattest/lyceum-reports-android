@@ -17,10 +17,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.thecattest.samsung.lyceumreports.Adapters.StudentsAdapter;
-import com.thecattest.samsung.lyceumreports.DataModels.Day.Day;
-import com.thecattest.samsung.lyceumreports.DataModels.Day.DayPost;
-import com.thecattest.samsung.lyceumreports.DataModels.Day.DayService;
-import com.thecattest.samsung.lyceumreports.DataModels.Day.Student;
+import com.thecattest.samsung.lyceumreports.DataModels.Legacy.Day.Day;
+import com.thecattest.samsung.lyceumreports.DataModels.Legacy.Day.DayPost;
+import com.thecattest.samsung.lyceumreports.DataModels.Legacy.Day.DayService;
+import com.thecattest.samsung.lyceumreports.DataModels.Legacy.Day.Student;
 import com.thecattest.samsung.lyceumreports.DefaultCallback;
 import com.thecattest.samsung.lyceumreports.Managers.DatePickerManager;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;

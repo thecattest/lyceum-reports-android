@@ -1,12 +1,10 @@
-package com.thecattest.samsung.lyceumreports.DataModels.Summary;
+package com.thecattest.samsung.lyceumreports.DataModels.Legacy.Summary;
 
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;

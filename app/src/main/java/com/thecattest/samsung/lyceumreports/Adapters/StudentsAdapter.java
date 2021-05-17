@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import com.thecattest.samsung.lyceumreports.DataModels.Day.Student;
+import com.thecattest.samsung.lyceumreports.DataModels.Legacy.Day.Student;
 import com.thecattest.samsung.lyceumreports.R;
 
 import java.util.ArrayList;
