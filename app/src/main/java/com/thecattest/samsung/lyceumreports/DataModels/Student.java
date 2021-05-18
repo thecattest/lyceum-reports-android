@@ -9,6 +9,25 @@ public class Student {
     @SerializedName("group_id")
     public int groupId;
 
+    public String getName() {
+        return surname + " " + name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Student student = (Student) o;
+
+        return id == student.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
+    }
+
     @Override
     public String toString() {
         return "Student{" +
