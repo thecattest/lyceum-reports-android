@@ -110,7 +110,7 @@ public class DayActivity extends AppCompatActivity {
     }
 
     private void initRetrofit() {
-        Retrofit retrofit = new RetrofitManager(loginManager).getInstance();
+        Retrofit retrofit = RetrofitManager.getInstance(loginManager);
         dayService = retrofit.create(DayService.class);
     }
 

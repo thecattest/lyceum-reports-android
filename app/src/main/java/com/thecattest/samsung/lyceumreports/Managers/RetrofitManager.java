@@ -8,16 +8,15 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitManager {
-    private final Retrofit retrofit;
 
-    public RetrofitManager() {
-        retrofit = new Retrofit.Builder()
+    public static Retrofit getInstance() {
+        return new Retrofit.Builder()
                 .baseUrl(URLConfig.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
     }
 
-    public RetrofitManager(LoginManager loginManager) {
+    public static Retrofit getInstance(LoginManager loginManager) {
         OkHttpClient.Builder client = new OkHttpClient.Builder();
         client.addInterceptor(chain -> {
             Request request = chain
@@ -27,14 +26,10 @@ public class RetrofitManager {
                     .build();
             return chain.proceed(request);
         });
-        retrofit = new Retrofit.Builder()
+        return new Retrofit.Builder()
                 .baseUrl(URLConfig.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client.build())
                 .build();
-    }
-
-    public Retrofit getInstance() {
-        return retrofit;
     }
 }

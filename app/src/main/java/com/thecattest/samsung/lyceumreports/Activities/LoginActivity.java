@@ -59,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void initRetrofit() {
-        Retrofit retrofit = new RetrofitManager().getInstance();
+        Retrofit retrofit = RetrofitManager.getInstance();
         loginService = retrofit.create(LoginService.class);
     }
 

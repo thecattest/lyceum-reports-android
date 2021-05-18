@@ -46,6 +46,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Intent i = new Intent(MainActivity.this, TestActivity.class);
+        startActivity(i);
+        finish();
+
         findViews();
         setListeners();
         initManagers();
@@ -73,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initRetrofit() {
-        Retrofit retrofit = (new RetrofitManager(loginManager)).getInstance();
+        Retrofit retrofit = RetrofitManager.getInstance(loginManager);
         summaryService = retrofit.create(SummaryService.class);
     }
 

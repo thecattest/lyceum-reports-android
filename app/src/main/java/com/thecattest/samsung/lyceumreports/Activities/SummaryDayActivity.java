@@ -76,7 +76,7 @@ public class SummaryDayActivity extends AppCompatActivity {
     }
 
     private void initRetrofit() {
-        Retrofit retrofit = new RetrofitManager(loginManager).getInstance();
+        Retrofit retrofit = RetrofitManager.getInstance(loginManager);
         summaryDayService = retrofit.create(SummaryDayService.class);
     }
 
