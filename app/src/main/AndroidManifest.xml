@@ -14,7 +14,8 @@
         android:theme="@style/Theme.LyceumReports"
         android:usesCleartextTraffic="true"
         tools:targetApi="n">
-        <activity android:name=".Activities.SummaryDayActivity"></activity>
+        <activity android:name=".Activities.TestActivity"></activity>
+        <activity android:name=".Activities.SummaryDayActivity" />
         <activity android:name=".Activities.LoginActivity" />
         <activity android:name=".Activities.DayActivity" />
         <activity android:name=".Activities.MainActivity">
