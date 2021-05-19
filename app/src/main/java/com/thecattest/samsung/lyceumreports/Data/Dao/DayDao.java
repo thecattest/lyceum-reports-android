@@ -21,11 +21,17 @@ public interface DayDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     Maybe<Void> insert(List<Day> day);
 
+    @Query("DELETE FROM days")
+    Maybe<Void> deleteAll();
+
     @Query("DELETE FROM days WHERE group_id in (:groupIds)")
     Maybe<Void> deleteByGroupIds(List<Integer> groupIds);
     
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     Maybe<Void> insertRefs(List<DayAbsentCrossRef> daysWithAbsent);
+
+    @Query("DELETE FROM day_absent_cross_refs")
+    Maybe<Void> deleteAllRefs();
 
     @Query("DELETE FROM day_absent_cross_refs WHERE did in (SELECT did FROM days WHERE group_id in (:groupIds))")
     Maybe<Void> deleteRefsByGroupIds(List<Integer> groupIds);

@@ -20,6 +20,9 @@ public interface GroupDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     Maybe<Void> insert(List<Group> groups);
 
+    @Query("DELETE FROM groups")
+    Maybe<Void> deleteAll();
+
     @Query("DELETE FROM groups WHERE gid in (:groupIds)")
     Maybe<Void> deleteByIds(List<Integer> groupIds);
 

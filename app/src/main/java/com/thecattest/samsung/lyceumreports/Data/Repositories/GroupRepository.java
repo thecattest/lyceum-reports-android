@@ -78,16 +78,23 @@ public class GroupRepository {
     public void insert(List<Group> groups) {
         LinkedList<Student> students = new LinkedList<>();
         LinkedList<Day> days = new LinkedList<>();
-        LinkedList<Integer> groupIds = new LinkedList<>();
         for (Group group : groups) {
             days.addAll(group.days);
             students.addAll(group.students);
-            groupIds.add(group.gid);
         }
-        deleteByIds(groupIds);
+        deleteAll();
         studentRepository.insert(students);
         dayRepository.insert(days);
         groupDao.insert(groups)
+                .subscribeOn(Schedulers.single())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(AppDatabase.getDefaultObserver());
+    }
+
+    public void deleteAll() {
+        studentRepository.deleteAll();
+        dayRepository.deleteAll();
+        groupDao.deleteAll()
                 .subscribeOn(Schedulers.single())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(AppDatabase.getDefaultObserver());

@@ -19,6 +19,9 @@ public interface StudentDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     Maybe<Void> insert(List<Student> students);
 
+    @Query("DELETE FROM students")
+    Maybe<Void> deleteAll();
+
     @Query("DELETE FROM students WHERE group_id in (:groupIds)")
     Maybe<Void> deleteByGroupIds(List<Integer> groupIds);
 
