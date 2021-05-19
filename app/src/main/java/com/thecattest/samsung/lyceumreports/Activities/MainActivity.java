@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         groupRepository = new GroupRepository(this, dayRepository, studentRepository, apiService);
 
         groupRepository.get()
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.single())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(groupsWithDaysAndStudent -> updateView(new ArrayList<>(groupsWithDaysAndStudent)));
 
