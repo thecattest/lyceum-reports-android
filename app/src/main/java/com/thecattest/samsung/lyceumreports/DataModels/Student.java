@@ -1,12 +1,28 @@
 package com.thecattest.samsung.lyceumreports.DataModels;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import com.google.gson.annotations.SerializedName;
 
+@Entity(tableName = "students")
 public class Student {
-    public int id;
+    @PrimaryKey
+    @SerializedName("id")
+    @ColumnInfo(name = "sid")
+    public int sid;
+
+    @SerializedName("surname")
+    @ColumnInfo(name = "surname")
     public String surname;
+
+    @SerializedName("name")
+    @ColumnInfo(name = "name")
     public String name;
+
     @SerializedName("group_id")
+    @ColumnInfo(name = "group_id")
     public int groupId;
 
     public String getName() {
@@ -20,18 +36,18 @@ public class Student {
 
         Student student = (Student) o;
 
-        return id == student.id;
+        return sid == student.sid;
     }
 
     @Override
     public int hashCode() {
-        return id;
+        return sid;
     }
 
     @Override
     public String toString() {
         return "Student{" +
-                "id=" + id +
+                "sid=" + sid +
                 ", surname='" + surname + '\'' +
                 ", name='" + name + '\'' +
                 ", groupId=" + groupId +

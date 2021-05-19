@@ -13,11 +13,16 @@ import retrofit2.Response;
 public abstract class DefaultCallback<T> implements Callback<T> {
     private final String defaultCodeMessage;
     private final LoginManager loginManager;
-    private final View mainLayout;
+    private View mainLayout;
 
     public DefaultCallback(Context context, LoginManager loginManager, View mainLayout) {
         this.loginManager = loginManager;
         this.mainLayout = mainLayout;
+        defaultCodeMessage = context.getResources().getString(R.string.snackbar_server_error_code);
+    }
+
+    public DefaultCallback(Context context, LoginManager loginManager) {
+        this.loginManager = loginManager;
         defaultCodeMessage = context.getResources().getString(R.string.snackbar_server_error_code);
     }
 

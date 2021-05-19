@@ -2,17 +2,33 @@ package com.thecattest.samsung.lyceumreports.DataModels;
 
 import android.content.Context;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
 import com.google.gson.annotations.SerializedName;
 import com.thecattest.samsung.lyceumreports.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
+@Entity(tableName = "days")
 public class Day {
-    public int id;
+    @SerializedName("id")
+    @ColumnInfo(name = "did")
+    @PrimaryKey
+    public int did;
+
+    @SerializedName("date")
+    @ColumnInfo(name = "date")
     public String date;
+
     @SerializedName("group_id")
+    @ColumnInfo(name = "group_id")
     public int groupId;
 
+    @Ignore
     public ArrayList<Student> absent;
 
     public String getHumanDate(Context context) {
@@ -27,7 +43,7 @@ public class Day {
         return day + " " + month;
     }
 
-    public String getAbsentStudentsString(Context context) {
+    public String getAbsentStudentsString(Context context, List<Student> absent) {
         if (absent.size() != 0) {
             StringBuilder absentStudentsString = new StringBuilder();
             for (Student absentStudent : absent) {
@@ -43,7 +59,7 @@ public class Day {
     @Override
     public String toString() {
         return "Day{" +
-                "id=" + id +
+                "id=" + did +
                 ", date='" + date + '\'' +
                 ", groupId=" + groupId +
                 ", absent=" + absent +
