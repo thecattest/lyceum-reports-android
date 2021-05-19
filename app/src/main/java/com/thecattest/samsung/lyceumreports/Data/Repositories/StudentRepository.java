@@ -27,38 +27,17 @@ public class StudentRepository {
         return students;
     }
 
-    public void insert(Student student) {
-        AppDatabase.databaseWriteExecutor.execute(() -> studentDao.insert(student)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(AppDatabase.getDefaultObserver()));
-    }
-
     public void insert(List<Student> students) {
-        AppDatabase.databaseWriteExecutor.execute(() -> studentDao.insert(students)
-                .subscribeOn(Schedulers.io())
+        studentDao.insert(students)
+                .subscribeOn(Schedulers.single())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(AppDatabase.getDefaultObserver()));
+                .subscribe(AppDatabase.getDefaultObserver());
     }
 
-    public void delete(Student student) {
-        AppDatabase.databaseWriteExecutor.execute(() -> studentDao.delete(student)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(AppDatabase.getDefaultObserver()));
-    }
-
-    public void delete(List<Student> students) {
-        AppDatabase.databaseWriteExecutor.execute(() -> studentDao.delete(students)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(AppDatabase.getDefaultObserver()));
-    }
-
-    public void deleteAll() {
-        AppDatabase.databaseWriteExecutor.execute(() -> studentDao.deleteAll()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(AppDatabase.getDefaultObserver()));
+    public void deleteByGroupIds(List<Integer> groupIds) {
+            studentDao.deleteByGroupIds(groupIds)
+                    .subscribeOn(Schedulers.single())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(AppDatabase.getDefaultObserver());
     }
 }

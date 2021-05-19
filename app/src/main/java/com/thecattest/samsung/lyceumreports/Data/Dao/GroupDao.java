@@ -17,23 +17,13 @@ import io.reactivex.Maybe;
 
 @Dao
 public interface GroupDao {
-    @Insert
-    Maybe<Void> insert(Group group);
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     Maybe<Void> insert(List<Group> groups);
 
-    @Delete
-    Maybe<Void> delete(Group group);
-
-    @Delete
-    Maybe<Void> delete(List<Group> groups);
+    @Query("DELETE FROM groups WHERE gid in (:groupIds)")
+    Maybe<Void> deleteByIds(List<Integer> groupIds);
 
     @Transaction
     @Query("SELECT * FROM groups")
     Flowable<List<GroupWithDaysAndStudents>> get();
-
-    @Transaction
-    @Query("SELECT * FROM groups WHERE gid = :gid")
-    Flowable<List<GroupWithDaysAndStudents>> get(int gid);
 }

@@ -1,45 +1,46 @@
 package com.thecattest.samsung.lyceumreports.Activities;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.snackbar.Snackbar;
-import com.thecattest.samsung.lyceumreports.Adapters.SummaryAdapter;
-import com.thecattest.samsung.lyceumreports.Data.Legacy.Summary.SummaryService;
-import com.thecattest.samsung.lyceumreports.Data.Legacy.Summary.SummaryWithPermissions;
-import com.thecattest.samsung.lyceumreports.DefaultCallback;
+import com.thecattest.samsung.lyceumreports.Adapters.GroupsAdapter;
+import com.thecattest.samsung.lyceumreports.Data.ApiService;
+import com.thecattest.samsung.lyceumreports.Data.Models.Group;
+import com.thecattest.samsung.lyceumreports.Data.Models.GroupWithDaysAndStudents;
+import com.thecattest.samsung.lyceumreports.Data.Repositories.DayRepository;
+import com.thecattest.samsung.lyceumreports.Data.Repositories.GroupRepository;
+import com.thecattest.samsung.lyceumreports.Data.Repositories.StudentRepository;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
 import com.thecattest.samsung.lyceumreports.Managers.RetrofitManager;
 import com.thecattest.samsung.lyceumreports.Managers.StatusManager;
 import com.thecattest.samsung.lyceumreports.R;
 
-import retrofit2.Call;
-import retrofit2.Response;
+import java.util.ArrayList;
+
+import io.reactivex.Flowable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ListView summaryListView;
+    private ListView groupsListView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private MaterialToolbar toolbar;
 
     private LoginManager loginManager;
     private StatusManager statusManager;
 
-    private SummaryWithPermissions summaryWithPermissions = new SummaryWithPermissions();
-
-    SummaryService summaryService;
-    Call<SummaryWithPermissions> dataGetCall;
+    private GroupRepository groupRepository;
+    private ApiService apiService;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,34 +56,43 @@ public class MainActivity extends AppCompatActivity {
         initManagers();
         initRetrofit();
 
-        if (summaryWithPermissions.getSummaryStringFromBundle(savedInstanceState) == null)
-            updateSummary();
+        StudentRepository studentRepository = new StudentRepository(this);
+        DayRepository dayRepository = new DayRepository(this, studentRepository);
+        groupRepository = new GroupRepository(this, dayRepository, studentRepository, apiService);
+
+        groupRepository.get()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(groupsWithDaysAndStudent -> updateView(new ArrayList<>(groupsWithDaysAndStudent)));
+
+//        if (summaryWithPermissions.getSummaryStringFromBundle(savedInstanceState) == null)
+//            updateSummary();
     }
 
-    @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
+//    @Override
+//    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+//        super.onRestoreInstanceState(savedInstanceState);
+//
+//        if(statusManager.loadFromBundle(savedInstanceState)) {
+//            summaryWithPermissions.loadFromBundle(savedInstanceState);
+//            updateSummaryView();
+//        }
+//    }
 
-        if(statusManager.loadFromBundle(savedInstanceState)) {
-            summaryWithPermissions.loadFromBundle(savedInstanceState);
-            updateSummaryView();
-        }
-    }
-
-    @SuppressLint("MissingSuperCall")
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        summaryWithPermissions.saveToBundle(outState);
-        statusManager.saveToBundle(outState);
-    }
+//    @SuppressLint("MissingSuperCall")
+//    @Override
+//    protected void onSaveInstanceState(@NonNull Bundle outState) {
+//        summaryWithPermissions.saveToBundle(outState);
+//        statusManager.saveToBundle(outState);
+//    }
 
     private void initRetrofit() {
         Retrofit retrofit = RetrofitManager.getInstance(loginManager);
-        summaryService = retrofit.create(SummaryService.class);
+        apiService = retrofit.create(ApiService.class);
     }
 
     private void findViews() {
-        summaryListView = findViewById(R.id.summaryList);
+        groupsListView = findViewById(R.id.groupsList);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         toolbar = findViewById(R.id.topAppBar);
     }
@@ -94,11 +104,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void initManagers() {
         loginManager = new LoginManager(this);
-        statusManager = new StatusManager(this, swipeRefreshLayout, v -> {updateSummary();});
+        statusManager = new StatusManager(this, swipeRefreshLayout, v -> update());
     }
 
     private void onRefresh() {
-        updateSummary();
+        update();
         swipeRefreshLayout.setRefreshing(false);
     }
 
@@ -117,77 +127,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {
-        cancelDataGetCall();
-    }
+    public void onBackPressed() {}
 
-    private void updateSummary() {
-        setLoadingStatus();
-
-        Call<SummaryWithPermissions> call = summaryService.getSummary();
-        dataGetCall = call;
-        call.enqueue(new DefaultCallback<SummaryWithPermissions>(this, loginManager, swipeRefreshLayout) {
-            @Override
-            public void onResponse200(Response<SummaryWithPermissions> response) {
-                summaryWithPermissions = response.body();
-                updateSummaryView();
-            }
-
-            @Override
-            public void onResponse500(Response<SummaryWithPermissions> response) {
-                super.onResponse500(response);
-                statusManager.setServerErrorLayout();
-            }
-
-            public void onResponseFailure(Call<SummaryWithPermissions> call, Throwable t) {
-                if (call.isCanceled()) {
-                    statusManager.setMainLayout();
-                    Snackbar.make(
-                            swipeRefreshLayout,
-                            R.string.snackbar_request_cancelled,
-                            Snackbar.LENGTH_LONG
-                    ).show();
-                } else {
-                    Snackbar.make(
-                            swipeRefreshLayout,
-                            R.string.snackbar_server_error,
-                            Snackbar.LENGTH_LONG
-                    ).show();
-                    statusManager.setServerErrorLayout();
-                }
-            }
-
-            @Override
-            public void onPostExecute() {
-                dataGetCall = null;
-            }
-        });
-    }
-
-    private boolean cancelDataGetCall() {
-        if (dataGetCall == null)
-            return false;
-        dataGetCall.cancel();
-        dataGetCall = null;
-        return true;
-    }
-
-    private void updateSummaryView() {
-        statusManager.setMainLayout();
-        updateSummaryAdapterData();
-        Menu menu = toolbar.getMenu();
-        menu.findItem(R.id.daySummaryTable).setVisible(summaryWithPermissions.canViewTable);
-        toolbar.invalidate();
-    }
-
-    private void updateSummaryAdapterData() {
-        SummaryAdapter summaryAdapter = new SummaryAdapter(this, summaryWithPermissions.summary, summaryWithPermissions.canEdit);
-        summaryListView.setAdapter(summaryAdapter);
-    }
-
-    private void setLoadingStatus() {
-        summaryWithPermissions = new SummaryWithPermissions();
-        updateSummaryView();
+    private void update() {
         statusManager.setLoadingLayout();
+        groupRepository.refreshGroups(this, loginManager, swipeRefreshLayout, () -> statusManager.setMainLayout());
+    }
+
+    private void updateView(ArrayList<GroupWithDaysAndStudents> groups) {
+        GroupsAdapter groupsAdapter = new GroupsAdapter(this, groups, true);
+        groupsListView.setAdapter(groupsAdapter);
+        Menu menu = toolbar.getMenu();
+        menu.findItem(R.id.daySummaryTable).setVisible(true);
+        toolbar.invalidate();
     }
 }

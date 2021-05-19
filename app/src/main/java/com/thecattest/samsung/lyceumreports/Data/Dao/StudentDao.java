@@ -16,26 +16,13 @@ import io.reactivex.Maybe;
 
 @Dao
 public interface StudentDao {
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    Maybe<Void> insert(Student student);
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     Maybe<Void> insert(List<Student> students);
 
-    @Delete
-    Maybe<Void> delete(Student student);
-
-    @Delete
-    Maybe<Void> delete(List<Student> students);
-
-    @Query("DELETE FROM students")
-    Maybe<Void> deleteAll();
+    @Query("DELETE FROM students WHERE group_id in (:groupIds)")
+    Maybe<Void> deleteByGroupIds(List<Integer> groupIds);
 
     @Transaction
     @Query("SELECT * FROM students")
     Flowable<List<Student>> get();
-
-    @Transaction
-    @Query("SELECT * FROM students WHERE sid = :sid")
-    Flowable<List<Student>> get(int sid);
 }

@@ -31,18 +31,6 @@ public class Day {
     @Ignore
     public ArrayList<Student> absent;
 
-    public String getHumanDate(Context context) {
-        String[] months = context.getResources().getStringArray(R.array.date_months_shortened);
-        String[] dateArr = date.split("-");
-
-        String day = dateArr[2];
-        if (day.charAt(0) == '0')
-            day = String.valueOf(day.charAt(1));
-        String month = months[Integer.parseInt(dateArr[1])];
-
-        return day + " " + month;
-    }
-
     public String getAbsentStudentsString(Context context, List<Student> absent) {
         if (absent.size() != 0) {
             StringBuilder absentStudentsString = new StringBuilder();

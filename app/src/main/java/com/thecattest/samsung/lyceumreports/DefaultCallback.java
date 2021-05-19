@@ -21,11 +21,6 @@ public abstract class DefaultCallback<T> implements Callback<T> {
         defaultCodeMessage = context.getResources().getString(R.string.snackbar_server_error_code);
     }
 
-    public DefaultCallback(Context context, LoginManager loginManager) {
-        this.loginManager = loginManager;
-        defaultCodeMessage = context.getResources().getString(R.string.snackbar_server_error_code);
-    }
-
     @Override
     public void onResponse(Call<T> call, Response<T> response) {
         int code = response.code();
@@ -82,4 +77,8 @@ public abstract class DefaultCallback<T> implements Callback<T> {
     public abstract void onResponseFailure(Call<T> call, Throwable t);
 
     public void onPostExecute() {}
+
+    public interface OnPost {
+        void execute();
+    }
 }

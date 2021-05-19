@@ -2,6 +2,8 @@ package com.thecattest.samsung.lyceumreports.Data.Repositories;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import com.thecattest.samsung.lyceumreports.Data.AppDatabase;
 import com.thecattest.samsung.lyceumreports.Data.Dao.DayDao;
 import com.thecattest.samsung.lyceumreports.Data.Models.Day;
@@ -13,7 +15,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import io.reactivex.Flowable;
+import io.reactivex.MaybeObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class DayRepository {
@@ -33,72 +37,35 @@ public class DayRepository {
         return days;
     }
 
-    public void insert(Day day) {
-        AppDatabase.databaseWriteExecutor.execute(() -> {
-            studentRepository.insert(day.absent);
-            dayDao.insert(day)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(AppDatabase.getDefaultObserver());
-            LinkedList<DayAbsentCrossRef> refs = new LinkedList<>();
+    public void insert(List<Day> days) {
+        LinkedList<Student> students = new LinkedList<>();
+        LinkedList<DayAbsentCrossRef> refs = new LinkedList<>();
+
+        for (Day day : days) {
+            students.addAll(day.absent);
             for (Student student : day.absent) {
                 refs.add(new DayAbsentCrossRef(day.did, student.sid));
             }
-            dayDao.insertRefs(refs)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(AppDatabase.getDefaultObserver());
-        });
-    }
-
-    public void insert(List<Day> days) {
-        AppDatabase.databaseWriteExecutor.execute(() -> {
-            LinkedList<Student> students = new LinkedList<>();
-            LinkedList<DayAbsentCrossRef> refs = new LinkedList<>();
-
-            for (Day day : days) {
-                students.addAll(day.absent);
-                for (Student student : day.absent) {
-                    refs.add(new DayAbsentCrossRef(day.did, student.sid));
-                }
-            }
-
-            studentRepository.insert(students);
-            dayDao.insert(days)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(AppDatabase.getDefaultObserver());
-            dayDao.insertRefs(refs)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(AppDatabase.getDefaultObserver());
-        });
-    }
-
-    public void delete(DayWithAbsent dayWithAbsent) {
-        AppDatabase.databaseWriteExecutor.execute(() -> {
-            dayDao.delete(dayWithAbsent.day)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(AppDatabase.getDefaultObserver());
-            dayDao.deleteRefs(dayWithAbsent.day.did)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(AppDatabase.getDefaultObserver());
-        });
-    }
-
-    public void delete(List<DayWithAbsent> daysWithAbsent) {
-        LinkedList<Day> days = new LinkedList<>();
-        for (DayWithAbsent dayWithAbsent : daysWithAbsent) {
-            days.add(dayWithAbsent.day);
-            dayDao.deleteRefs(dayWithAbsent.day.did)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(AppDatabase.getDefaultObserver());
         }
-        dayDao.delete(days)
-                .subscribeOn(Schedulers.io())
+
+        studentRepository.insert(students);
+        dayDao.insert(days)
+                .subscribeOn(Schedulers.single())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(AppDatabase.getDefaultObserver());
+        dayDao.insertRefs(refs)
+                .subscribeOn(Schedulers.single())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(AppDatabase.getDefaultObserver());
+    }
+
+    public void deleteByGroupIds(List<Integer> groupIds) {
+        dayDao.deleteRefsByGroupIds(groupIds)
+                .subscribeOn(Schedulers.single())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(AppDatabase.getDefaultObserver());
+        dayDao.deleteByGroupIds(groupIds)
+                .subscribeOn(Schedulers.single())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(AppDatabase.getDefaultObserver());
     }

@@ -29,6 +29,10 @@ public class Group {
     @Ignore
     public ArrayList<Day> days;
 
+    public String getLabel() {
+        return number + letter;
+    }
+
     @Override
     public String toString() {
         return "Group{" +
