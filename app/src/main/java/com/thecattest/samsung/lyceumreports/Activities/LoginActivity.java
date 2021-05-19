@@ -15,20 +15,18 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
-import com.thecattest.samsung.lyceumreports.DataModels.Login.LoginService;
+import com.thecattest.samsung.lyceumreports.Data.Legacy.Login.LoginService;
 import com.thecattest.samsung.lyceumreports.DefaultCallback;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
 import com.thecattest.samsung.lyceumreports.Managers.RetrofitManager;
 import com.thecattest.samsung.lyceumreports.Managers.StatusManager;
 import com.thecattest.samsung.lyceumreports.R;
-import com.thecattest.samsung.lyceumreports.URLConfig;
 
 import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LoginActivity extends AppCompatActivity {
 

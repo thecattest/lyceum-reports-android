@@ -13,7 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.thecattest.samsung.lyceumreports.Activities.DayActivity;
-import com.thecattest.samsung.lyceumreports.DataModels.Legacy.Summary.Summary;
+import com.thecattest.samsung.lyceumreports.Data.Legacy.Summary.Summary;
 import com.thecattest.samsung.lyceumreports.R;
 
 import java.util.ArrayList;

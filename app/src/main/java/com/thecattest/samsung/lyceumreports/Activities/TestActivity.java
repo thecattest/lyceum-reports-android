@@ -8,14 +8,14 @@ import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.thecattest.samsung.lyceumreports.DataModels.ApiService;
-import com.thecattest.samsung.lyceumreports.DataModels.DayWithAbsent;
-import com.thecattest.samsung.lyceumreports.DataModels.Group;
-import com.thecattest.samsung.lyceumreports.DataModels.GroupWithDaysAndStudents;
-import com.thecattest.samsung.lyceumreports.DataModels.Repositories.DayRepository;
-import com.thecattest.samsung.lyceumreports.DataModels.Repositories.GroupRepository;
-import com.thecattest.samsung.lyceumreports.DataModels.Repositories.StudentRepository;
-import com.thecattest.samsung.lyceumreports.DataModels.Student;
+import com.thecattest.samsung.lyceumreports.Data.ApiService;
+import com.thecattest.samsung.lyceumreports.Data.Models.DayWithAbsent;
+import com.thecattest.samsung.lyceumreports.Data.Models.Group;
+import com.thecattest.samsung.lyceumreports.Data.Models.GroupWithDaysAndStudents;
+import com.thecattest.samsung.lyceumreports.Data.Repositories.DayRepository;
+import com.thecattest.samsung.lyceumreports.Data.Repositories.GroupRepository;
+import com.thecattest.samsung.lyceumreports.Data.Repositories.StudentRepository;
+import com.thecattest.samsung.lyceumreports.Data.Models.Student;
 import com.thecattest.samsung.lyceumreports.Adapters.TestListViewAdapter;
 import com.thecattest.samsung.lyceumreports.DefaultCallback;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;

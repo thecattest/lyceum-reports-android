@@ -1,7 +1,6 @@
 package com.thecattest.samsung.lyceumreports.Adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,9 +9,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import com.thecattest.samsung.lyceumreports.DataModels.DayWithAbsent;
-import com.thecattest.samsung.lyceumreports.DataModels.GroupWithDaysAndStudents;
-import com.thecattest.samsung.lyceumreports.DataModels.Student;
+import com.thecattest.samsung.lyceumreports.Data.Models.DayWithAbsent;
+import com.thecattest.samsung.lyceumreports.Data.Models.GroupWithDaysAndStudents;
+import com.thecattest.samsung.lyceumreports.Data.Models.Student;
 
 import java.util.List;
 
