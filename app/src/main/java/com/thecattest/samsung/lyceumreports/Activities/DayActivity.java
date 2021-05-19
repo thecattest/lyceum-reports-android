@@ -340,7 +340,7 @@ public class DayActivity extends AppCompatActivity {
             currentDay.name = defaultGroupLabel;
             updateDayView();
         }
-        statusManager.setLoadingLayout(mainIsVisible);
+        statusManager.setLoadingLayout();
     }
 
     private void setLoadingStatus() {

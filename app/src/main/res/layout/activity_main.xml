@@ -22,11 +22,18 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <include
+        android:id="@+id/fragmentLoading"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_below="@id/topBar"
+        layout="@layout/fragment_loading"/>
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/topBar">
+        android:layout_below="@id/fragmentLoading">
         <ListView
             android:id="@+id/summaryList"
             android:layout_width="match_parent"
@@ -34,8 +41,6 @@
             tools:listitem="@layout/summary_card"
             android:divider="@null"/>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-    <include layout="@layout/fragment_loading"/>
 
     <include layout="@layout/fragment_server_error"/>
 

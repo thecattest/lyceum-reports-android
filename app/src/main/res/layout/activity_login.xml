@@ -21,12 +21,19 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <include
+        android:id="@+id/fragmentLoading"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_below="@id/topBar"
+        layout="@layout/fragment_loading"/>
+
     <RelativeLayout
         android:id="@+id/loginFormLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        android:layout_below="@id/topBar">
+        android:layout_below="@id/fragmentLoading">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/loginLayout"
@@ -80,7 +87,5 @@
 
         </ScrollView>
     </RelativeLayout>
-
-    <include layout="@layout/fragment_loading"/>
 
 </RelativeLayout>

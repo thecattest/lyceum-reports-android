@@ -27,7 +27,7 @@ public class StatusManager {
 
     public StatusManager(AppCompatActivity activity, View mainLayout) {
         this.mainLayout = mainLayout;
-        this.loadingLayout = activity.findViewById(R.id.loadingLayout);
+        this.loadingLayout = activity.findViewById(R.id.fragmentLoading);
     }
 
     public void saveToBundle(Bundle outState) {
@@ -62,15 +62,11 @@ public class StatusManager {
         serverErrorLayout.setVisibility(View.VISIBLE);
     }
 
-    public void setLoadingLayout(boolean mainIsVisible) {
-        mainLayout.setVisibility(mainIsVisible ? View.VISIBLE : View.GONE);
+    public void setLoadingLayout() {
+        mainLayout.setVisibility(View.VISIBLE);
         loadingLayout.setVisibility(View.VISIBLE);
         if (serverErrorUsed)
             serverErrorLayout.setVisibility(View.GONE);
-    }
-
-    public void setLoadingLayout() {
-        setLoadingLayout(false);
     }
 
     public void setMainLayout() {

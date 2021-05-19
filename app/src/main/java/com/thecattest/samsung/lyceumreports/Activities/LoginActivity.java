@@ -108,7 +108,7 @@ public class LoginActivity extends AppCompatActivity {
     public void onBackPressed() {}
 
     public void login(View v) {
-        statusManager.setLoadingLayout(true);
+        statusManager.setLoadingLayout();
 
         String loginString = Objects.requireNonNull(login.getText()).toString();
         String passwordString = Objects.requireNonNull(password.getText()).toString();

@@ -29,12 +29,19 @@
 
     </RelativeLayout>
 
+    <include
+        android:id="@+id/fragmentLoading"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_below="@id/header"
+        layout="@layout/fragment_loading"/>
+
     <RelativeLayout
         android:id="@+id/main"
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/header">
+        android:layout_below="@id/fragmentLoading">
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipeRefreshLayout"
@@ -84,8 +91,6 @@
         </RelativeLayout>
 
     </RelativeLayout>
-
-    <include layout="@layout/fragment_loading"/>
 
     <include layout="@layout/fragment_server_error"/>
 
