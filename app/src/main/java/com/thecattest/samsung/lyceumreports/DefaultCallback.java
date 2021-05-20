@@ -64,7 +64,9 @@ public abstract class DefaultCallback<T> implements Callback<T> {
 
     public abstract void onResponse200(Response<T> response);
 
-    public void onResponse401(Response<T> response) {};
+    public void onResponse401(Response<T> response) {
+        loginManager.handleNotAuthorized();
+    };
 
     public void onResponse500(Response<T> response) {
         Snackbar.make(

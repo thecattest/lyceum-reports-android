@@ -1,7 +1,9 @@
 package com.thecattest.samsung.lyceumreports.Activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
@@ -15,6 +17,7 @@ import com.thecattest.samsung.lyceumreports.Adapters.GroupsAdapter;
 import com.thecattest.samsung.lyceumreports.Data.ApiService;
 import com.thecattest.samsung.lyceumreports.Data.Models.Group;
 import com.thecattest.samsung.lyceumreports.Data.Models.GroupWithDaysAndStudents;
+import com.thecattest.samsung.lyceumreports.Data.Models.Permissions;
 import com.thecattest.samsung.lyceumreports.Data.Repositories.DayRepository;
 import com.thecattest.samsung.lyceumreports.Data.Repositories.GroupRepository;
 import com.thecattest.samsung.lyceumreports.Data.Repositories.StudentRepository;
@@ -42,53 +45,27 @@ public class MainActivity extends AppCompatActivity {
     private GroupRepository groupRepository;
     private ApiService apiService;
 
+    private Permissions permissions;
+
+    @SuppressLint("CheckResult")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        Intent i = new Intent(MainActivity.this, TestActivity.class);
-//        startActivity(i);
-//        finish();
-
         findViews();
         setListeners();
         initManagers();
         initRetrofit();
+        initRepositories();
 
-        StudentRepository studentRepository = new StudentRepository(this);
-        DayRepository dayRepository = new DayRepository(this, studentRepository);
-        groupRepository = new GroupRepository(this, dayRepository, studentRepository, apiService);
-
+        permissions = loginManager.getPermissions();
+        updateMenu();
+        update();
         groupRepository.get()
                 .subscribeOn(Schedulers.single())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(groupsWithDaysAndStudent -> updateView(new ArrayList<>(groupsWithDaysAndStudent)));
-
-//        if (summaryWithPermissions.getSummaryStringFromBundle(savedInstanceState) == null)
-//            updateSummary();
-    }
-
-//    @Override
-//    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-//        super.onRestoreInstanceState(savedInstanceState);
-//
-//        if(statusManager.loadFromBundle(savedInstanceState)) {
-//            summaryWithPermissions.loadFromBundle(savedInstanceState);
-//            updateSummaryView();
-//        }
-//    }
-
-//    @SuppressLint("MissingSuperCall")
-//    @Override
-//    protected void onSaveInstanceState(@NonNull Bundle outState) {
-//        summaryWithPermissions.saveToBundle(outState);
-//        statusManager.saveToBundle(outState);
-//    }
-
-    private void initRetrofit() {
-        Retrofit retrofit = RetrofitManager.getInstance(loginManager);
-        apiService = retrofit.create(ApiService.class);
     }
 
     private void findViews() {
@@ -105,6 +82,17 @@ public class MainActivity extends AppCompatActivity {
     private void initManagers() {
         loginManager = new LoginManager(this);
         statusManager = new StatusManager(this, swipeRefreshLayout, v -> update());
+    }
+
+    private void initRetrofit() {
+        Retrofit retrofit = RetrofitManager.getInstance(loginManager);
+        apiService = retrofit.create(ApiService.class);
+    }
+
+    private void initRepositories() {
+        StudentRepository studentRepository = new StudentRepository(this);
+        DayRepository dayRepository = new DayRepository(this, studentRepository);
+        groupRepository = new GroupRepository(this, dayRepository, studentRepository, apiService);
     }
 
     private void onRefresh() {
@@ -130,15 +118,22 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {}
 
     private void update() {
+        Log.d("MainActivity", "updating");
         statusManager.setLoadingLayout();
-        groupRepository.refreshGroups(this, loginManager, swipeRefreshLayout, () -> statusManager.setMainLayout());
+        swipeRefreshLayout.setRefreshing(true);
+        groupRepository.refreshGroups(this, loginManager, swipeRefreshLayout,
+                () -> {statusManager.setMainLayout(); swipeRefreshLayout.setRefreshing(false);
+        });
     }
 
     private void updateView(ArrayList<GroupWithDaysAndStudents> groups) {
-        GroupsAdapter groupsAdapter = new GroupsAdapter(this, groups, true);
+        GroupsAdapter groupsAdapter = new GroupsAdapter(this, groups, permissions.canEdit);
         groupsListView.setAdapter(groupsAdapter);
+    }
+
+    private void updateMenu() {
         Menu menu = toolbar.getMenu();
-        menu.findItem(R.id.daySummaryTable).setVisible(true);
+        menu.findItem(R.id.daySummaryTable).setVisible(permissions.canViewTable);
         toolbar.invalidate();
     }
 }

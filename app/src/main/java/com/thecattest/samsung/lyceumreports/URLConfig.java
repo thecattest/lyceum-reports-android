@@ -8,7 +8,8 @@ public class URLConfig {
     public static final String SUMMARY_DAY_ENDPOINT = "/api/summary/day/{date}";
     public static final String DAY_ENDPOINT = "/api/day/{groupId}";
 
-    public static final String GROUPS_LIST_ENDPOINT = "/api/v2/groups/";
-    public static final String GROUP_ENDPOINT = "/api/v2/groups/{group_id}/{date}";
-    public static final String DAYS_LIST_ENDPOINT = "/api/v2/days/";
+    public static final String V2_LOGIN_ENDPOINT = "/api/v2/login/";
+    public static final String V2_GROUPS_LIST_ENDPOINT = "/api/v2/groups/";
+    public static final String V2_GROUP_ENDPOINT = "/api/v2/groups/{group_id}/{date}";
+    public static final String V2_DAYS_LIST_ENDPOINT = "/api/v2/days/";
 }

@@ -15,7 +15,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
+import com.thecattest.samsung.lyceumreports.Data.ApiService;
 import com.thecattest.samsung.lyceumreports.Data.Legacy.Login.LoginService;
+import com.thecattest.samsung.lyceumreports.Data.Models.Permissions;
 import com.thecattest.samsung.lyceumreports.DefaultCallback;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
 import com.thecattest.samsung.lyceumreports.Managers.RetrofitManager;
@@ -39,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
     private LoginManager loginManager;
     private StatusManager statusManager;
 
-    private LoginService loginService;
+    private ApiService apiService;
 
     private boolean loginIsValid = false;
     private boolean passwordIsValid = false;
@@ -54,11 +56,6 @@ public class LoginActivity extends AppCompatActivity {
         initManagers();
         initRetrofit();
         updateButtonState();
-    }
-
-    private void initRetrofit() {
-        Retrofit retrofit = RetrofitManager.getInstance();
-        loginService = retrofit.create(LoginService.class);
     }
 
     private void findViews() {
@@ -104,6 +101,11 @@ public class LoginActivity extends AppCompatActivity {
         statusManager = new StatusManager(this, loginFormLayout);
     }
 
+    private void initRetrofit() {
+        Retrofit retrofit = RetrofitManager.getInstance();
+        apiService = retrofit.create(ApiService.class);
+    }
+
     @Override
     public void onBackPressed() {}
 
@@ -113,10 +115,10 @@ public class LoginActivity extends AppCompatActivity {
         String loginString = Objects.requireNonNull(login.getText()).toString();
         String passwordString = Objects.requireNonNull(password.getText()).toString();
 
-        Call<Void> call = loginService.login(loginString, passwordString);
-        call.enqueue(new DefaultCallback<Void>(this, loginManager, scrollView) {
+        Call<Permissions> call = apiService.login(loginString, passwordString);
+        call.enqueue(new DefaultCallback<Permissions>(this, loginManager, scrollView) {
             @Override
-            public void onResponse200(Response<Void> response) {
+            public void onResponse200(Response<Permissions> response) {
                 Snackbar.make(
                         scrollView,
                         R.string.snackbar_authorization_successful,
@@ -124,8 +126,10 @@ public class LoginActivity extends AppCompatActivity {
                 ).show();
 
                 String cookies = response.headers().get("Set-Cookie");
-                if(!cookies.isEmpty())
+                if(!cookies.isEmpty()) {
                     loginManager.setCookie(cookies);
+                    loginManager.setPermissions(response.body());
+                }
 
                 Intent i = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(i);
@@ -133,7 +137,7 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onResponse401(Response<Void> response) {
+            public void onResponse401(Response<Permissions> response) {
                 Snackbar.make(
                         scrollView,
                         R.string.snackbar_wrong_login_password,
@@ -141,7 +145,7 @@ public class LoginActivity extends AppCompatActivity {
                 ).show();
             }
 
-            public void onResponseFailure(Call<Void> call, Throwable t) {
+            public void onResponseFailure(Call<Permissions> call, Throwable t) {
                 Snackbar.make(
                         scrollView,
                         R.string.snackbar_server_error,
