@@ -2,22 +2,18 @@ package com.thecattest.samsung.lyceumreports.Data.Repositories;
 
 import android.content.Context;
 
-import androidx.annotation.NonNull;
-
 import com.thecattest.samsung.lyceumreports.Data.AppDatabase;
 import com.thecattest.samsung.lyceumreports.Data.Dao.DayDao;
 import com.thecattest.samsung.lyceumreports.Data.Models.Day;
-import com.thecattest.samsung.lyceumreports.Data.Models.DayAbsentCrossRef;
-import com.thecattest.samsung.lyceumreports.Data.Models.DayWithAbsent;
+import com.thecattest.samsung.lyceumreports.Data.Models.Relations.DayAbsentCrossRef;
+import com.thecattest.samsung.lyceumreports.Data.Models.Relations.DayWithAbsent;
 import com.thecattest.samsung.lyceumreports.Data.Models.Student;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import io.reactivex.Flowable;
-import io.reactivex.MaybeObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class DayRepository {
@@ -35,6 +31,10 @@ public class DayRepository {
 
     public Flowable<List<DayWithAbsent>> get() {
         return days;
+    }
+
+    public Flowable<List<DayWithAbsent>> getByGroupIdAndDate(int groupId, String date) {
+        return dayDao.getByGroupIdAndDate(groupId, date);
     }
 
     public void insert(List<Day> days) {
@@ -76,6 +76,35 @@ public class DayRepository {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(AppDatabase.getDefaultObserver());
         dayDao.deleteByGroupIds(groupIds)
+                .subscribeOn(Schedulers.single())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(AppDatabase.getDefaultObserver());
+    }
+
+    public void deleteByGroupIdAndDate(int groupId, String date) {
+        dayDao.deleteRefsByGroupIdAndDate(groupId, date)
+                .subscribeOn(Schedulers.single())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(AppDatabase.getDefaultObserver());
+        dayDao.deleteByGroupIdAndDate(groupId, date)
+                .subscribeOn(Schedulers.single())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(AppDatabase.getDefaultObserver());
+    }
+
+    public void deleteByGroupIdsAndDates(List<Integer> groupIds, List<String> dates) {
+        dayDao.deleteRefsByGroupIdsAndDates(groupIds, dates)
+                .subscribeOn(Schedulers.single())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(AppDatabase.getDefaultObserver());
+        dayDao.deleteByGroupIdsAndDates(groupIds, dates)
+                .subscribeOn(Schedulers.single())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(AppDatabase.getDefaultObserver());
+    }
+
+    public void deleteAllButGroupIds(List<Integer> groupIds) {
+        dayDao.deleteAllRefsButGroupIds(groupIds)
                 .subscribeOn(Schedulers.single())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(AppDatabase.getDefaultObserver());

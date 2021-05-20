@@ -1,4 +1,4 @@
-package com.thecattest.samsung.lyceumreports.Data.Models;
+package com.thecattest.samsung.lyceumreports.Data.Models.Relations;
 
 import androidx.room.Entity;
 import androidx.room.Index;

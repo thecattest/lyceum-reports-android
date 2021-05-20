@@ -3,8 +3,8 @@ package com.thecattest.samsung.lyceumreports.Activities;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -17,19 +17,23 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.thecattest.samsung.lyceumreports.Adapters.StudentsAdapter;
-import com.thecattest.samsung.lyceumreports.Data.Legacy.Day.Day;
-import com.thecattest.samsung.lyceumreports.Data.Legacy.Day.DayPost;
-import com.thecattest.samsung.lyceumreports.Data.Legacy.Day.DayService;
-import com.thecattest.samsung.lyceumreports.Data.Legacy.Day.Student;
-import com.thecattest.samsung.lyceumreports.DefaultCallback;
+import com.thecattest.samsung.lyceumreports.Data.ApiService;
+import com.thecattest.samsung.lyceumreports.Data.Models.Relations.DayWithAbsent;
+import com.thecattest.samsung.lyceumreports.Data.Models.Relations.GroupWithStudents;
+import com.thecattest.samsung.lyceumreports.Data.Models.Student;
+import com.thecattest.samsung.lyceumreports.Data.Repositories.DayRepository;
+import com.thecattest.samsung.lyceumreports.Data.Repositories.GroupRepository;
+import com.thecattest.samsung.lyceumreports.Data.Repositories.StudentRepository;
 import com.thecattest.samsung.lyceumreports.Managers.DatePickerManager;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
 import com.thecattest.samsung.lyceumreports.Managers.RetrofitManager;
 import com.thecattest.samsung.lyceumreports.Managers.StatusManager;
 import com.thecattest.samsung.lyceumreports.R;
 
-import retrofit2.Call;
-import retrofit2.Response;
+import java.util.ArrayList;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 
 public class DayActivity extends AppCompatActivity {
@@ -50,15 +54,12 @@ public class DayActivity extends AppCompatActivity {
     private StatusManager statusManager;
     private DatePickerManager datePickerManager;
 
-    private Day currentDay = new Day();
     private StudentsAdapter studentsAdapter;
-
-    private DayService dayService;
-    private Call<Void> dataUpdateCall = null;
-    private Call<Day> dataGetCall = null;
+    private GroupRepository groupRepository;
+    private DayRepository dayRepository;
+    private ApiService apiService;
 
     private int groupId;
-    private String defaultGroupLabel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,32 +70,25 @@ public class DayActivity extends AppCompatActivity {
         setListeners();
         initManagers();
         initRetrofit();
+        initRepositories();
 
         groupId = getIntent().getIntExtra(GROUP_ID, 6);
-        defaultGroupLabel = getIntent().getStringExtra(GROUP_LABEL);
-        currentDay.name = defaultGroupLabel;
-        updateDayView();
+        String groupLabel = getIntent().getStringExtra(GROUP_LABEL);
+        classLabel.setText(groupLabel);
+
+        updateSource();
     }
 
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-
         datePickerManager.loadFromBundle(savedInstanceState);
-        if (statusManager.loadFromBundle(savedInstanceState)) {
-            currentDay.loadFromBundle(savedInstanceState);
-            updateDayView();
-        } else {
-            updateSwipeRefreshLayout();
-        }
     }
 
     @SuppressLint("MissingSuperCall")
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
-        currentDay.saveToBundle(outState);
         datePickerManager.saveToBundle(outState);
-        statusManager.saveToBundle(outState);
     }
 
     private void findViews() {
@@ -109,13 +103,8 @@ public class DayActivity extends AppCompatActivity {
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
     }
 
-    private void initRetrofit() {
-        Retrofit retrofit = RetrofitManager.getInstance(loginManager);
-        dayService = retrofit.create(DayService.class);
-    }
-
     private void setListeners() {
-        studentsListView.setOnItemClickListener(this::onStudentItemClick);
+//        studentsListView.setOnItemClickListener(this::onStudentItemClick);
         confirmButton.setOnClickListener(this::onConfirmButtonClick);
         cancelButton.setOnClickListener(this::onCancelButtonClick);
         swipeRefreshLayout.setOnRefreshListener(this::onRefresh);
@@ -124,200 +113,177 @@ public class DayActivity extends AppCompatActivity {
     private void initManagers() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         loginManager = new LoginManager(this);
-        statusManager = new StatusManager(this, mainLayout, v -> {updateDay();});
+        statusManager = new StatusManager(this, mainLayout, v -> {
+            update();});
         datePickerManager = new DatePickerManager(
                 this,
                 datePickerTrigger,
                 fragmentManager,
-                this::updateDay);
+                this::updateSource);
     }
 
-    // Students list item click
-    public void onStudentItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Student student = (Student)parent.getItemAtPosition(position);
-        student.absent = !student.absent;
-        studentsAdapter.notifyDataSetChanged();
-        updateConfirmButton();
+    private void initRetrofit() {
+        Retrofit retrofit = RetrofitManager.getInstance(loginManager);
+        apiService = retrofit.create(ApiService.class);
     }
 
-    // Refresh action
+    private void initRepositories() {
+        StudentRepository studentRepository = new StudentRepository(this);
+        dayRepository = new DayRepository(this, studentRepository);
+        groupRepository = new GroupRepository(this, dayRepository, studentRepository, apiService);
+    }
+
+//    public void onStudentItemClick(AdapterView<?> parent, View view, int position, long id) {
+//        Student student = (Student)parent.getItemAtPosition(position);
+//        student.absent = !student.absent;
+//        studentsAdapter.notifyDataSetChanged();
+//        updateConfirmButton();
+//    }
+
     public void onRefresh() {
-        updateDay();
-        swipeRefreshLayout.setRefreshing(false);
+        update();
     }
 
-    @Override
-    public void onBackPressed() {
-        if (!cancelDataGetCall() && !cancelDataUpdateCall()) {
-            Intent i = new Intent(DayActivity.this, MainActivity.class);
-            startActivity(i);
-            finish();
-        }
-    }
-
-    // Cancel button click
     public void onCancelButtonClick(View v) {
         onBackPressed();
     }
 
-    // Confirm button click
+    @Override
+    public void onBackPressed() {
+        Intent i = new Intent(DayActivity.this, MainActivity.class);
+        startActivity(i);
+        finish();
+    }
+
     public void onConfirmButtonClick(View v) {
-        v.setEnabled(false);
-        datePickerManager.setEnabled(false);
-        setLoadingStatus(true);
-
-        String formattedDate = datePickerManager.getDate();
-        String absentStudentsIdsString = currentDay.getAbsentStudentsIdsString();
-
-        Call<Void> call = dayService.updateDay(groupId, new DayPost(formattedDate, absentStudentsIdsString));
-        dataUpdateCall = call;
-        call.enqueue(new DefaultCallback<Void>(this, loginManager, mainLayout) {
-            @Override
-            public void onResponse200(Response<Void> response) {
-                Snackbar.make(
-                        mainLayout,
-                        R.string.snackbar_server_ok,
-                        Snackbar.LENGTH_SHORT
-                ).setAnchorView(buttonsGroup).show();
-                updateDay();
-            }
-
-            @Override
-            public void onResponse500(Response<Void> response) {
-                Snackbar.make(
-                        mainLayout,
-                        R.string.snackbar_server_error_code_500,
-                        Snackbar.LENGTH_LONG
-                ).setAnchorView(buttonsGroup).show();
-                statusManager.setMainLayout();
-            }
-
-            public void onResponseFailure(Call<Void> call, Throwable t) {
-                if (call.isCanceled()) {
-                    statusManager.setMainLayout();
-                    Snackbar.make(
-                            mainLayout,
-                            R.string.snackbar_request_cancelled,
-                            Snackbar.LENGTH_LONG
-                    ).setAnchorView(buttonsGroup).show();
-                } else {
-                    Snackbar.make(
-                            mainLayout,
-                            R.string.snackbar_server_error,
-                            Snackbar.LENGTH_LONG
-                    ).show();
-                }
-            }
-
-            @Override
-            public void onPostExecute() {
-                v.setEnabled(true);
-                datePickerManager.setEnabled(true);
-                dataUpdateCall = null;
-            }
-        });
+//        v.setEnabled(false);
+//        datePickerManager.setEnabled(false);
+//        statusManager.setLoadingLayout();
+//
+//        String formattedDate = datePickerManager.getDate();
+//        String absentStudentsIdsString = currentDay.getAbsentStudentsIdsString();
+//
+//        Call<Void> call = dayService.updateDay(groupId, new DayPost(formattedDate, absentStudentsIdsString));
+//        call.enqueue(new DefaultCallback<Void>(this, loginManager, mainLayout) {
+//            @Override
+//            public void onResponse200(Response<Void> response) {
+//                Snackbar.make(
+//                        mainLayout,
+//                        R.string.snackbar_server_ok,
+//                        Snackbar.LENGTH_SHORT
+//                ).setAnchorView(buttonsGroup).show();
+//                update();
+//            }
+//
+//            @Override
+//            public void onResponse500(Response<Void> response) {
+//                Snackbar.make(
+//                        mainLayout,
+//                        R.string.snackbar_server_error_code_500,
+//                        Snackbar.LENGTH_LONG
+//                ).setAnchorView(buttonsGroup).show();
+//                statusManager.setMainLayout();
+//            }
+//
+//            public void onResponseFailure(Call<Void> call, Throwable t) {
+//                if (call.isCanceled()) {
+//                    statusManager.setMainLayout();
+//                    Snackbar.make(
+//                            mainLayout,
+//                            R.string.snackbar_request_cancelled,
+//                            Snackbar.LENGTH_LONG
+//                    ).setAnchorView(buttonsGroup).show();
+//                } else {
+//                    Snackbar.make(
+//                            mainLayout,
+//                            R.string.snackbar_server_error,
+//                            Snackbar.LENGTH_LONG
+//                    ).show();
+//                }
+//            }
+//
+//            @Override
+//            public void onPostExecute() {
+//                v.setEnabled(true);
+//                datePickerManager.setEnabled(true);
+//            }
+//        });
     }
 
-    private boolean cancelDataUpdateCall() {
-        if (dataUpdateCall == null)
-            return false;
-        dataUpdateCall.cancel();
-        dataUpdateCall = null;
-        String formattedDate = datePickerManager.getDate();
-        String absentStudentsIdsString = currentDay.getLoadedAbsentStudentsIdsString();
-        Call<Void> call = dayService.updateDay(groupId, new DayPost(formattedDate, absentStudentsIdsString));
-        call.enqueue(new DefaultCallback<Void>(this, loginManager, mainLayout) {
-            @Override
-            public void onResponse200(Response<Void> response) {}
-
-            @Override
-            public void onResponseFailure(Call<Void> call, Throwable t) {}
-        });
-        return true;
+    @SuppressLint("CheckResult")
+    private void updateSource() {
+        Log.d("Groups", "updating source");
+        groupRepository.getById(groupId)
+                .subscribeOn(Schedulers.single())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        dbGroups -> updateView(new ArrayList<>(dbGroups)));
+        if (datePickerManager.isEmpty())
+            return;
+        dayRepository.getByGroupIdAndDate(groupId, datePickerManager.getDate())
+                .subscribeOn(Schedulers.single())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(dbDays -> updateDay(new ArrayList<>(dbDays)));
     }
 
-    private void updateDay() {
-        setLoadingStatus();
+    private void update() {
+        statusManager.setLoadingLayout();
         datePickerManager.setEnabled(false);
 
         String formattedDate = datePickerManager.getDate();
-
-        Call<Day> call = dayService.getDay(groupId, formattedDate);
-        dataGetCall = call;
-        call.enqueue(new DefaultCallback<Day>(this, loginManager, mainLayout) {
-            @Override
-            public void onResponse200(Response<Day> response) {
-                currentDay = response.body();
-                currentDay.updateLoadedAbsent();
-                updateDayView();
-            }
-
-            @Override
-            public void onResponse500(Response<Day> response) {
-                super.onResponse500(response);
-                statusManager.setServerErrorLayout();
-            }
-
-            public void onResponseFailure(Call<Day> call, Throwable t) {
-                if (call.isCanceled()) {
+        groupRepository.refreshGroup(getApplicationContext(), loginManager,
+                mainLayout, () -> {
+                    datePickerManager.setEnabled(true);
+                    swipeRefreshLayout.setRefreshing(false);
                     statusManager.setMainLayout();
-                    Snackbar.make(
-                            mainLayout,
-                            R.string.snackbar_request_cancelled,
-                            Snackbar.LENGTH_LONG
-                    ).show();
-                } else {
-                    statusManager.setServerErrorLayout();
-                    Snackbar.make(
-                            mainLayout,
-                            R.string.snackbar_server_error,
-                            Snackbar.LENGTH_LONG
-                    ).show();
-                }
-            }
-
-            @Override
-            public void onPostExecute() {
-                dataGetCall = null;
-                datePickerManager.setEnabled(true);
-            }
-        });
+                }, groupId, formattedDate);
     }
 
-    private boolean cancelDataGetCall() {
-        if (dataGetCall == null)
-            return false;
-        dataGetCall.cancel();
-        dataGetCall = null;
-        return true;
-    }
-
-    private void updateDayView() {
+    @SuppressLint("CheckResult")
+    private void updateView(ArrayList<GroupWithStudents> groups) {
         statusManager.setMainLayout();
-        classLabel.setText(currentDay.name);
-        updateStudentsAdapterData();
+        Log.d("Groups", groups.toString());
+        if (groups.isEmpty()) {
+            updateStudentsAdapterData(new GroupWithStudents());
+            buttonsGroup.setVisibility(View.GONE);
+        } else {
+            GroupWithStudents group = groups.get(0);
 
-        updateConfirmButton();
+            Log.d("Groups", group.group.toString());
+            Log.d("Groups", group.students.toString());
+
+            updateStudentsAdapterData(group);
+
+            classLabel.setText(group.group.getLabel());
+            buttonsGroup.setVisibility(View.VISIBLE);
+        }
         updateSwipeRefreshLayout();
+    }
 
-        if (currentDay.noInfo()) {
+    private void updateDay(ArrayList<DayWithAbsent> days) {
+        DayWithAbsent day = new DayWithAbsent();
+        if (days.isEmpty()) {
             Snackbar.make(
                     mainLayout,
                     R.string.snackbar_no_info,
                     Snackbar.LENGTH_LONG
             ).setAnchorView(buttonsGroup).show();
-        } else if (currentDay.noLoadedAbsent()) {
-            Snackbar.make(
+        } else {
+            day = days.get(0);
+            if (day.absent.isEmpty())
+                Snackbar.make(
                     mainLayout,
                     R.string.snackbar_no_absent,
                     Snackbar.LENGTH_LONG
             ).setAnchorView(buttonsGroup).show();
         }
-        buttonsGroup.setVisibility(currentDay.isEmpty() ? View.GONE : View.VISIBLE);
+        studentsAdapter.updateDay(day);
     }
 
-    private void updateStudentsAdapterData() {
-        studentsAdapter = new StudentsAdapter(this, currentDay.students);
+    private void updateStudentsAdapterData(GroupWithStudents group) {
+        if (group.students == null)
+            return;
+        studentsAdapter = new StudentsAdapter(this, group);
         studentsListView.setAdapter(studentsAdapter);
     }
 
@@ -326,24 +292,11 @@ public class DayActivity extends AppCompatActivity {
     }
 
     private void updateConfirmButton() {
-        confirmButton.setVisibility(currentDay.canEdit ? View.VISIBLE : View.GONE);
-        confirmButton.setEnabled(!currentDay.noChanges() || currentDay.noInfo());
-        if (currentDay.noCurrentAbsent())
-            confirmButton.setText(getResources().getString(R.string.button_submit_day_no_one_absent));
-        else
-            confirmButton.setText(getResources().getString(R.string.button_submit_day_default));
-    }
-
-    private void setLoadingStatus(boolean mainIsVisible) {
-        if (!mainIsVisible) {
-            currentDay = new Day();
-            currentDay.name = defaultGroupLabel;
-            updateDayView();
-        }
-        statusManager.setLoadingLayout();
-    }
-
-    private void setLoadingStatus() {
-        setLoadingStatus(false);
+//        confirmButton.setVisibility(currentDay.canEdit ? View.VISIBLE : View.GONE);
+//        confirmButton.setEnabled(!currentDay.noChanges() || currentDay.noInfo());
+//        if (currentDay.noCurrentAbsent())
+//            confirmButton.setText(getResources().getString(R.string.button_submit_day_no_one_absent));
+//        else
+//            confirmButton.setText(getResources().getString(R.string.button_submit_day_default));
     }
 }

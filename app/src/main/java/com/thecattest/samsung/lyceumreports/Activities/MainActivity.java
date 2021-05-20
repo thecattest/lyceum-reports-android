@@ -3,7 +3,6 @@ package com.thecattest.samsung.lyceumreports.Activities;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
@@ -15,8 +14,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.thecattest.samsung.lyceumreports.Adapters.GroupsAdapter;
 import com.thecattest.samsung.lyceumreports.Data.ApiService;
-import com.thecattest.samsung.lyceumreports.Data.Models.Group;
-import com.thecattest.samsung.lyceumreports.Data.Models.GroupWithDaysAndStudents;
+import com.thecattest.samsung.lyceumreports.Data.Models.Relations.GroupWithDaysAndStudents;
 import com.thecattest.samsung.lyceumreports.Data.Models.Permissions;
 import com.thecattest.samsung.lyceumreports.Data.Repositories.DayRepository;
 import com.thecattest.samsung.lyceumreports.Data.Repositories.GroupRepository;
@@ -28,7 +26,6 @@ import com.thecattest.samsung.lyceumreports.R;
 
 import java.util.ArrayList;
 
-import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
@@ -61,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
         permissions = loginManager.getPermissions();
         updateMenu();
-        update();
+//        update();
         groupRepository.get()
                 .subscribeOn(Schedulers.single())
                 .observeOn(AndroidSchedulers.mainThread())

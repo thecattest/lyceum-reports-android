@@ -11,12 +11,9 @@ import com.thecattest.samsung.lyceumreports.Data.Dao.DayDao;
 import com.thecattest.samsung.lyceumreports.Data.Dao.GroupDao;
 import com.thecattest.samsung.lyceumreports.Data.Dao.StudentDao;
 import com.thecattest.samsung.lyceumreports.Data.Models.Day;
-import com.thecattest.samsung.lyceumreports.Data.Models.DayAbsentCrossRef;
+import com.thecattest.samsung.lyceumreports.Data.Models.Relations.DayAbsentCrossRef;
 import com.thecattest.samsung.lyceumreports.Data.Models.Group;
 import com.thecattest.samsung.lyceumreports.Data.Models.Student;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import io.reactivex.MaybeObserver;
 import io.reactivex.disposables.Disposable;

@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
@@ -13,11 +14,16 @@ import com.thecattest.samsung.lyceumreports.R;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity(tableName = "days")
+@Entity(tableName = "days",
+        indices = {
+        @Index(
+                value = {"group_id", "date"},
+                unique = true)
+})
 public class Day {
     @SerializedName("id")
     @ColumnInfo(name = "did")
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     public int did;
 
     @SerializedName("date")
@@ -29,7 +35,7 @@ public class Day {
     public int groupId;
 
     @Ignore
-    public ArrayList<Student> absent;
+    public ArrayList<Student> absent = new ArrayList<>();
 
     public String getAbsentStudentsString(Context context, List<Student> absent) {
         if (absent.size() != 0) {

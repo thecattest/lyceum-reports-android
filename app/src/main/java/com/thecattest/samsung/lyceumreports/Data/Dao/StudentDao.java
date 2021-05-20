@@ -25,6 +25,9 @@ public interface StudentDao {
     @Query("DELETE FROM students WHERE group_id in (:groupIds)")
     Maybe<Void> deleteByGroupIds(List<Integer> groupIds);
 
+    @Query("DELETE FROM students WHERE group_id NOT in (:groupIds)")
+    Maybe<Void> deleteAllButGroupIds(List<Integer> groupIds);
+
     @Transaction
     @Query("SELECT * FROM students")
     Flowable<List<Student>> get();

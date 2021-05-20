@@ -13,8 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.thecattest.samsung.lyceumreports.Activities.DayActivity;
-import com.thecattest.samsung.lyceumreports.Data.Models.DayWithAbsent;
-import com.thecattest.samsung.lyceumreports.Data.Models.GroupWithDaysAndStudents;
+import com.thecattest.samsung.lyceumreports.Data.Models.Relations.DayWithAbsent;
+import com.thecattest.samsung.lyceumreports.Data.Models.Relations.GroupWithDaysAndStudents;
 import com.thecattest.samsung.lyceumreports.R;
 
 import java.util.ArrayList;
@@ -58,12 +58,12 @@ public class GroupsAdapter extends ArrayAdapter<GroupWithDaysAndStudents> {
             convertView.setEnabled(false);
         }
 
-        String todayServerFormatDate = group.getTodayDateServerFormat(getContext());
-        String yesterdayServerFormatDate = group.getYesterdayDateServerFormat(getContext());
+        String todayServerFormatDate = group.group.getTodayDateServerFormat(getContext());
+        String yesterdayServerFormatDate = group.group.getYesterdayDateServerFormat(getContext());
 
         String absentDefault = getContext().getString(R.string.summary_status_no_info);
-        todayDate.setText(group.getHumanDate(getContext(), todayServerFormatDate));
-        yesterdayDate.setText(group.getHumanDate(getContext(), yesterdayServerFormatDate));
+        todayDate.setText(group.group.getHumanDate(getContext(), todayServerFormatDate));
+        yesterdayDate.setText(group.group.getHumanDate(getContext(), yesterdayServerFormatDate));
         todayAbsent.setText(absentDefault);
         yesterdayAbsent.setText(absentDefault);
 

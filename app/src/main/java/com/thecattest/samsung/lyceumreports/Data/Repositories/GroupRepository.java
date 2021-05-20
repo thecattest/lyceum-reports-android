@@ -8,9 +8,9 @@ import com.thecattest.samsung.lyceumreports.Data.ApiService;
 import com.thecattest.samsung.lyceumreports.Data.AppDatabase;
 import com.thecattest.samsung.lyceumreports.Data.Dao.GroupDao;
 import com.thecattest.samsung.lyceumreports.Data.Models.Day;
-import com.thecattest.samsung.lyceumreports.Data.Models.DayWithAbsent;
 import com.thecattest.samsung.lyceumreports.Data.Models.Group;
-import com.thecattest.samsung.lyceumreports.Data.Models.GroupWithDaysAndStudents;
+import com.thecattest.samsung.lyceumreports.Data.Models.Relations.GroupWithDaysAndStudents;
+import com.thecattest.samsung.lyceumreports.Data.Models.Relations.GroupWithStudents;
 import com.thecattest.samsung.lyceumreports.Data.Models.Student;
 import com.thecattest.samsung.lyceumreports.DefaultCallback;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
@@ -50,6 +50,10 @@ public class GroupRepository {
 
     public Flowable<List<GroupWithDaysAndStudents>> get() { return groups; }
 
+    public Flowable<List<GroupWithStudents>> getById(int groupId) {
+        return groupDao.getById(groupId);
+    }
+
     public void refreshGroups(Context context, LoginManager loginManager,
                               View mainLayout, DefaultCallback.OnPost onPost) {
         Call<ArrayList<Group>> groupsRefreshCall = apiService.getGroups();
@@ -69,20 +73,57 @@ public class GroupRepository {
             }
 
             @Override
-            public void onPostExecute() {
-                onPost.execute();
-            }
+            public void onPostExecute() { onPost.execute(); }
         });
+    }
+
+    public void refreshGroup(Context context, LoginManager loginManager,
+                             View mainLayout, DefaultCallback.OnPost onPost,
+                             int groupId, String date) {
+        Call<Group> groupRefreshCall = apiService.getGroup(groupId, date);
+        groupRefreshCall.enqueue(new DefaultCallback<Group>(context, loginManager, mainLayout) {
+            @Override
+            public void onResponse200(Response<Group> response) {
+                insert(response.body());
+            }
+
+            @Override
+            public void onResponseFailure(Call<Group> call, Throwable t) {
+                Snackbar.make(
+                        mainLayout,
+                        R.string.snackbar_server_error,
+                        Snackbar.LENGTH_LONG
+                ).show();
+            }
+
+            @Override
+            public void onPostExecute() { onPost.execute(); }
+        });
+    }
+
+    public void insert(Group group) {
+        studentRepository.insert(group.students);
+        dayRepository.insert(group.days);
+        groupDao.insert(group)
+                .subscribeOn(Schedulers.single())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(AppDatabase.getDefaultObserver());
     }
 
     public void insert(List<Group> groups) {
         LinkedList<Student> students = new LinkedList<>();
         LinkedList<Day> days = new LinkedList<>();
+        LinkedList<Integer> groupIds = new LinkedList<>();
+        LinkedList<String> dates = new LinkedList<>();
         for (Group group : groups) {
+            groupIds.add(group.gid);
             days.addAll(group.days);
+            for (Day day : days)
+                dates.add(day.date);
             students.addAll(group.students);
         }
-        deleteAll();
+        deleteByIdsAndDates(groupIds, dates);
+        deleteAllButIds(groupIds);
         studentRepository.insert(students);
         dayRepository.insert(days);
         groupDao.insert(groups)
@@ -91,19 +132,39 @@ public class GroupRepository {
                 .subscribe(AppDatabase.getDefaultObserver());
     }
 
-    public void deleteAll() {
-        studentRepository.deleteAll();
-        dayRepository.deleteAll();
-        groupDao.deleteAll()
+    public void deleteByIdAndDate(int groupId, String date) {
+        ArrayList<Integer> groupIds = new ArrayList<>();
+        groupIds.add(groupId);
+        studentRepository.deleteByGroupIds(groupIds);
+        dayRepository.deleteByGroupIdAndDate(groupId, date);
+        groupDao.deleteById(groupId)
                 .subscribeOn(Schedulers.single())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(AppDatabase.getDefaultObserver());
     }
 
-    public void deleteByIds(List<Integer> groupIds) {
+    public void deleteByIdsAndDates(List<Integer> groupIds, List<String> dates) {
         studentRepository.deleteByGroupIds(groupIds);
-        dayRepository.deleteByGroupIds(groupIds);
+        dayRepository.deleteByGroupIdsAndDates(groupIds, dates);
         groupDao.deleteByIds(groupIds)
+                .subscribeOn(Schedulers.single())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(AppDatabase.getDefaultObserver());
+    }
+
+//    public void deleteAll() {
+//        studentRepository.deleteAll();
+//        dayRepository.deleteAll();
+//        groupDao.deleteAll()
+//                .subscribeOn(Schedulers.single())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(AppDatabase.getDefaultObserver());
+//    }
+
+    public void deleteAllButIds(List<Integer> groupIds) {
+        studentRepository.deleteAllButGroupIds(groupIds);
+        dayRepository.deleteAllButGroupIds(groupIds);
+        groupDao.deleteAllButIds(groupIds)
                 .subscribeOn(Schedulers.single())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(AppDatabase.getDefaultObserver());
