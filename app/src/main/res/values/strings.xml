@@ -47,6 +47,7 @@
 
     <!-- Date -->
     <string name="date_format">yyyy-MM-dd</string>
+    <string name="button_refresh">Обновить</string>
     <string-array name="date_months_shortened">
         <item />
         <item>янв</item>

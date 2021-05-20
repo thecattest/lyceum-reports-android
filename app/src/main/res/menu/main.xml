@@ -2,6 +2,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/refresh"
+        android:title="@string/button_refresh"
+        android:icon="@drawable/ic_refresh_24"
+        android:contentDescription="@string/button_refresh"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/daySummaryTable"
         android:title="@string/title_summary_day"
         android:icon="@drawable/ic_table_24"

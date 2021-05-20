@@ -97,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void onRefresh() {
         update();
-        swipeRefreshLayout.setRefreshing(false);
     }
 
     private boolean onMenuItemClick(MenuItem item) {
@@ -110,6 +109,9 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(i);
                 finish();
                 return true;
+            case R.id.refresh:
+                update();
+                return true;
         }
         return false;
     }
@@ -118,9 +120,7 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {}
 
     private void update() {
-        Log.d("MainActivity", "updating");
         statusManager.setLoadingLayout();
-        swipeRefreshLayout.setRefreshing(true);
         groupRepository.refreshGroups(this, loginManager, swipeRefreshLayout,
                 () -> {statusManager.setMainLayout(); swipeRefreshLayout.setRefreshing(false);
         });
