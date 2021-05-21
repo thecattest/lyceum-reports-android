@@ -50,13 +50,9 @@ public class DatePickerManager {
         datePicker.addOnPositiveButtonClickListener(this::onPositiveDatePickerButtonClick);
     }
 
-    public void showDatePicker() {
+    public void showDatePicker(View v) {
         if (enabled)
             datePicker.show(fragmentManager, TAG);
-    }
-
-    public void showDatePicker(View v) {
-        showDatePicker();
     }
 
     private void onPositiveDatePickerButtonClick(Long selection) {
