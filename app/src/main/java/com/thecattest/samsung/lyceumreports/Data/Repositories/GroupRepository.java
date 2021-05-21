@@ -1,6 +1,7 @@
 package com.thecattest.samsung.lyceumreports.Data.Repositories;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -35,16 +36,19 @@ public class GroupRepository {
 
     private final Context context;
     private final LoginManager loginManager;
+    private final View mainLayout;
     private final ApiService apiService;
 
     public GroupRepository(Context context,
                            LoginManager loginManager,
+                           View mainLayout,
                            DayRepository dayRepository,
                            StudentRepository studentRepository,
                            ApiService apiService) {
         AppDatabase db = AppDatabase.getInstance(context);
         this.context = context;
         this.loginManager = loginManager;
+        this.mainLayout = mainLayout;
         this.dayRepository = dayRepository;
         this.studentRepository = studentRepository;
         this.apiService = apiService;
@@ -55,8 +59,7 @@ public class GroupRepository {
 
     public Maybe<GroupWithStudents> getById(int groupId) { return groupDao.getById(groupId); }
 
-    public void refreshGroups(View mainLayout,
-                              DefaultCallback.OnPost onPost, DefaultCallback.OnPost onSuccess) {
+    public void refreshGroups(DefaultCallback.OnPost onPost, DefaultCallback.OnPost onSuccess) {
         Call<ArrayList<Group>> groupsRefreshCall = apiService.getGroups();
         groupsRefreshCall.enqueue(new DefaultCallback<ArrayList<Group>>(context, loginManager, mainLayout) {
             @Override
@@ -83,8 +86,7 @@ public class GroupRepository {
         });
     }
 
-    public void refreshGroup(View mainLayout,
-                             DefaultCallback.OnPost onPost, DefaultCallback.OnPost onSuccess,
+    public void refreshGroup(DefaultCallback.OnPost onPost, DefaultCallback.OnPost onSuccess,
                              int groupId, String date) {
         Call<Group> groupRefreshCall = apiService.getGroup(groupId, date);
         groupRefreshCall.enqueue(new DefaultCallback<Group>(context, loginManager, mainLayout) {
@@ -97,6 +99,34 @@ public class GroupRepository {
             @Override
             public void onResponseFailure(Call<Group> call, Throwable t) {
                 Toast.makeText(context, R.string.snackbar_server_error, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onPostExecute() { onPost.execute(); }
+        });
+    }
+
+    public void refreshDaySummary(DefaultCallback.OnPost onPost, DefaultCallback.OnPost onSuccess,
+                                  String date) {
+        Call<ArrayList<Group>> refreshDaySummary = apiService.getDaySummary(date);
+        refreshDaySummary.enqueue(new DefaultCallback<ArrayList<Group>>(context, loginManager, mainLayout) {
+            @Override
+            public void onResponse200(Response<ArrayList<Group>> response) {
+                ArrayList<Group> groups = response.body();
+                insert(groups);
+                if (!groups.isEmpty())
+                    onSuccess.execute();
+            }
+
+            @Override
+            public void onResponseFailure(Call<ArrayList<Group>> call, Throwable t) {
+                Snackbar snackbar = Snackbar.make(
+                        mainLayout,
+                        R.string.snackbar_server_error,
+                        Snackbar.LENGTH_SHORT
+                );
+                snackbar.setAction(R.string.button_dismiss, v -> snackbar.dismiss());
+                snackbar.show();
             }
 
             @Override
@@ -121,6 +151,8 @@ public class GroupRepository {
         LinkedList<String> dates = new LinkedList<>();
         for (Group group : groups) {
             groupIds.add(group.gid);
+            if (group.days == null)
+                continue;
             days.addAll(group.days);
             for (Day day : days)
                 dates.add(day.date);

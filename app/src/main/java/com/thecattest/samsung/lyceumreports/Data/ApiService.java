@@ -30,4 +30,7 @@ public interface ApiService {
 
     @POST(URLConfig.V2_DAYS_LIST_ENDPOINT)
     Call<Void> sendDay(@Body Day day);
+
+    @GET(URLConfig.V2_DAYS_ENDPOINT)
+    Call<ArrayList<Group>> getDaySummary(@Path("date") String date);
 }

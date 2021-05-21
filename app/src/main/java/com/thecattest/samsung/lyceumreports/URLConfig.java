@@ -12,4 +12,5 @@ public class URLConfig {
     public static final String V2_GROUPS_LIST_ENDPOINT = "/api/v2/groups/";
     public static final String V2_GROUP_ENDPOINT = "/api/v2/groups/{group_id}/{date}";
     public static final String V2_DAYS_LIST_ENDPOINT = "/api/v2/days/";
+    public static final String V2_DAYS_ENDPOINT = "/api/v2/days/{date}";
 }

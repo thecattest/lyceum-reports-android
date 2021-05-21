@@ -11,6 +11,7 @@ import com.thecattest.samsung.lyceumreports.Data.Dao.DayDao;
 import com.thecattest.samsung.lyceumreports.Data.Models.Day;
 import com.thecattest.samsung.lyceumreports.Data.Models.Relations.DayAbsentCrossRef;
 import com.thecattest.samsung.lyceumreports.Data.Models.Relations.DayWithAbsent;
+import com.thecattest.samsung.lyceumreports.Data.Models.Relations.DayWithAbsentAndGroup;
 import com.thecattest.samsung.lyceumreports.Data.Models.Student;
 import com.thecattest.samsung.lyceumreports.DefaultCallback;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
@@ -32,15 +33,18 @@ public class DayRepository {
 
     private final Context context;
     private final LoginManager loginManager;
+    private final View mainLayout;
     private final ApiService apiService;
 
     public DayRepository(Context context,
                          LoginManager loginManager,
+                         View mainLayout,
                          StudentRepository studentRepository,
                          ApiService apiService) {
         AppDatabase db = AppDatabase.getInstance(context);
         this.context = context;
         this.loginManager = loginManager;
+        this.mainLayout = mainLayout;
         this.studentRepository = studentRepository;
         dayDao = db.dayDao();
         this.apiService = apiService;
@@ -50,8 +54,11 @@ public class DayRepository {
         return dayDao.getByGroupIdAndDate(groupId, date);
     }
 
-    public void sendDay(View mainLayout,
-                        DefaultCallback.OnPost onPost, DefaultCallback.OnPost onSuccess,
+    public Maybe<List<DayWithAbsentAndGroup>> getByDate(String date) {
+        return dayDao.getByDate(date);
+    }
+
+    public void sendDay(DefaultCallback.OnPost onPost, DefaultCallback.OnPost onSuccess,
                         Day day) {
         Call<Void> sendDayCall = apiService.sendDay(day);
         sendDayCall.enqueue(new DefaultCallback<Void>(context, loginManager, mainLayout) {
@@ -136,6 +143,17 @@ public class DayRepository {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(AppDatabase.getDefaultObserver());
         dayDao.deleteByGroupIds(groupIds)
+                .subscribeOn(Schedulers.single())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(AppDatabase.getDefaultObserver());
+    }
+
+    public void deleteByDate(String date) {
+        dayDao.deleteRefsByDate(date)
+                .subscribeOn(Schedulers.single())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(AppDatabase.getDefaultObserver());
+        dayDao.deleteByDate(date)
                 .subscribeOn(Schedulers.single())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(AppDatabase.getDefaultObserver());

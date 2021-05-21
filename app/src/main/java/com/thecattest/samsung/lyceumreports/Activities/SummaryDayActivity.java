@@ -6,24 +6,27 @@ import android.os.Bundle;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.thecattest.samsung.lyceumreports.Adapters.SummaryDayAdapter;
-import com.thecattest.samsung.lyceumreports.Data.Legacy.SummaryDay.SummaryDay;
-import com.thecattest.samsung.lyceumreports.Data.Legacy.SummaryDay.SummaryDayService;
-import com.thecattest.samsung.lyceumreports.DefaultCallback;
+import com.thecattest.samsung.lyceumreports.Data.ApiService;
+import com.thecattest.samsung.lyceumreports.Data.Models.Relations.DayWithAbsentAndGroup;
+import com.thecattest.samsung.lyceumreports.Data.Repositories.DayRepository;
+import com.thecattest.samsung.lyceumreports.Data.Repositories.GroupRepository;
+import com.thecattest.samsung.lyceumreports.Data.Repositories.StudentRepository;
 import com.thecattest.samsung.lyceumreports.Managers.DatePickerManager;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
 import com.thecattest.samsung.lyceumreports.Managers.RetrofitManager;
 import com.thecattest.samsung.lyceumreports.Managers.StatusManager;
 import com.thecattest.samsung.lyceumreports.R;
 
-import retrofit2.Call;
-import retrofit2.Response;
+import java.util.ArrayList;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 
 public class SummaryDayActivity extends AppCompatActivity {
@@ -36,10 +39,9 @@ public class SummaryDayActivity extends AppCompatActivity {
     private StatusManager statusManager;
     private DatePickerManager datePickerManager;
 
-    private SummaryDay summaryDay = new SummaryDay();
-
-    private SummaryDayService summaryDayService;
-    private Call<SummaryDay> dataGetCall;
+    private GroupRepository groupRepository;
+    private DayRepository dayRepository;
+    private ApiService apiService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,13 +52,7 @@ public class SummaryDayActivity extends AppCompatActivity {
         setListeners();
         initManagers();
         initRetrofit();
-
-        updateSummaryDayView();
-    }
-
-    private void initRetrofit() {
-        Retrofit retrofit = RetrofitManager.getInstance(loginManager);
-        summaryDayService = retrofit.create(SummaryDayService.class);
+        initRepositories();
     }
 
     private void findViews() {
@@ -72,101 +68,79 @@ public class SummaryDayActivity extends AppCompatActivity {
     private void initManagers() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         loginManager = new LoginManager(this);
-        statusManager = new StatusManager(this, swipeRefreshLayout, v -> {updateSummaryDay();});
+        statusManager = new StatusManager(this, swipeRefreshLayout);
         datePickerManager = new DatePickerManager(
                 this,
                 datePickerTrigger,
                 fragmentManager,
-                this::updateSummaryDay);
+                () -> loadData(true));
     }
 
-    public void onRefresh() {
-        updateSummaryDay();
-        swipeRefreshLayout.setRefreshing(false);
+    private void initRetrofit() {
+        Retrofit retrofit = RetrofitManager.getInstance(loginManager);
+        apiService = retrofit.create(ApiService.class);
     }
+
+    private void initRepositories() {
+        StudentRepository studentRepository = new StudentRepository(this);
+        dayRepository = new DayRepository(this, loginManager, swipeRefreshLayout,
+                studentRepository, apiService);
+        groupRepository = new GroupRepository(this, loginManager, swipeRefreshLayout,
+                dayRepository, studentRepository, apiService);
+    }
+
+    public void onRefresh() { refreshData(); }
 
     @Override
     public void onBackPressed() {
-        if (!cancelDataGetCall()) {
-            Intent i = new Intent(SummaryDayActivity.this, MainActivity.class);
-            startActivity(i);
-            finish();
-        }
+        Intent i = new Intent(SummaryDayActivity.this, MainActivity.class);
+        startActivity(i);
+        finish();
     }
 
-    private void updateSummaryDay() {
-        setLoadingStatus();
+    private void refreshData() {
+        statusManager.setLoadingLayout();
         datePickerManager.setEnabled(false);
 
         String formattedDate = datePickerManager.getDate();
-
-        Call<SummaryDay> call = summaryDayService.getSummaryDay(formattedDate);
-        dataGetCall = call;
-        call.enqueue(new DefaultCallback<SummaryDay>(this, loginManager, swipeRefreshLayout) {
-            @Override
-            public void onResponse200(Response<SummaryDay> response) {
-                summaryDay = response.body();
-                updateSummaryDayView();
-            }
-
-            @Override
-            public void onResponse500(Response<SummaryDay> response) {
-                super.onResponse500(response);
-                statusManager.setServerErrorLayout();
-            }
-
-            public void onResponseFailure(Call<SummaryDay> call, Throwable t) {
-                if (call.isCanceled()) {
+        groupRepository.refreshDaySummary(
+                () -> {
                     statusManager.setMainLayout();
-                    Snackbar.make(
-                            swipeRefreshLayout,
-                            R.string.snackbar_request_cancelled,
-                            Snackbar.LENGTH_LONG
-                    ).show();
-                } else {
-                    Snackbar.make(
-                            swipeRefreshLayout,
-                            R.string.snackbar_server_error,
-                            Snackbar.LENGTH_LONG
-                    ).show();
-                    statusManager.setServerErrorLayout();
-                }
-            }
-
-            @Override
-            public void onPostExecute() {
-                dataGetCall = null;
-                datePickerManager.setEnabled(true);
-            }
-        });
+                    datePickerManager.setEnabled(true);
+                    swipeRefreshLayout.setRefreshing(false);
+                    loadData(false);
+                }, () -> {}, formattedDate
+        );
     }
 
-    private boolean cancelDataGetCall() {
-        if (dataGetCall == null)
-            return false;
-        dataGetCall.cancel();
-        dataGetCall = null;
-        return true;
+    @SuppressLint("CheckResult")
+    private void loadData(boolean firstTime) {
+        dayRepository.getByDate(datePickerManager.getDate())
+                .subscribeOn(Schedulers.single())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        days -> {
+                            if (!days.isEmpty())
+                                updateView(new ArrayList<>(days));
+                            else if (firstTime)
+                                refreshData();
+                            else
+                                updateView(new ArrayList<>());
+                        });
     }
 
-    private void updateSummaryDayView() {
+    private void updateView(ArrayList<DayWithAbsentAndGroup> days) {
         statusManager.setMainLayout();
-        updateSummaryDayAdapterData();
-        updateSwipeRefreshLayout();
-    }
-
-    private void updateSwipeRefreshLayout() {
         swipeRefreshLayout.setEnabled(!datePickerManager.isEmpty());
-    }
 
-    private void updateSummaryDayAdapterData() {
-        SummaryDayAdapter summaryDayAdapter = new SummaryDayAdapter(this, summaryDay.groups);
+        SummaryDayAdapter summaryDayAdapter = new SummaryDayAdapter(this, days);
         summaryDayListView.setAdapter(summaryDayAdapter);
-    }
 
-    private void setLoadingStatus() {
-        summaryDay = new SummaryDay();
-        updateSummaryDayView();
-        statusManager.setLoadingLayout();
+        if (days.isEmpty())
+            new MaterialAlertDialogBuilder(this)
+                    .setTitle(R.string.dialog_title_no_data)
+                    .setMessage(R.string.dialog_text_no_data)
+                    .setPositiveButton(R.string.button_ok, ((dialog, which) -> dialog.dismiss()))
+                    .show();
     }
 }

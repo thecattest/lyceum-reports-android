@@ -122,8 +122,10 @@ public class DayActivity extends AppCompatActivity {
 
     private void initRepositories() {
         StudentRepository studentRepository = new StudentRepository(this);
-        dayRepository = new DayRepository(this, loginManager, studentRepository, apiService);
-        groupRepository = new GroupRepository(this, loginManager, dayRepository, studentRepository, apiService);
+        dayRepository = new DayRepository(this, loginManager, mainLayout,
+                studentRepository, apiService);
+        groupRepository = new GroupRepository(this, loginManager, mainLayout,
+                dayRepository, studentRepository, apiService);
     }
 
     public void onStudentItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -151,13 +153,13 @@ public class DayActivity extends AppCompatActivity {
         datePickerManager.setEnabled(false);
 
         String formattedDate = datePickerManager.getDate();
-        groupRepository.refreshGroup(mainLayout,
+        groupRepository.refreshGroup(
                 () -> {
                     datePickerManager.setEnabled(true);
                     swipeRefreshLayout.setRefreshing(false);
                     statusManager.setMainLayout();
                     loadGroup();
-                }, this::loadGroup, groupId, formattedDate);
+                }, () -> {}, groupId, formattedDate);
     }
 
     private void sendDay() {
@@ -167,7 +169,7 @@ public class DayActivity extends AppCompatActivity {
         try {
             Day day = studentsAdapter.getDay();
             dayRepository.update(day);
-            dayRepository.sendDay(mainLayout,
+            dayRepository.sendDay(
                     () -> {
                         confirmButton.setEnabled(true);
                         datePickerManager.setEnabled(true);

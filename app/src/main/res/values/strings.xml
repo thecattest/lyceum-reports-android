@@ -21,6 +21,8 @@
     <!-- Dialog -->
     <string name="dialog_title_unsaved_changes">Несохранённые изменения</string>
     <string name="dialog_text_unsaved_changes">Изменения за этот день не были отправлены.</string>
+    <string name="dialog_title_no_data">Данных нет</string>
+    <string name="dialog_text_no_data">В выбранный вами день ни в одном классе не отмечены отсутствующие.</string>
 
     <!-- Buttons -->
     <string name="button_edit">редактировать</string>
