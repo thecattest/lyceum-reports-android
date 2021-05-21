@@ -13,7 +13,7 @@ import retrofit2.Response;
 public abstract class DefaultCallback<T> implements Callback<T> {
     private final String defaultCodeMessage;
     private final LoginManager loginManager;
-    private View mainLayout;
+    private final View mainLayout;
 
     public DefaultCallback(Context context, LoginManager loginManager, View mainLayout) {
         this.loginManager = loginManager;
@@ -43,11 +43,13 @@ public abstract class DefaultCallback<T> implements Callback<T> {
                     break;
 
                 default:
-                    Snackbar.make(
+                    Snackbar snackbar = Snackbar.make(
                             mainLayout,
-                            defaultCodeMessage + code,
+                            defaultCodeMessage + " " + code,
                             Snackbar.LENGTH_SHORT
-                    ).show();
+                    );
+                    snackbar.setAction(R.string.button_dismiss, v -> snackbar.dismiss());
+                    snackbar.show();
                     break;
             }
         } catch (IllegalStateException ignored) {}
@@ -69,11 +71,13 @@ public abstract class DefaultCallback<T> implements Callback<T> {
     };
 
     public void onResponse500(Response<T> response) {
-        Snackbar.make(
+        Snackbar snackbar = Snackbar.make(
                 mainLayout,
                 R.string.snackbar_server_error_code_500,
                 Snackbar.LENGTH_LONG
-        ).show();
+        );
+        snackbar.setAction(R.string.button_dismiss, v -> snackbar.dismiss());
+        snackbar.show();
     }
 
     public abstract void onResponseFailure(Call<T> call, Throwable t);

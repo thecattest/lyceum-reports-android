@@ -216,6 +216,7 @@ public class DayActivity extends AppCompatActivity {
                     datePickerManager.setEnabled(true);
                     swipeRefreshLayout.setRefreshing(false);
                     statusManager.setMainLayout();
+                    loadGroup();
                 }, this::loadGroup, groupId, formattedDate);
     }
 

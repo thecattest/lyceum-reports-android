@@ -2,6 +2,7 @@ package com.thecattest.samsung.lyceumreports.Data.Repositories;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.thecattest.samsung.lyceumreports.Data.ApiService;
@@ -64,11 +65,13 @@ public class GroupRepository {
 
             @Override
             public void onResponseFailure(Call<ArrayList<Group>> call, Throwable t) {
-                Snackbar.make(
+                Snackbar snackbar = Snackbar.make(
                         mainLayout,
                         R.string.snackbar_server_error,
-                        Snackbar.LENGTH_LONG
-                ).show();
+                        Snackbar.LENGTH_SHORT
+                );
+                snackbar.setAction(R.string.button_dismiss, v -> snackbar.dismiss());
+                snackbar.show();
             }
 
             @Override
@@ -89,11 +92,7 @@ public class GroupRepository {
 
             @Override
             public void onResponseFailure(Call<Group> call, Throwable t) {
-                Snackbar.make(
-                        mainLayout,
-                        R.string.snackbar_server_error,
-                        Snackbar.LENGTH_LONG
-                ).show();
+                Toast.makeText(context, R.string.snackbar_server_error, Toast.LENGTH_SHORT).show();
             }
 
             @Override

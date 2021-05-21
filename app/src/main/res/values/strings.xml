@@ -26,6 +26,8 @@
     <string name="button_date_picker_trigger">выбрать дату</string>
     <string name="button_refresh">Обновить</string>
     <string name="button_check_again">проверить снова</string>
+    <string name="button_dismiss">закрыть</string>
+    <string name="button_ok">ок</string>
     <string name="button_login">Войти</string>
     <string name="button_logout">Выйти</string>
 
