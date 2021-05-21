@@ -27,13 +27,6 @@ public class StudentRepository {
                 .subscribe(AppDatabase.getDefaultObserver());
     }
 
-//    public void deleteAll() {
-//        studentDao.deleteAll()
-//                .subscribeOn(Schedulers.single())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(AppDatabase.getDefaultObserver());
-//    }
-
     public void deleteAllButGroupIds(List<Integer> groupIds) {
         studentDao.deleteAllButGroupIds(groupIds)
                 .subscribeOn(Schedulers.single())
