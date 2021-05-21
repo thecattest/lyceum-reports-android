@@ -3,7 +3,6 @@ package com.thecattest.samsung.lyceumreports.Activities;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -16,9 +15,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.thecattest.samsung.lyceumreports.Adapters.StudentsAdapter;
 import com.thecattest.samsung.lyceumreports.Data.ApiService;
+import com.thecattest.samsung.lyceumreports.Data.Models.Day;
 import com.thecattest.samsung.lyceumreports.Data.Models.Relations.DayWithAbsent;
 import com.thecattest.samsung.lyceumreports.Data.Models.Relations.GroupWithStudents;
 import com.thecattest.samsung.lyceumreports.Data.Models.Student;
@@ -126,23 +127,18 @@ public class DayActivity extends AppCompatActivity {
 
     private void initRepositories() {
         StudentRepository studentRepository = new StudentRepository(this);
-        dayRepository = new DayRepository(this, studentRepository);
-        groupRepository = new GroupRepository(this, dayRepository, studentRepository, apiService);
+        dayRepository = new DayRepository(this, loginManager, studentRepository, apiService);
+        groupRepository = new GroupRepository(this, loginManager, dayRepository, studentRepository, apiService);
     }
 
     public void onStudentItemClick(AdapterView<?> parent, View view, int position, long id) {
         Student student = (Student)parent.getItemAtPosition(position);
         studentsAdapter.toggleAbsent(student);
         studentsAdapter.notifyDataSetChanged();
-        Log.d("DayActivityDebug", "updating button");
         updateConfirmButtonState();
     }
 
     public void onRefresh() { refreshGroupAndDay(); }
-
-    public void onCancelButtonClick(View v) {
-        onBackPressed();
-    }
 
     @Override
     public void onBackPressed() {
@@ -151,73 +147,48 @@ public class DayActivity extends AppCompatActivity {
         finish();
     }
 
-    public void onConfirmButtonClick(View v) {
-//        v.setEnabled(false);
-//        datePickerManager.setEnabled(false);
-//        statusManager.setLoadingLayout();
-//
-//        String formattedDate = datePickerManager.getDate();
-//        String absentStudentsIdsString = currentDay.getAbsentStudentsIdsString();
-//
-//        Call<Void> call = dayService.updateDay(groupId, new DayPost(formattedDate, absentStudentsIdsString));
-//        call.enqueue(new DefaultCallback<Void>(this, loginManager, mainLayout) {
-//            @Override
-//            public void onResponse200(Response<Void> response) {
-//                Snackbar.make(
-//                        mainLayout,
-//                        R.string.snackbar_server_ok,
-//                        Snackbar.LENGTH_SHORT
-//                ).setAnchorView(buttonsGroup).show();
-//                update();
-//            }
-//
-//            @Override
-//            public void onResponse500(Response<Void> response) {
-//                Snackbar.make(
-//                        mainLayout,
-//                        R.string.snackbar_server_error_code_500,
-//                        Snackbar.LENGTH_LONG
-//                ).setAnchorView(buttonsGroup).show();
-//                statusManager.setMainLayout();
-//            }
-//
-//            public void onResponseFailure(Call<Void> call, Throwable t) {
-//                if (call.isCanceled()) {
-//                    statusManager.setMainLayout();
-//                    Snackbar.make(
-//                            mainLayout,
-//                            R.string.snackbar_request_cancelled,
-//                            Snackbar.LENGTH_LONG
-//                    ).setAnchorView(buttonsGroup).show();
-//                } else {
-//                    Snackbar.make(
-//                            mainLayout,
-//                            R.string.snackbar_server_error,
-//                            Snackbar.LENGTH_LONG
-//                    ).show();
-//                }
-//            }
-//
-//            @Override
-//            public void onPostExecute() {
-//                v.setEnabled(true);
-//                datePickerManager.setEnabled(true);
-//            }
-//        });
-    }
+    public void onCancelButtonClick(View v) { onBackPressed(); }
+
+    public void onConfirmButtonClick(View v) { sendDay(); }
 
     private void refreshGroupAndDay() {
         statusManager.setLoadingLayout();
         datePickerManager.setEnabled(false);
 
         String formattedDate = datePickerManager.getDate();
-        groupRepository.refreshGroup(getApplicationContext(), loginManager, mainLayout,
+        groupRepository.refreshGroup(mainLayout,
                 () -> {
                     datePickerManager.setEnabled(true);
                     swipeRefreshLayout.setRefreshing(false);
                     statusManager.setMainLayout();
                     loadGroup();
                 }, this::loadGroup, groupId, formattedDate);
+    }
+
+    private void sendDay() {
+        confirmButton.setEnabled(false);
+        datePickerManager.setEnabled(false);
+        statusManager.setLoadingLayout();
+        try {
+            Day day = studentsAdapter.getDay();
+            dayRepository.update(day);
+            dayRepository.sendDay(mainLayout,
+                    () -> {
+                        confirmButton.setEnabled(true);
+                        datePickerManager.setEnabled(true);
+                        statusManager.setMainLayout();
+                    },
+                    () -> {
+                        Snackbar snackbar = Snackbar.make(
+                                mainLayout,
+                                R.string.snackbar_server_ok,
+                                Snackbar.LENGTH_SHORT);
+                        snackbar.setAction(R.string.button_refresh, btn -> refreshGroupAndDay());
+                        snackbar.setAnchorView(buttonsGroup);
+                        snackbar.show();
+                    },
+                    day);
+        } catch (NullPointerException ignored) {}
     }
 
     @SuppressLint("CheckResult")
@@ -281,13 +252,34 @@ public class DayActivity extends AppCompatActivity {
                     R.string.snackbar_no_absent,
                     Snackbar.LENGTH_SHORT
             ).setAnchorView(buttonsGroup).show();
-        if (day.day == null)
-            Snackbar.make(
+        if (day.day == null) {
+            Snackbar snackbar = Snackbar.make(
                     mainLayout,
                     R.string.snackbar_no_info,
-                    Snackbar.LENGTH_SHORT)
-                    .setAction(R.string.button_check_again, v -> refreshGroupAndDay())
-                    .setAnchorView(buttonsGroup).show();
+                    Snackbar.LENGTH_SHORT);
+            snackbar.setAction(R.string.button_check_again, v -> refreshGroupAndDay());
+            snackbar.setAnchorView(buttonsGroup);
+            snackbar.show();
+        }
+//        else {
+//            checkUnsavedChanges();
+//        }
+    }
+
+    private void checkUnsavedChanges() {
+        Day day = studentsAdapter.getDay();
+        if (day != null && !day.isSyncedWithServer) {
+            new MaterialAlertDialogBuilder(this)
+                    .setTitle("Несохранённые изменения")
+                    .setMessage("У вас есть неотправленные изменения за этот день.")
+                    .setNeutralButton("показать", (dialog, which) -> {
+                        dialog.dismiss();
+                    })
+                    .setPositiveButton("отправить", (dialog, which) -> {
+                        sendDay();
+                        dialog.dismiss();
+                    }).show();
+        }
     }
 
     private void updateSwipeRefreshLayoutState() {

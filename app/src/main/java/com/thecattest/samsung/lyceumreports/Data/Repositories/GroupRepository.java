@@ -29,18 +29,22 @@ import retrofit2.Response;
 
 public class GroupRepository {
 
+    private final GroupDao groupDao;
     private final DayRepository dayRepository;
     private final StudentRepository studentRepository;
 
+    private final Context context;
+    private final LoginManager loginManager;
     private final ApiService apiService;
 
-    private final GroupDao groupDao;
-
     public GroupRepository(Context context,
+                           LoginManager loginManager,
                            DayRepository dayRepository,
                            StudentRepository studentRepository,
                            ApiService apiService) {
         AppDatabase db = AppDatabase.getInstance(context);
+        this.context = context;
+        this.loginManager = loginManager;
         this.dayRepository = dayRepository;
         this.studentRepository = studentRepository;
         this.apiService = apiService;
@@ -51,8 +55,8 @@ public class GroupRepository {
 
     public Maybe<GroupWithStudents> getById(int groupId) { return groupDao.getById(groupId); }
 
-    public void refreshGroups(Context context, LoginManager loginManager,
-                              View mainLayout, DefaultCallback.OnPost onPost, DefaultCallback.OnPost onSuccess) {
+    public void refreshGroups(View mainLayout,
+                              DefaultCallback.OnPost onPost, DefaultCallback.OnPost onSuccess) {
         Call<ArrayList<Group>> groupsRefreshCall = apiService.getGroups();
         groupsRefreshCall.enqueue(new DefaultCallback<ArrayList<Group>>(context, loginManager, mainLayout) {
             @Override
@@ -79,7 +83,7 @@ public class GroupRepository {
         });
     }
 
-    public void refreshGroup(Context context, LoginManager loginManager, View mainLayout,
+    public void refreshGroup(View mainLayout,
                              DefaultCallback.OnPost onPost, DefaultCallback.OnPost onSuccess,
                              int groupId, String date) {
         Call<Group> groupRefreshCall = apiService.getGroup(groupId, date);

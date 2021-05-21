@@ -20,6 +20,9 @@ public interface DayDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     Maybe<Void> insert(List<Day> day);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    Maybe<Long> insert(Day day);
+
     @Query("DELETE FROM days")
     Maybe<Void> deleteAll();
 

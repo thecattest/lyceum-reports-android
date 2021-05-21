@@ -8,23 +8,16 @@ import com.thecattest.samsung.lyceumreports.Data.Models.Student;
 
 import java.util.List;
 
-import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 public class StudentRepository {
 
     public final StudentDao studentDao;
-    private final Flowable<List<Student>> students;
 
     public StudentRepository(Context context) {
         AppDatabase db = AppDatabase.getInstance(context);
         studentDao = db.studentDao();
-        students = studentDao.get();
-    }
-
-    public Flowable<List<Student>> get() {
-        return students;
     }
 
     public void insert(List<Student> students) {

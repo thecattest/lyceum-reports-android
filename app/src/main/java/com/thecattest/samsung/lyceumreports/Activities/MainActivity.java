@@ -83,8 +83,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void initRepositories() {
         StudentRepository studentRepository = new StudentRepository(this);
-        DayRepository dayRepository = new DayRepository(this, studentRepository);
-        groupRepository = new GroupRepository(this, dayRepository, studentRepository, apiService);
+        DayRepository dayRepository = new DayRepository(this, loginManager, studentRepository, apiService);
+        groupRepository = new GroupRepository(this, loginManager, dayRepository, studentRepository, apiService);
     }
 
     private void onRefresh() {
@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void refreshData() {
         statusManager.setLoadingLayout();
-        groupRepository.refreshGroups(this, loginManager, swipeRefreshLayout,
+        groupRepository.refreshGroups(swipeRefreshLayout,
                 () -> {statusManager.setMainLayout(); swipeRefreshLayout.setRefreshing(false);},
                 this::loadData
         );

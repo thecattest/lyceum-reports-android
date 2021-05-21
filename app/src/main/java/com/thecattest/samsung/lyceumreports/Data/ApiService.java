@@ -29,5 +29,5 @@ public interface ApiService {
     Call<Group> getGroup(@Path("group_id") int groupId, @Path("date") String date);
 
     @POST(URLConfig.V2_DAYS_LIST_ENDPOINT)
-    Call<Void> updateDay(@Body Day day);
+    Call<Void> sendDay(@Body Day day);
 }
