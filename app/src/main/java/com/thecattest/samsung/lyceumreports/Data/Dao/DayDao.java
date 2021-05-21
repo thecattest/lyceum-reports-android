@@ -56,5 +56,5 @@ public interface DayDao {
 
     @Transaction
     @Query("SELECT * FROM days WHERE group_id = :groupId AND date = :date LIMIT 1")
-    Flowable<List<DayWithAbsent>> getByGroupIdAndDate(int groupId, String date);
+    Maybe<DayWithAbsent> getByGroupIdAndDate(int groupId, String date);
 }

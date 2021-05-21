@@ -1,6 +1,7 @@
 package com.thecattest.samsung.lyceumreports.Adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,10 +33,59 @@ public class StudentsAdapter extends ArrayAdapter<Student> {
         if (dayWithAbsent.day != null) {
             day.date = dayWithAbsent.day.date;
             day.absent = new ArrayList<>(dayWithAbsent.absent);
+            Log.d("DayActivityDebug", "updating loaded absent");
+            day.loadedAbsent = new ArrayList<>(dayWithAbsent.absent);
+        } else {
+            day.isSyncedWithServer = false;
+            day.isLoadedFromServer = false;
         }
         group.group.days = new ArrayList<>();
         group.group.days.add(day);
         notifyDataSetChanged();
+    }
+
+    public void toggleAbsent(Student student) {
+        Day day = group.group.days.get(0);
+        if (day.absent.contains(student)) {
+            day.absent.remove(student);
+        } else {
+            day.absent.add(student);
+        }
+
+        boolean equals = true;
+        for (Student st : day.loadedAbsent) {
+            equals = day.absent.contains(st);
+            if (!equals)
+                break;
+        }
+        if (equals)
+            for (Student st : day.absent) {
+                equals = day.loadedAbsent.contains(st);
+                if (!equals)
+                    break;
+            }
+
+        day.isSyncedWithServer = day.isLoadedFromServer && equals;
+    }
+
+    public boolean noLoadedAbsent() {
+        if (group.group.days == null || group.group.days.isEmpty())
+            return false;
+        Day day = group.group.days.get(0);
+        return day.isLoadedFromServer && day.loadedAbsent.isEmpty();
+    }
+
+    public boolean noAbsent() {
+        if (group.group.days == null || group.group.days.isEmpty())
+            return false;
+        Day day = group.group.days.get(0);
+        return day.absent.isEmpty();
+    }
+
+    public boolean buttonEnabled() {
+        if (group.group.days == null || group.group.days.isEmpty())
+            return false;
+        return !group.group.days.get(0).isSyncedWithServer;
     }
 
     @NonNull

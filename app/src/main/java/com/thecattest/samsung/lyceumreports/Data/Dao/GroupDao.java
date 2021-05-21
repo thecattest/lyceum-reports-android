@@ -12,7 +12,6 @@ import com.thecattest.samsung.lyceumreports.Data.Models.Relations.GroupWithStude
 
 import java.util.List;
 
-import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 
 @Dao
@@ -37,9 +36,9 @@ public interface GroupDao {
 
     @Transaction
     @Query("SELECT * FROM groups")
-    Flowable<List<GroupWithDaysAndStudents>> get();
+    Maybe<List<GroupWithDaysAndStudents>> get();
 
     @Transaction
     @Query("SELECT * FROM groups WHERE gid = :groupId")
-    Flowable<List<GroupWithStudents>> getById(int groupId);
+    Maybe<GroupWithStudents> getById(int groupId);
 }

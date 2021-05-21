@@ -3,7 +3,6 @@ package com.thecattest.samsung.lyceumreports.Managers;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 

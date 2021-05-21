@@ -11,8 +11,8 @@ import com.thecattest.samsung.lyceumreports.Data.Dao.DayDao;
 import com.thecattest.samsung.lyceumreports.Data.Dao.GroupDao;
 import com.thecattest.samsung.lyceumreports.Data.Dao.StudentDao;
 import com.thecattest.samsung.lyceumreports.Data.Models.Day;
-import com.thecattest.samsung.lyceumreports.Data.Models.Relations.DayAbsentCrossRef;
 import com.thecattest.samsung.lyceumreports.Data.Models.Group;
+import com.thecattest.samsung.lyceumreports.Data.Models.Relations.DayAbsentCrossRef;
 import com.thecattest.samsung.lyceumreports.Data.Models.Student;
 
 import io.reactivex.MaybeObserver;
@@ -22,9 +22,6 @@ import io.reactivex.disposables.Disposable;
 public abstract class AppDatabase extends RoomDatabase {
 
     private static volatile AppDatabase INSTANCE;
-//    private static final int NUMBER_OF_THREADS = 4;
-//    public static final ExecutorService databaseWriteExecutor =
-//            Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
     public abstract GroupDao groupDao();
     public abstract DayDao dayDao();

@@ -24,6 +24,8 @@
     <string name="button_submit_day_no_one_absent">все в классе</string>
     <string name="button_cancel">назад</string>
     <string name="button_date_picker_trigger">выбрать дату</string>
+    <string name="button_refresh">Обновить</string>
+    <string name="button_check_again">проверить снова</string>
     <string name="button_login">Войти</string>
     <string name="button_logout">Выйти</string>
 
@@ -47,7 +49,6 @@
 
     <!-- Date -->
     <string name="date_format">yyyy-MM-dd</string>
-    <string name="button_refresh">Обновить</string>
     <string-array name="date_months_shortened">
         <item />
         <item>янв</item>

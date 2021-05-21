@@ -13,6 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import io.reactivex.Flowable;
+import io.reactivex.Maybe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -33,7 +34,7 @@ public class DayRepository {
         return days;
     }
 
-    public Flowable<List<DayWithAbsent>> getByGroupIdAndDate(int groupId, String date) {
+    public Maybe<DayWithAbsent> getByGroupIdAndDate(int groupId, String date) {
         return dayDao.getByGroupIdAndDate(groupId, date);
     }
 

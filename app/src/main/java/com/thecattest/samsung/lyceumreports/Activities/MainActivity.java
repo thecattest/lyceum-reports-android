@@ -14,8 +14,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.thecattest.samsung.lyceumreports.Adapters.GroupsAdapter;
 import com.thecattest.samsung.lyceumreports.Data.ApiService;
-import com.thecattest.samsung.lyceumreports.Data.Models.Relations.GroupWithDaysAndStudents;
 import com.thecattest.samsung.lyceumreports.Data.Models.Permissions;
+import com.thecattest.samsung.lyceumreports.Data.Models.Relations.GroupWithDaysAndStudents;
 import com.thecattest.samsung.lyceumreports.Data.Repositories.DayRepository;
 import com.thecattest.samsung.lyceumreports.Data.Repositories.GroupRepository;
 import com.thecattest.samsung.lyceumreports.Data.Repositories.StudentRepository;
@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
 
     private Permissions permissions;
 
-    @SuppressLint("CheckResult")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,11 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
         permissions = loginManager.getPermissions();
         updateMenu();
-//        update();
-        groupRepository.get()
-                .subscribeOn(Schedulers.single())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(groupsWithDaysAndStudent -> updateView(new ArrayList<>(groupsWithDaysAndStudent)));
+        loadData();
     }
 
     private void findViews() {
@@ -78,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initManagers() {
         loginManager = new LoginManager(this);
-        statusManager = new StatusManager(this, swipeRefreshLayout, v -> update());
+        statusManager = new StatusManager(this, swipeRefreshLayout, v -> refreshData());
     }
 
     private void initRetrofit() {
@@ -93,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onRefresh() {
-        update();
+        refreshData();
     }
 
     private boolean onMenuItemClick(MenuItem item) {
@@ -107,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                 finish();
                 return true;
             case R.id.refresh:
-                update();
+                refreshData();
                 return true;
         }
         return false;
@@ -116,14 +111,28 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {}
 
-    private void update() {
+    private void refreshData() {
         statusManager.setLoadingLayout();
         groupRepository.refreshGroups(this, loginManager, swipeRefreshLayout,
-                () -> {statusManager.setMainLayout(); swipeRefreshLayout.setRefreshing(false);
-        });
+                () -> {statusManager.setMainLayout(); swipeRefreshLayout.setRefreshing(false);},
+                this::loadData
+        );
     }
 
-    private void updateView(ArrayList<GroupWithDaysAndStudents> groups) {
+    @SuppressLint("CheckResult")
+    private void loadData() {
+        groupRepository.get()
+                .subscribeOn(Schedulers.single())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        groupsWithDaysAndStudent -> updateView(new ArrayList<>(groupsWithDaysAndStudent), false),
+                        (t) -> {},
+                        () -> updateView(new ArrayList<>(), true));
+    }
+
+    private void updateView(ArrayList<GroupWithDaysAndStudents> groups, boolean noData) {
+        if (groups.isEmpty() && !noData)
+            refreshData();
         GroupsAdapter groupsAdapter = new GroupsAdapter(this, groups, permissions.canEdit);
         groupsListView.setAdapter(groupsAdapter);
     }

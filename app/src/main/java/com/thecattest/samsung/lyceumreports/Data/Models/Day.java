@@ -34,8 +34,16 @@ public class Day {
     @ColumnInfo(name = "group_id")
     public int groupId;
 
+    @ColumnInfo(name = "is_synced")
+    public boolean isSyncedWithServer = true;
+
     @Ignore
     public ArrayList<Student> absent = new ArrayList<>();
+
+    @Ignore
+    public ArrayList<Student> loadedAbsent = new ArrayList<>();
+    @Ignore
+    public boolean isLoadedFromServer = true;
 
     public String getAbsentStudentsString(Context context, List<Student> absent) {
         if (absent.size() != 0) {

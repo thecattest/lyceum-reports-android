@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import io.reactivex.Flowable;
+import io.reactivex.Maybe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
@@ -34,7 +34,6 @@ public class GroupRepository {
     private final ApiService apiService;
 
     private final GroupDao groupDao;
-    private final Flowable<List<GroupWithDaysAndStudents>> groups;
 
     public GroupRepository(Context context,
                            DayRepository dayRepository,
@@ -45,22 +44,22 @@ public class GroupRepository {
         this.studentRepository = studentRepository;
         this.apiService = apiService;
         groupDao = db.groupDao();
-        groups = groupDao.get();
     }
 
-    public Flowable<List<GroupWithDaysAndStudents>> get() { return groups; }
+    public Maybe<List<GroupWithDaysAndStudents>> get() { return groupDao.get(); }
 
-    public Flowable<List<GroupWithStudents>> getById(int groupId) {
-        return groupDao.getById(groupId);
-    }
+    public Maybe<GroupWithStudents> getById(int groupId) { return groupDao.getById(groupId); }
 
     public void refreshGroups(Context context, LoginManager loginManager,
-                              View mainLayout, DefaultCallback.OnPost onPost) {
+                              View mainLayout, DefaultCallback.OnPost onPost, DefaultCallback.OnPost onSuccess) {
         Call<ArrayList<Group>> groupsRefreshCall = apiService.getGroups();
         groupsRefreshCall.enqueue(new DefaultCallback<ArrayList<Group>>(context, loginManager, mainLayout) {
             @Override
             public void onResponse200(Response<ArrayList<Group>> response) {
-                insert(response.body());
+                ArrayList<Group> groups = response.body();
+                insert(groups);
+                if (!groups.isEmpty())
+                    onSuccess.execute();
             }
 
             @Override
@@ -77,14 +76,15 @@ public class GroupRepository {
         });
     }
 
-    public void refreshGroup(Context context, LoginManager loginManager,
-                             View mainLayout, DefaultCallback.OnPost onPost,
+    public void refreshGroup(Context context, LoginManager loginManager, View mainLayout,
+                             DefaultCallback.OnPost onPost, DefaultCallback.OnPost onSuccess,
                              int groupId, String date) {
         Call<Group> groupRefreshCall = apiService.getGroup(groupId, date);
         groupRefreshCall.enqueue(new DefaultCallback<Group>(context, loginManager, mainLayout) {
             @Override
             public void onResponse200(Response<Group> response) {
-                insert(response.body());
+                insert(response.body(), date);
+                onSuccess.execute();
             }
 
             @Override
@@ -101,7 +101,8 @@ public class GroupRepository {
         });
     }
 
-    public void insert(Group group) {
+    public void insert(Group group, String date) {
+        deleteByIdAndDate(group.gid, date);
         studentRepository.insert(group.students);
         dayRepository.insert(group.days);
         groupDao.insert(group)
