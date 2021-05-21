@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initManagers() {
         loginManager = new LoginManager(this);
-        statusManager = new StatusManager(this, swipeRefreshLayout, v -> refreshData());
+        statusManager = new StatusManager(this, swipeRefreshLayout);
     }
 
     private void initRetrofit() {

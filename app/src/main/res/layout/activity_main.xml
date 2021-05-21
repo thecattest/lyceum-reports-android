@@ -42,6 +42,4 @@
             android:divider="@null"/>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <include layout="@layout/fragment_server_error"/>
-
 </RelativeLayout>

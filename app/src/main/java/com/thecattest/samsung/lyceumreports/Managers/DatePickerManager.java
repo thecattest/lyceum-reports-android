@@ -2,7 +2,6 @@ package com.thecattest.samsung.lyceumreports.Managers;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
@@ -18,9 +17,6 @@ import java.util.Date;
 public class DatePickerManager {
 
     private final static String TAG = "MATERIAL_DATE_PICKER";
-
-    private final static String CURRENT_SELECTION = "CURRENT_SELECTION";
-    private final static String DATE_PICKER_TRIGGER_TEXT = "DATE_PICKER_TRIGGER_TEXT";
 
     private MaterialDatePicker<Long> datePicker;
     private Long currentSelection = null;

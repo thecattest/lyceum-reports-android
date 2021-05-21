@@ -92,6 +92,4 @@
 
     </RelativeLayout>
 
-    <include layout="@layout/fragment_server_error"/>
-
 </RelativeLayout>

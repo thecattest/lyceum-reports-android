@@ -10,7 +10,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.thecattest.samsung.lyceumreports.Data.Legacy.SummaryDay.SummaryDayRow;
 import com.thecattest.samsung.lyceumreports.Data.Models.Relations.DayWithAbsentAndGroup;
 import com.thecattest.samsung.lyceumreports.R;
 

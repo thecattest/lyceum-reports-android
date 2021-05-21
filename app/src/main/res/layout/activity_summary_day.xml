@@ -48,6 +48,4 @@
             tools:listitem="@layout/summary_day_row"/>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <include layout="@layout/fragment_server_error"/>
-
 </RelativeLayout>
