@@ -50,7 +50,7 @@ public class StudentsAdapter extends ArrayAdapter<Student> {
         throw new NullPointerException();
     }
 
-    public void updateDay(DayWithAbsent dayWithAbsent) {
+    public void updateDay(DayWithAbsent dayWithAbsent, String date) {
         Day day = new Day();
         day.groupId = group.group.gid;
         if (dayWithAbsent.day != null) {
@@ -59,6 +59,7 @@ public class StudentsAdapter extends ArrayAdapter<Student> {
             day.loadedAbsent = new ArrayList<>(dayWithAbsent.absent);
             day.isSyncedWithServer = dayWithAbsent.day.isSyncedWithServer;
         } else {
+            day.date = date;
             day.isSyncedWithServer = false;
             day.isLoadedFromServer = false;
         }

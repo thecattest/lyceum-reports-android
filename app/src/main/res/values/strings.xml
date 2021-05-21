@@ -18,6 +18,10 @@
     <string name="snackbar_wrong_login_password">Неправильный логин или пароль</string>
     <string name="snackbar_authorization_successful">Авторизация прошла успешно</string>
 
+    <!-- Dialog -->
+    <string name="dialog_title_unsaved_changes">Несохранённые изменения</string>
+    <string name="dialog_text_unsaved_changes">Изменения за этот день не были отправлены.</string>
+
     <!-- Buttons -->
     <string name="button_edit">редактировать</string>
     <string name="button_submit_day_default">отправить</string>

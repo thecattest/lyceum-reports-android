@@ -241,7 +241,7 @@ public class DayActivity extends AppCompatActivity {
     }
 
     private void updateAdapterDay(DayWithAbsent day) {
-        studentsAdapter.updateDay(day);
+        studentsAdapter.updateDay(day, datePickerManager.getDate());
 
         updateConfirmButtonState();
         updateSwipeRefreshLayoutState();
@@ -261,24 +261,19 @@ public class DayActivity extends AppCompatActivity {
             snackbar.setAnchorView(buttonsGroup);
             snackbar.show();
         }
-//        else {
-//            checkUnsavedChanges();
-//        }
+        else {
+            checkUnsavedChanges();
+        }
     }
 
     private void checkUnsavedChanges() {
         Day day = studentsAdapter.getDay();
         if (day != null && !day.isSyncedWithServer) {
             new MaterialAlertDialogBuilder(this)
-                    .setTitle("Несохранённые изменения")
-                    .setMessage("У вас есть неотправленные изменения за этот день.")
-                    .setNeutralButton("показать", (dialog, which) -> {
-                        dialog.dismiss();
-                    })
-                    .setPositiveButton("отправить", (dialog, which) -> {
-                        sendDay();
-                        dialog.dismiss();
-                    }).show();
+                    .setTitle(R.string.dialog_title_unsaved_changes)
+                    .setMessage(R.string.dialog_text_unsaved_changes)
+                    .setPositiveButton(R.string.button_ok, (dialog, which) -> dialog.dismiss())
+                    .show();
         }
     }
 
