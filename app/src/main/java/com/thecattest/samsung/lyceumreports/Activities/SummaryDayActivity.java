@@ -54,27 +54,6 @@ public class SummaryDayActivity extends AppCompatActivity {
         updateSummaryDayView();
     }
 
-    @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-
-        datePickerManager.loadFromBundle(savedInstanceState);
-        if (statusManager.loadFromBundle(savedInstanceState)) {
-            summaryDay.loadFromBundle(savedInstanceState);
-            updateSummaryDayView();
-        } else {
-            updateSwipeRefreshLayout();
-        }
-    }
-
-    @SuppressLint("MissingSuperCall")
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        summaryDay.saveToBundle(outState);
-        datePickerManager.saveToBundle(outState);
-        statusManager.saveToBundle(outState);
-    }
-
     private void initRetrofit() {
         Retrofit retrofit = RetrofitManager.getInstance(loginManager);
         summaryDayService = retrofit.create(SummaryDayService.class);

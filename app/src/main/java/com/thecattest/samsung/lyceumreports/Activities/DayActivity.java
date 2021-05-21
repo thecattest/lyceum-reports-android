@@ -80,15 +80,10 @@ public class DayActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        datePickerManager.loadFromBundle(savedInstanceState);
-    }
-
-    @SuppressLint("MissingSuperCall")
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        datePickerManager.saveToBundle(outState);
+    protected void onStop() {
+        super.onStop();
+        swipeRefreshLayout.setRefreshing(false);
+        statusManager.setMainLayout();
     }
 
     private void findViews() {

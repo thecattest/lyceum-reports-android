@@ -60,6 +60,13 @@ public class MainActivity extends AppCompatActivity {
         loadData();
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        swipeRefreshLayout.setRefreshing(false);
+        statusManager.setMainLayout();
+    }
+
     private void findViews() {
         groupsListView = findViewById(R.id.groupsList);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);

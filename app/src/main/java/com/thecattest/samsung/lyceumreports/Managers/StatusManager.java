@@ -30,30 +30,6 @@ public class StatusManager {
         this.loadingLayout = activity.findViewById(R.id.fragmentLoading);
     }
 
-    public void saveToBundle(Bundle outState) {
-        String layout = "";
-        if (mainLayout.getVisibility() == View.VISIBLE) {
-            layout = LAYOUT_TYPE_MAIN;
-        }
-        else if (serverErrorUsed && serverErrorLayout.getVisibility() == View.VISIBLE) {
-            layout = LAYOUT_TYPE_SERVER_ERROR;
-        }
-        outState.putString(LAYOUT_TYPE, layout);
-    }
-
-    public boolean loadFromBundle(Bundle savedInstanceState) {
-        String layout = savedInstanceState.getString(LAYOUT_TYPE);
-        switch (layout) {
-            case LAYOUT_TYPE_SERVER_ERROR:
-                setServerErrorLayout();
-                break;
-            case LAYOUT_TYPE_MAIN:
-                setMainLayout();
-                return true;
-        }
-        return false;
-    }
-
     public void setServerErrorLayout() {
         if (!serverErrorUsed)
             return;
