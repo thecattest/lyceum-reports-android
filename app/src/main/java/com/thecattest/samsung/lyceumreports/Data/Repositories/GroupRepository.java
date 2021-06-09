@@ -134,6 +134,7 @@ public class GroupRepository {
 
     public void insert(Group group, String date) {
 //        deleteByIdAndDate(group.gid, date);
+        dayRepository.deleteByGroupIdAndDate(group.gid, date);
         studentRepository.insert(group.students);
         dayRepository.insert(group.days);
         groupDao.insert(group)
@@ -146,16 +147,17 @@ public class GroupRepository {
         LinkedList<Student> students = new LinkedList<>();
         LinkedList<Day> days = new LinkedList<>();
         LinkedList<Integer> groupIds = new LinkedList<>();
-//        LinkedList<String> dates = new LinkedList<>();
+        LinkedList<String> dates = new LinkedList<>();
         for (Group group : groups) {
             groupIds.add(group.gid);
             if (group.days == null)
                 continue;
             days.addAll(group.days);
-//            for (Day day : days)
-//                dates.add(day.date);
+            for (Day day : days)
+                dates.add(day.date);
             students.addAll(group.students);
         }
+        dayRepository.deleteByGroupIdsAndDates(groupIds, dates);
 //        deleteByIdsAndDates(groupIds, dates);
         deleteAllButIds(groupIds);
         studentRepository.insert(students);

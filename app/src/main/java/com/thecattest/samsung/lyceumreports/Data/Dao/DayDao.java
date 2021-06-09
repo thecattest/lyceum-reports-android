@@ -32,6 +32,10 @@ public interface DayDao {
             "WHERE group_id IN (:groupIds) " +
             "AND date IN (:dates)")
     Maybe<Void> deleteByGroupIdsAndDates(List<Integer> groupIds, List<String> dates);
+
+    @Query("DELETE FROM days " +
+            "WHERE group_id NOT IN (:groupIds)")
+    Maybe<Void> deleteAllButGroupIds(List<Integer> groupIds);
     
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     Maybe<Void> insertRefs(List<DayAbsentCrossRef> daysWithAbsent);
