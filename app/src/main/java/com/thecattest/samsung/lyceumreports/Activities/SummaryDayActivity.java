@@ -13,6 +13,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.thecattest.samsung.lyceumreports.Adapters.SummaryDayAdapter;
 import com.thecattest.samsung.lyceumreports.Data.ApiService;
+import com.thecattest.samsung.lyceumreports.Data.AppDatabase;
 import com.thecattest.samsung.lyceumreports.Data.Models.Relations.DayWithAbsentAndGroup;
 import com.thecattest.samsung.lyceumreports.Data.Repositories.DayRepository;
 import com.thecattest.samsung.lyceumreports.Data.Repositories.GroupRepository;
@@ -26,7 +27,6 @@ import com.thecattest.samsung.lyceumreports.R;
 import java.util.ArrayList;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 
 public class SummaryDayActivity extends AppCompatActivity {
@@ -116,7 +116,7 @@ public class SummaryDayActivity extends AppCompatActivity {
     @SuppressLint("CheckResult")
     private void loadData(boolean firstTime) {
         dayRepository.getByDate(datePickerManager.getDate())
-                .subscribeOn(Schedulers.single())
+                .subscribeOn(AppDatabase.scheduler)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         days -> {

@@ -15,13 +15,23 @@ import com.thecattest.samsung.lyceumreports.Data.Models.Group;
 import com.thecattest.samsung.lyceumreports.Data.Models.Relations.DayAbsentCrossRef;
 import com.thecattest.samsung.lyceumreports.Data.Models.Student;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import io.reactivex.MaybeObserver;
+import io.reactivex.Scheduler;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 @Database(entities = {Group.class, Day.class, Student.class, DayAbsentCrossRef.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static volatile AppDatabase INSTANCE;
+
+    private static final ExecutorService executor =
+            Executors.newFixedThreadPool(1);
+
+    public static final Scheduler scheduler = Schedulers.from(executor);
 
     public abstract GroupDao groupDao();
     public abstract DayDao dayDao();

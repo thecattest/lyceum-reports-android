@@ -14,6 +14,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.thecattest.samsung.lyceumreports.Adapters.GroupsAdapter;
 import com.thecattest.samsung.lyceumreports.Data.ApiService;
+import com.thecattest.samsung.lyceumreports.Data.AppDatabase;
 import com.thecattest.samsung.lyceumreports.Data.Models.Permissions;
 import com.thecattest.samsung.lyceumreports.Data.Models.Relations.GroupWithDaysAndStudents;
 import com.thecattest.samsung.lyceumreports.Data.Repositories.DayRepository;
@@ -27,7 +28,6 @@ import com.thecattest.samsung.lyceumreports.R;
 import java.util.ArrayList;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity {
@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("CheckResult")
     private void loadData() {
         groupRepository.get()
-                .subscribeOn(Schedulers.single())
+                .subscribeOn(AppDatabase.scheduler)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         groupsWithDaysAndStudent -> updateView(new ArrayList<>(groupsWithDaysAndStudent), false),

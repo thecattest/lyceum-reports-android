@@ -23,7 +23,6 @@ import java.util.List;
 
 import io.reactivex.Maybe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -134,11 +133,11 @@ public class GroupRepository {
     }
 
     public void insert(Group group, String date) {
-        deleteByIdAndDate(group.gid, date);
+//        deleteByIdAndDate(group.gid, date);
         studentRepository.insert(group.students);
         dayRepository.insert(group.days);
         groupDao.insert(group)
-                .subscribeOn(Schedulers.single())
+                .subscribeOn(AppDatabase.scheduler)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(AppDatabase.getDefaultObserver());
     }
@@ -147,22 +146,22 @@ public class GroupRepository {
         LinkedList<Student> students = new LinkedList<>();
         LinkedList<Day> days = new LinkedList<>();
         LinkedList<Integer> groupIds = new LinkedList<>();
-        LinkedList<String> dates = new LinkedList<>();
+//        LinkedList<String> dates = new LinkedList<>();
         for (Group group : groups) {
             groupIds.add(group.gid);
             if (group.days == null)
                 continue;
             days.addAll(group.days);
-            for (Day day : days)
-                dates.add(day.date);
+//            for (Day day : days)
+//                dates.add(day.date);
             students.addAll(group.students);
         }
-        deleteByIdsAndDates(groupIds, dates);
+//        deleteByIdsAndDates(groupIds, dates);
         deleteAllButIds(groupIds);
         studentRepository.insert(students);
         dayRepository.insert(days);
         groupDao.insert(groups)
-                .subscribeOn(Schedulers.single())
+                .subscribeOn(AppDatabase.scheduler)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(AppDatabase.getDefaultObserver());
     }
@@ -173,7 +172,7 @@ public class GroupRepository {
         studentRepository.deleteByGroupIds(groupIds);
         dayRepository.deleteByGroupIdAndDate(groupId, date);
         groupDao.deleteById(groupId)
-                .subscribeOn(Schedulers.single())
+                .subscribeOn(AppDatabase.scheduler)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(AppDatabase.getDefaultObserver());
     }
@@ -182,7 +181,7 @@ public class GroupRepository {
         studentRepository.deleteByGroupIds(groupIds);
         dayRepository.deleteByGroupIdsAndDates(groupIds, dates);
         groupDao.deleteByIds(groupIds)
-                .subscribeOn(Schedulers.single())
+                .subscribeOn(AppDatabase.scheduler)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(AppDatabase.getDefaultObserver());
     }
@@ -191,7 +190,7 @@ public class GroupRepository {
         studentRepository.deleteAllButGroupIds(groupIds);
         dayRepository.deleteAllButGroupIds(groupIds);
         groupDao.deleteAllButIds(groupIds)
-                .subscribeOn(Schedulers.single())
+                .subscribeOn(AppDatabase.scheduler)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(AppDatabase.getDefaultObserver());
     }

@@ -9,7 +9,6 @@ import com.thecattest.samsung.lyceumreports.Data.Models.Student;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 public class StudentRepository {
 
@@ -22,21 +21,21 @@ public class StudentRepository {
 
     public void insert(List<Student> students) {
         studentDao.insert(students)
-                .subscribeOn(Schedulers.single())
+                .subscribeOn(AppDatabase.scheduler)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(AppDatabase.getDefaultObserver());
     }
 
     public void deleteAllButGroupIds(List<Integer> groupIds) {
         studentDao.deleteAllButGroupIds(groupIds)
-                .subscribeOn(Schedulers.single())
+                .subscribeOn(AppDatabase.scheduler)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(AppDatabase.getDefaultObserver());
     }
 
     public void deleteByGroupIds(List<Integer> groupIds) {
             studentDao.deleteByGroupIds(groupIds)
-                    .subscribeOn(Schedulers.single())
+                    .subscribeOn(AppDatabase.scheduler)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(AppDatabase.getDefaultObserver());
     }

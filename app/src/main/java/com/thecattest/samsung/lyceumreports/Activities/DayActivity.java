@@ -18,6 +18,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.thecattest.samsung.lyceumreports.Adapters.StudentsAdapter;
 import com.thecattest.samsung.lyceumreports.Data.ApiService;
+import com.thecattest.samsung.lyceumreports.Data.AppDatabase;
 import com.thecattest.samsung.lyceumreports.Data.Models.Day;
 import com.thecattest.samsung.lyceumreports.Data.Models.Relations.DayWithAbsent;
 import com.thecattest.samsung.lyceumreports.Data.Models.Relations.GroupWithStudents;
@@ -32,7 +33,6 @@ import com.thecattest.samsung.lyceumreports.Managers.StatusManager;
 import com.thecattest.samsung.lyceumreports.R;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 
 public class DayActivity extends AppCompatActivity {
@@ -190,7 +190,7 @@ public class DayActivity extends AppCompatActivity {
     @SuppressLint("CheckResult")
     private void loadGroup() {
         groupRepository.getById(groupId)
-                .subscribeOn(Schedulers.single())
+                .subscribeOn(AppDatabase.scheduler)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::updateView);
         loadDay(false);
@@ -223,7 +223,7 @@ public class DayActivity extends AppCompatActivity {
         if (datePickerManager.isEmpty())
             return;
         dayRepository.getByGroupIdAndDate(groupId, datePickerManager.getDate())
-                .subscribeOn(Schedulers.single())
+                .subscribeOn(AppDatabase.scheduler)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         this::updateAdapterDay,
