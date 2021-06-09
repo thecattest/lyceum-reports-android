@@ -120,11 +120,8 @@ public class DayActivity extends AppCompatActivity {
     }
 
     private void initRepositories() {
-        StudentRepository studentRepository = new StudentRepository(this);
-        dayRepository = new DayRepository(this, loginManager, mainLayout,
-                studentRepository, apiService);
-        groupRepository = new GroupRepository(this, loginManager, mainLayout,
-                dayRepository, studentRepository, apiService);
+        groupRepository = new GroupRepository(this, loginManager, mainLayout, apiService);
+        dayRepository = groupRepository.dayRepository;
     }
 
     public void onStudentItemClick(AdapterView<?> parent, View view, int position, long id) {

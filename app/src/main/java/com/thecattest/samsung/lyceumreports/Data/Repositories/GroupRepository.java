@@ -29,8 +29,8 @@ import retrofit2.Response;
 public class GroupRepository {
 
     private final GroupDao groupDao;
-    private final DayRepository dayRepository;
-    private final StudentRepository studentRepository;
+    public final DayRepository dayRepository;
+    public final StudentRepository studentRepository;
 
     private final Context context;
     private final LoginManager loginManager;
@@ -40,15 +40,13 @@ public class GroupRepository {
     public GroupRepository(Context context,
                            LoginManager loginManager,
                            View mainLayout,
-                           DayRepository dayRepository,
-                           StudentRepository studentRepository,
                            ApiService apiService) {
         AppDatabase db = AppDatabase.getInstance(context);
         this.context = context;
         this.loginManager = loginManager;
         this.mainLayout = mainLayout;
-        this.dayRepository = dayRepository;
-        this.studentRepository = studentRepository;
+        this.dayRepository = new DayRepository(context, loginManager, mainLayout, apiService);
+        this.studentRepository = dayRepository.studentRepository;
         this.apiService = apiService;
         groupDao = db.groupDao();
     }

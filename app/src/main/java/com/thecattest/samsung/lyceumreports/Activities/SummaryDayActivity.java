@@ -82,11 +82,8 @@ public class SummaryDayActivity extends AppCompatActivity {
     }
 
     private void initRepositories() {
-        StudentRepository studentRepository = new StudentRepository(this);
-        dayRepository = new DayRepository(this, loginManager, swipeRefreshLayout,
-                studentRepository, apiService);
-        groupRepository = new GroupRepository(this, loginManager, swipeRefreshLayout,
-                dayRepository, studentRepository, apiService);
+        groupRepository = new GroupRepository(this, loginManager, swipeRefreshLayout, apiService);
+        dayRepository = groupRepository.dayRepository;
     }
 
     public void onRefresh() { refreshData(); }

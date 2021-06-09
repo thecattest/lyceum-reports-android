@@ -28,7 +28,7 @@ import retrofit2.Response;
 public class DayRepository {
 
     private final DayDao dayDao;
-    private final StudentRepository studentRepository;
+    public final StudentRepository studentRepository;
 
     private final Context context;
     private final LoginManager loginManager;
@@ -38,13 +38,12 @@ public class DayRepository {
     public DayRepository(Context context,
                          LoginManager loginManager,
                          View mainLayout,
-                         StudentRepository studentRepository,
                          ApiService apiService) {
         AppDatabase db = AppDatabase.getInstance(context);
         this.context = context;
         this.loginManager = loginManager;
         this.mainLayout = mainLayout;
-        this.studentRepository = studentRepository;
+        this.studentRepository = new StudentRepository(context);
         dayDao = db.dayDao();
         this.apiService = apiService;
     }
@@ -126,10 +125,10 @@ public class DayRepository {
     }
 
     public void deleteByGroupIdAndDate(int groupId, String date) {
-//        dayDao.deleteRefsByGroupIdAndDate(groupId, date)
-//                .subscribeOn(AppDatabase.scheduler)
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(AppDatabase.getDefaultObserver());
+        dayDao.deleteRefsByGroupIdAndDate(groupId, date)
+                .subscribeOn(AppDatabase.scheduler)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(AppDatabase.getDefaultObserver());
         dayDao.deleteByGroupIdAndDate(groupId, date)
                 .subscribeOn(AppDatabase.scheduler)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -137,10 +136,10 @@ public class DayRepository {
     }
 
     public void deleteByGroupIdsAndDates(List<Integer> groupIds, List<String> dates) {
-//        dayDao.deleteRefsByGroupIdsAndDates(groupIds, dates)
-//                .subscribeOn(AppDatabase.scheduler)
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(AppDatabase.getDefaultObserver());
+        dayDao.deleteRefsByGroupIdsAndDates(groupIds, dates)
+                .subscribeOn(AppDatabase.scheduler)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(AppDatabase.getDefaultObserver());
         dayDao.deleteByGroupIdsAndDates(groupIds, dates)
                 .subscribeOn(AppDatabase.scheduler)
                 .observeOn(AndroidSchedulers.mainThread())
