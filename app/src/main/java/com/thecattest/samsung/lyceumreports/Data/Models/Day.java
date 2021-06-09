@@ -9,6 +9,7 @@ import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
+import com.thecattest.samsung.lyceumreports.Data.Models.Relations.DayWithAbsent;
 import com.thecattest.samsung.lyceumreports.R;
 
 import java.util.ArrayList;
@@ -45,6 +46,44 @@ public class Day {
     @Ignore
     public boolean isLoadedFromServer = true;
 
+    public Day() {}
+
+    public Day(int groupId, String date, DayWithAbsent dayWithAbsent) {
+        this.groupId = groupId;
+        if (dayWithAbsent.day != null) {
+            this.date = dayWithAbsent.day.date;
+            absent = new ArrayList<>(dayWithAbsent.absent);
+            loadedAbsent = new ArrayList<>(dayWithAbsent.absent);
+            isSyncedWithServer = dayWithAbsent.day.isSyncedWithServer;
+        } else {
+            this.date = date;
+            isSyncedWithServer = false;
+            isLoadedFromServer = false;
+        }
+    }
+
+    public void toggleAbsent(Student student) {
+        if (absent.contains(student)) {
+            absent.remove(student);
+        } else {
+            absent.add(student);
+        }
+
+        boolean equals = true;
+        for (Student st : loadedAbsent) {
+            equals = absent.contains(st);
+            if (!equals)
+                break;
+        }
+        if (equals)
+            for (Student st : absent) {
+                equals = loadedAbsent.contains(st);
+                if (!equals)
+                    break;
+            }
+        isSyncedWithServer = isLoadedFromServer && equals;
+    }
+
     public String getAbsentStudentsString(Context context, List<Student> absent) {
         if (absent.size() != 0) {
             StringBuilder absentStudentsString = new StringBuilder();
@@ -56,6 +95,18 @@ public class Day {
         } else {
             return context.getResources().getString(R.string.summary_status_no_absent);
         }
+    }
+
+    public boolean noLoadedAbsent() {
+        return isLoadedFromServer && loadedAbsent.isEmpty();
+    }
+
+    public boolean noAbsent() {
+        return absent.isEmpty();
+    }
+
+    public boolean isChanged() {
+        return !isSyncedWithServer;
     }
 
     @Override

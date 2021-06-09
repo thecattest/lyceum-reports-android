@@ -51,18 +51,7 @@ public class StudentsAdapter extends ArrayAdapter<Student> {
     }
 
     public void updateDay(DayWithAbsent dayWithAbsent, String date) {
-        Day day = new Day();
-        day.groupId = group.group.gid;
-        if (dayWithAbsent.day != null) {
-            day.date = dayWithAbsent.day.date;
-            day.absent = new ArrayList<>(dayWithAbsent.absent);
-            day.loadedAbsent = new ArrayList<>(dayWithAbsent.absent);
-            day.isSyncedWithServer = dayWithAbsent.day.isSyncedWithServer;
-        } else {
-            day.date = date;
-            day.isSyncedWithServer = false;
-            day.isLoadedFromServer = false;
-        }
+        Day day = new Day(group.group.gid, date, dayWithAbsent);
         group.group.days = new ArrayList<>();
         group.group.days.add(day);
         notifyDataSetChanged();
@@ -70,45 +59,27 @@ public class StudentsAdapter extends ArrayAdapter<Student> {
 
     public void toggleAbsent(Student student) {
         Day day = group.group.days.get(0);
-        if (day.absent.contains(student)) {
-            day.absent.remove(student);
-        } else {
-            day.absent.add(student);
-        }
-
-        boolean equals = true;
-        for (Student st : day.loadedAbsent) {
-            equals = day.absent.contains(st);
-            if (!equals)
-                break;
-        }
-        if (equals)
-            for (Student st : day.absent) {
-                equals = day.loadedAbsent.contains(st);
-                if (!equals)
-                    break;
-            }
-
-        day.isSyncedWithServer = day.isLoadedFromServer && equals;
+        day.toggleAbsent(student);
     }
 
     public boolean noLoadedAbsent() {
         if (group.group.days == null || group.group.days.isEmpty())
             return false;
         Day day = group.group.days.get(0);
-        return day.isLoadedFromServer && day.loadedAbsent.isEmpty();
+        return day.noLoadedAbsent();
     }
 
     public boolean noAbsent() {
         if (group.group.days == null || group.group.days.isEmpty())
             return false;
         Day day = group.group.days.get(0);
-        return day.absent.isEmpty();
+        return day.noAbsent();
     }
 
     public boolean buttonEnabled() {
         if (group.group.days == null || group.group.days.isEmpty())
             return false;
-        return !group.group.days.get(0).isSyncedWithServer;
+        Day day = group.group.days.get(0);
+        return day.isChanged();
     }
 }
