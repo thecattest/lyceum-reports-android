@@ -176,7 +176,7 @@ public class DayActivity extends AppCompatActivity {
                                 mainLayout,
                                 R.string.snackbar_server_ok,
                                 Snackbar.LENGTH_SHORT);
-                        snackbar.setAction(R.string.button_refresh, btn -> refreshGroupAndDay());
+//                        snackbar.setAction(R.string.button_refresh, btn -> refreshGroupAndDay());
                         snackbar.setAnchorView(buttonsGroup);
                         snackbar.show();
                     },
