@@ -10,6 +10,7 @@ import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 import com.thecattest.samsung.lyceumreports.Data.Models.Relations.DayWithAbsent;
+import com.thecattest.samsung.lyceumreports.Data.Repositories.DayRepository;
 import com.thecattest.samsung.lyceumreports.R;
 
 import java.util.ArrayList;
@@ -62,7 +63,7 @@ public class Day {
         }
     }
 
-    public void toggleAbsent(Student student) {
+    public void toggleAbsent(Student student, DayRepository dayRepository) {
         if (absent.contains(student)) {
             absent.remove(student);
         } else {
@@ -82,6 +83,7 @@ public class Day {
                     break;
             }
         isSyncedWithServer = isLoadedFromServer && equals;
+        dayRepository.update(this);
     }
 
     public String getAbsentStudentsString(Context context, List<Student> absent) {

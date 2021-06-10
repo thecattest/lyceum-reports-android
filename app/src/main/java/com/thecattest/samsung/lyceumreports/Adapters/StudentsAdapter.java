@@ -13,6 +13,7 @@ import com.thecattest.samsung.lyceumreports.Data.Models.Day;
 import com.thecattest.samsung.lyceumreports.Data.Models.Relations.DayWithAbsent;
 import com.thecattest.samsung.lyceumreports.Data.Models.Relations.GroupWithStudents;
 import com.thecattest.samsung.lyceumreports.Data.Models.Student;
+import com.thecattest.samsung.lyceumreports.Data.Repositories.DayRepository;
 import com.thecattest.samsung.lyceumreports.R;
 
 import java.util.ArrayList;
@@ -57,9 +58,9 @@ public class StudentsAdapter extends ArrayAdapter<Student> {
         notifyDataSetChanged();
     }
 
-    public void toggleAbsent(Student student) {
+    public void toggleAbsent(Student student, DayRepository dayRepository) {
         Day day = group.group.days.get(0);
-        day.toggleAbsent(student);
+        day.toggleAbsent(student, dayRepository);
     }
 
     public boolean noLoadedAbsent() {

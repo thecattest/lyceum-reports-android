@@ -126,7 +126,7 @@ public class DayActivity extends AppCompatActivity {
 
     public void onStudentItemClick(AdapterView<?> parent, View view, int position, long id) {
         Student student = (Student)parent.getItemAtPosition(position);
-        studentsAdapter.toggleAbsent(student);
+        studentsAdapter.toggleAbsent(student, dayRepository);
         studentsAdapter.notifyDataSetChanged();
         updateConfirmButtonState();
     }
@@ -164,7 +164,7 @@ public class DayActivity extends AppCompatActivity {
         statusManager.setLoadingLayout();
         try {
             Day day = studentsAdapter.getDay();
-            dayRepository.update(day);
+//            dayRepository.update(day);
             dayRepository.sendDay(
                     () -> {
                         confirmButton.setEnabled(true);
