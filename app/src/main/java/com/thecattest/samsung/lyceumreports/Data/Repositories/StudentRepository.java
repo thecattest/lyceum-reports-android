@@ -14,8 +14,7 @@ public class StudentRepository {
 
     public final StudentDao studentDao;
 
-    public StudentRepository(Context context) {
-        AppDatabase db = AppDatabase.getInstance(context);
+    public StudentRepository(AppDatabase db) {
         studentDao = db.studentDao();
     }
 

@@ -20,6 +20,7 @@ import com.thecattest.samsung.lyceumreports.R;
 import java.util.LinkedList;
 import java.util.List;
 
+import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import retrofit2.Call;
@@ -30,9 +31,9 @@ public class DayRepository {
     private final DayDao dayDao;
     public final StudentRepository studentRepository;
 
-    private final Context context;
-    private final LoginManager loginManager;
-    private final View mainLayout;
+    private Context context;
+    private LoginManager loginManager;
+    private View mainLayout;
     private final ApiService apiService;
 
     public DayRepository(Context context,
@@ -43,9 +44,21 @@ public class DayRepository {
         this.context = context;
         this.loginManager = loginManager;
         this.mainLayout = mainLayout;
-        this.studentRepository = new StudentRepository(context);
+        this.studentRepository = new StudentRepository(db);
         dayDao = db.dayDao();
         this.apiService = apiService;
+    }
+
+    public DayRepository(Context context,
+                         ApiService apiService) {
+        AppDatabase db = AppDatabase.getInstance(context);
+        this.studentRepository = new StudentRepository(db);
+        dayDao = db.dayDao();
+        this.apiService = apiService;
+    }
+
+    public Maybe<List<DayWithAbsent>> getNotSynced() {
+        return dayDao.getNotSynced();
     }
 
     public Maybe<DayWithAbsent> getByGroupIdAndDate(int groupId, String date) {
@@ -59,28 +72,46 @@ public class DayRepository {
     public void sendDay(DefaultCallback.OnPost onPost, DefaultCallback.OnPost onSuccess,
                         Day day) {
         Call<Void> sendDayCall = apiService.sendDay(day);
-        sendDayCall.enqueue(new DefaultCallback<Void>(context, loginManager, mainLayout) {
-            @Override
-            public void onResponse200(Response<Void> response) {
-                onSuccess.execute();
-                day.isSyncedWithServer = true;
-                update(day);
-            }
+        if (context != null && loginManager != null && mainLayout != null)
+            sendDayCall.enqueue(new DefaultCallback<Void>(context, loginManager, mainLayout) {
+                @Override
+                public void onResponse200(Response<Void> response) {
+                    onSuccess.execute();
+                    day.isSyncedWithServer = true;
+                    update(day);
+                }
 
-            @Override
-            public void onResponseFailure(Call<Void> call, Throwable t) {
-                Snackbar snackbar = Snackbar.make(
-                        mainLayout,
-                        R.string.snackbar_server_error,
-                        Snackbar.LENGTH_SHORT
-                );
-                snackbar.setAction(R.string.button_dismiss, v -> snackbar.dismiss());
-                snackbar.show();
-            }
+                @Override
+                public void onResponseFailure(Call<Void> call, Throwable t) {
+                    Snackbar snackbar = Snackbar.make(
+                            mainLayout,
+                            R.string.snackbar_server_error,
+                            Snackbar.LENGTH_SHORT
+                    );
+                    snackbar.setAction(R.string.button_dismiss, v -> snackbar.dismiss());
+                    snackbar.show();
+                }
 
-            @Override
-            public void onPostExecute() { onPost.execute(); }
-        });
+                @Override
+                public void onPostExecute() { onPost.execute(); }
+            });
+        else
+            sendDayCall.enqueue(new DefaultCallback<Void>() {
+                @Override
+                public void onResponse200(Response<Void> response) {
+                    onSuccess.execute();
+                    day.isSyncedWithServer = true;
+                    update(day);
+                }
+
+                @Override
+                public void onResponseFailure(Call<Void> call, Throwable t) {
+
+                }
+
+                @Override
+                public void onPostExecute() { onPost.execute(); }
+            });
     }
 
     @SuppressLint("CheckResult")

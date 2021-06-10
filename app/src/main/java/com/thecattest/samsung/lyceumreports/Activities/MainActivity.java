@@ -24,6 +24,7 @@ import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
 import com.thecattest.samsung.lyceumreports.Managers.RetrofitManager;
 import com.thecattest.samsung.lyceumreports.Managers.StatusManager;
 import com.thecattest.samsung.lyceumreports.R;
+import com.thecattest.samsung.lyceumreports.Services.SenderService;
 
 import java.util.ArrayList;
 
@@ -58,6 +59,12 @@ public class MainActivity extends AppCompatActivity {
         permissions = loginManager.getPermissions();
         updateMenu();
         loadData();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        startService(new Intent(this, SenderService.class));
     }
 
     @Override

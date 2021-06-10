@@ -13,6 +13,7 @@ import com.thecattest.samsung.lyceumreports.Data.Models.Relations.DayWithAbsentA
 
 import java.util.List;
 
+import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 
 @Dao
@@ -81,4 +82,10 @@ public interface DayDao {
             "WHERE date in (:date) " +
             "ORDER BY groups.number, groups.letter")
     Maybe<List<DayWithAbsentAndGroup>> getByDate(String date);
+
+    @Transaction
+    @Query("SELECT * " +
+            "FROM days " +
+            "WHERE is_synced = 0")
+    Maybe<List<DayWithAbsent>> getNotSynced();
 }
