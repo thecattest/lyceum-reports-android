@@ -14,6 +14,7 @@ public class LoginManager {
     private static final String KEY_COOKIES = "COOKIES";
     private static final String KEY_CAN_EDIT = "CAN_EDIT";
     private static final String KEY_CAN_VIEW_TABLE = "CAN_VIEW_TABLE";
+    private static final String KEY_LAST_UPDATED = "LAST_UPDATED";
 
     private final SharedPreferences sharedPreferences;
     private AppCompatActivity activity;
@@ -29,6 +30,22 @@ public class LoginManager {
 
     public String getCookie() {
         return sharedPreferences.getString(KEY_COOKIES, "");
+    }
+
+    public long setLastUpdated() {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        long unixTime = System.currentTimeMillis() / 1000L;
+        editor.putLong(KEY_LAST_UPDATED, unixTime);
+        editor.apply();
+        return unixTime;
+    }
+
+    public long getLastUpdated() {
+        long lastUpdated = sharedPreferences.getLong(KEY_LAST_UPDATED, 0L);
+        if (lastUpdated == 0L) {
+            return setLastUpdated();
+        }
+        return lastUpdated;
     }
 
     public void setCookie(String cookies) {
@@ -56,6 +73,7 @@ public class LoginManager {
         editor.remove(KEY_COOKIES);
         editor.remove(KEY_CAN_VIEW_TABLE);
         editor.remove(KEY_CAN_EDIT);
+        editor.remove(KEY_LAST_UPDATED);
         editor.apply();
     }
 

@@ -183,4 +183,11 @@ public class DayRepository {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(AppDatabase.getDefaultObserver());
     }
+
+    public void deleteSyncedRefs(List<Integer> groupIds, List<String> dates) {
+        dayDao.deleteSyncedRefsByGroupIdsAndDates(groupIds, dates)
+                .subscribeOn(AppDatabase.scheduler)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(AppDatabase.getDefaultObserver());
+    }
 }

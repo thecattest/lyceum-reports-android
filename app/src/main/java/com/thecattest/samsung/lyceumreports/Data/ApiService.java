@@ -33,4 +33,7 @@ public interface ApiService {
 
     @GET(URLConfig.V2_DAYS_ENDPOINT)
     Call<ArrayList<Group>> getDaySummary(@Path("date") String date);
+
+    @GET(URLConfig.V2_UPDATES_ENDPOINT)
+    Call<ArrayList<Group>> getUpdates(@Path("seconds") long seconds);
 }

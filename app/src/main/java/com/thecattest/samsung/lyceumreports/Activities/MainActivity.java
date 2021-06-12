@@ -1,8 +1,12 @@
 package com.thecattest.samsung.lyceumreports.Activities;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
@@ -55,6 +59,14 @@ public class MainActivity extends AppCompatActivity {
         initManagers();
         initRetrofit();
         initRepositories();
+
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.d("Updates", "broadcast got");
+                loadData();
+            }
+        }, new IntentFilter(SenderService.CHANNEL));
 
         permissions = loginManager.getPermissions();
         updateMenu();

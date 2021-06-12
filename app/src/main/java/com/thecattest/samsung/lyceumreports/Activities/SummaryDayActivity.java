@@ -1,8 +1,12 @@
 package com.thecattest.samsung.lyceumreports.Activities;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -22,6 +26,7 @@ import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
 import com.thecattest.samsung.lyceumreports.Managers.RetrofitManager;
 import com.thecattest.samsung.lyceumreports.Managers.StatusManager;
 import com.thecattest.samsung.lyceumreports.R;
+import com.thecattest.samsung.lyceumreports.Services.SenderService;
 
 import java.util.ArrayList;
 
@@ -52,6 +57,14 @@ public class SummaryDayActivity extends AppCompatActivity {
         initManagers();
         initRetrofit();
         initRepositories();
+
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.d("Updates", "broadcast got");
+                loadData(false);
+            }
+        }, new IntentFilter(SenderService.CHANNEL));
     }
 
     private void findViews() {

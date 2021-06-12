@@ -83,7 +83,7 @@ public class Day {
                     break;
             }
         isSyncedWithServer = isLoadedFromServer && equals;
-        dayRepository.update(this);
+//        dayRepository.update(this);
     }
 
     public String getAbsentStudentsString(Context context, List<Student> absent) {

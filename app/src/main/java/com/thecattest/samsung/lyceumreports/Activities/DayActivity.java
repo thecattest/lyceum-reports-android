@@ -1,9 +1,13 @@
 package com.thecattest.samsung.lyceumreports.Activities;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
@@ -30,6 +34,7 @@ import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
 import com.thecattest.samsung.lyceumreports.Managers.RetrofitManager;
 import com.thecattest.samsung.lyceumreports.Managers.StatusManager;
 import com.thecattest.samsung.lyceumreports.R;
+import com.thecattest.samsung.lyceumreports.Services.SenderService;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import retrofit2.Retrofit;
@@ -69,6 +74,13 @@ public class DayActivity extends AppCompatActivity {
         initManagers();
         initRetrofit();
         initRepositories();
+
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                loadGroup();
+            }
+        }, new IntentFilter(SenderService.CHANNEL));
 
         groupId = getIntent().getIntExtra(GROUP_ID, 6);
         String groupLabel = getIntent().getStringExtra(GROUP_LABEL);
@@ -163,7 +175,7 @@ public class DayActivity extends AppCompatActivity {
         statusManager.setLoadingLayout();
         try {
             Day day = studentsAdapter.getDay();
-//            dayRepository.update(day);
+            dayRepository.update(day);
             dayRepository.sendDay(
                     () -> {
                         confirmButton.setEnabled(true);
@@ -254,7 +266,9 @@ public class DayActivity extends AppCompatActivity {
             snackbar.show();
         }
         else {
-            checkUnsavedChanges();
+            try {
+                checkUnsavedChanges();
+            } catch (WindowManager.BadTokenException ignored) {}
         }
     }
 

@@ -60,6 +60,15 @@ public interface DayDao {
     Maybe<Void> deleteRefsByGroupIdsAndDates(List<Integer> groupIds, List<String> dates);
 
     @Query("DELETE FROM day_absent_cross_refs " +
+            "WHERE did IN " +
+            "(SELECT did " +
+                "FROM days " +
+                "WHERE group_id IN (:groupIds) " +
+                "AND date IN (:dates) " +
+                "AND is_synced = 1)")
+    Maybe<Void> deleteSyncedRefsByGroupIdsAndDates(List<Integer> groupIds, List<String> dates);
+
+    @Query("DELETE FROM day_absent_cross_refs " +
             "WHERE did NOT IN " +
                 "(SELECT did " +
                 "FROM days " +
@@ -86,6 +95,8 @@ public interface DayDao {
     @Transaction
     @Query("SELECT * " +
             "FROM days " +
-            "WHERE is_synced = 0")
+            "WHERE is_synced = 0 " +
+            "ORDER BY random() " +
+            "LIMIT 1")
     Maybe<List<DayWithAbsent>> getNotSynced();
 }
