@@ -6,6 +6,7 @@ import com.thecattest.samsung.lyceumreports.Data.Models.Student;
 
 import java.util.List;
 
+import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 public class StudentRepository {
@@ -17,8 +18,12 @@ public class StudentRepository {
     }
 
     public void insert(List<Student> students) {
+        insert(students, AppDatabase.scheduler);
+    }
+
+    public void insert(List<Student> students, Scheduler scheduler) {
         studentDao.insert(students)
-                .subscribeOn(AppDatabase.scheduler)
+                .subscribeOn(scheduler)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(AppDatabase.getDefaultObserver());
     }

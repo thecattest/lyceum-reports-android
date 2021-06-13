@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import io.reactivex.Maybe;
+import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -134,6 +135,10 @@ public class DayRepository {
     }
 
     public void insert(List<Day> days) {
+        insert(days, AppDatabase.scheduler);
+    }
+
+    public void insert(List<Day> days, Scheduler scheduler) {
         LinkedList<Student> students = new LinkedList<>();
         LinkedList<DayAbsentCrossRef> refs = new LinkedList<>();
 
@@ -144,13 +149,13 @@ public class DayRepository {
             }
         }
 
-        studentRepository.insert(students);
+        studentRepository.insert(students, scheduler);
         dayDao.insert(days)
-                .subscribeOn(AppDatabase.scheduler)
+                .subscribeOn(scheduler)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(AppDatabase.getDefaultObserver());
         dayDao.insertRefs(refs)
-                .subscribeOn(AppDatabase.scheduler)
+                .subscribeOn(scheduler)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(AppDatabase.getDefaultObserver());
     }
@@ -167,12 +172,16 @@ public class DayRepository {
     }
 
     public void deleteByGroupIdsAndDates(List<Integer> groupIds, List<String> dates) {
+        deleteByGroupIdsAndDates(groupIds, dates, AppDatabase.scheduler);
+    }
+
+    public void deleteByGroupIdsAndDates(List<Integer> groupIds, List<String> dates, Scheduler scheduler) {
         dayDao.deleteRefsByGroupIdsAndDates(groupIds, dates)
-                .subscribeOn(AppDatabase.scheduler)
+                .subscribeOn(scheduler)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(AppDatabase.getDefaultObserver());
         dayDao.deleteByGroupIdsAndDates(groupIds, dates)
-                .subscribeOn(AppDatabase.scheduler)
+                .subscribeOn(scheduler)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(AppDatabase.getDefaultObserver());
     }

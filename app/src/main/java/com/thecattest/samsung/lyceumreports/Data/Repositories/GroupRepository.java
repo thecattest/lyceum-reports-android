@@ -234,9 +234,9 @@ public class GroupRepository {
             students.addAll(group.students);
         }
 //        dayRepository.deleteSyncedRefs(groupIds, dates);
-        dayRepository.deleteByGroupIdsAndDates(groupIds, dates);
-        studentRepository.insert(students);
-        dayRepository.insert(days);
+        dayRepository.deleteByGroupIdsAndDates(groupIds, dates, AppDatabase.serviceScheduler);
+        studentRepository.insert(students, AppDatabase.serviceScheduler);
+        dayRepository.insert(days, AppDatabase.serviceScheduler);
         groupDao.insert(groups)
                 .subscribeOn(AppDatabase.serviceScheduler)
                 .observeOn(AndroidSchedulers.mainThread())
