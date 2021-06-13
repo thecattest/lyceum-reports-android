@@ -263,4 +263,13 @@ public class GroupRepository {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(AppDatabase.getDefaultObserver());
     }
+
+    public void deleteAll() {
+        studentRepository.deleteAll();
+        dayRepository.deleteAll();
+        groupDao.deleteAll()
+                .subscribeOn(AppDatabase.serviceScheduler)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(AppDatabase.getDefaultObserver());
+    }
 }

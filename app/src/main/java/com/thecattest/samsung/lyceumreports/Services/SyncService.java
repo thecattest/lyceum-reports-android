@@ -25,7 +25,7 @@ import io.reactivex.Maybe;
 import retrofit2.Retrofit;
 
 public class SyncService extends Service {
-    public static String CHANNEL = "UPDATER_SERVICE_CHANNEL";
+    public static String REDRAW_BROADCAST = "UPDATER_SERVICE_CHANNEL";
 
     private GroupRepository groupRepository;
     private DayRepository dayRepository;
@@ -54,7 +54,6 @@ public class SyncService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         showToast("service start command");
         new MainTask().execute();
-        // stopSelf();
         return Service.START_STICKY;
     }
 
@@ -84,13 +83,7 @@ public class SyncService extends Service {
         showToast("getting updates");
         groupRepository.getUpdates(this::sendNotSynced, () -> {
             showToast("got updates");
-//            try {
-//                Thread.sleep(800);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-            // broadcast to redraw
-            Intent i = new Intent(CHANNEL);
+            Intent i = new Intent(REDRAW_BROADCAST);
             sendBroadcast(i);
         });
     }

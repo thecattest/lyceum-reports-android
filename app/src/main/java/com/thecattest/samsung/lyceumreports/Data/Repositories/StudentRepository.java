@@ -31,9 +31,16 @@ public class StudentRepository {
     }
 
     public void deleteByGroupIds(List<Integer> groupIds) {
-            studentDao.deleteByGroupIds(groupIds)
-                    .subscribeOn(AppDatabase.scheduler)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(AppDatabase.getDefaultObserver());
+        studentDao.deleteByGroupIds(groupIds)
+                .subscribeOn(AppDatabase.scheduler)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(AppDatabase.getDefaultObserver());
+    }
+
+    public void deleteAll() {
+        studentDao.deleteAll()
+                .subscribeOn(AppDatabase.scheduler)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(AppDatabase.getDefaultObserver());
     }
 }

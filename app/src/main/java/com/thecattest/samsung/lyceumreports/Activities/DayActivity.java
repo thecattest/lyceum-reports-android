@@ -80,7 +80,7 @@ public class DayActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 loadGroup();
             }
-        }, new IntentFilter(SyncService.CHANNEL));
+        }, new IntentFilter(SyncService.REDRAW_BROADCAST));
 
         groupId = getIntent().getIntExtra(GROUP_ID, 6);
         String groupLabel = getIntent().getStringExtra(GROUP_LABEL);

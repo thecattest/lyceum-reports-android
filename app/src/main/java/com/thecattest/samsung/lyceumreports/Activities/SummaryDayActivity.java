@@ -64,7 +64,7 @@ public class SummaryDayActivity extends AppCompatActivity {
                 Log.d("Updates", "broadcast got");
                 loadData(false);
             }
-        }, new IntentFilter(SyncService.CHANNEL));
+        }, new IntentFilter(SyncService.REDRAW_BROADCAST));
     }
 
     private void findViews() {

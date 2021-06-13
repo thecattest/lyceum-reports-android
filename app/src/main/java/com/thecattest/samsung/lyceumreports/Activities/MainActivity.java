@@ -58,13 +58,16 @@ public class MainActivity extends AppCompatActivity {
         initRetrofit();
         initRepositories();
 
+        if (!loginManager.isLoggedIn())
+            loginManager.handleNotAuthorized();
+
         registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 Log.d("Updates", "broadcast got");
                 loadData();
             }
-        }, new IntentFilter(SyncService.CHANNEL));
+        }, new IntentFilter(SyncService.REDRAW_BROADCAST));
 
         permissions = loginManager.getPermissions();
         updateMenu();

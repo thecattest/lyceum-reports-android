@@ -98,4 +98,10 @@ public interface DayDao {
             "ORDER BY random() " +
             "LIMIT 1")
     Maybe<List<DayWithAbsent>> getNotSynced();
+
+    @Query("DELETE FROM days")
+    Maybe<Void> deleteAll();
+
+    @Query("DELETE FROM day_absent_cross_refs")
+    Maybe<Void> deleteAllRefs();
 }
