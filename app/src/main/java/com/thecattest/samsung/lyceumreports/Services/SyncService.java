@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.thecattest.samsung.lyceumreports.Data.ApiService;
@@ -25,7 +24,7 @@ import java.util.List;
 import io.reactivex.Maybe;
 import retrofit2.Retrofit;
 
-public class SenderService extends Service {
+public class SyncService extends Service {
     public static String CHANNEL = "UPDATER_SERVICE_CHANNEL";
 
     private GroupRepository groupRepository;
@@ -33,7 +32,7 @@ public class SenderService extends Service {
     private LoginManager loginManager;
     private boolean running = true;
 
-    public SenderService() {
+    public SyncService() {
     }
 
     @Override
@@ -83,7 +82,7 @@ public class SenderService extends Service {
 
     private void getUpdates() {
         showToast("getting updates");
-        groupRepository.getUpdates(() -> {}, () -> {
+        groupRepository.getUpdates(this::sendNotSynced, () -> {
             showToast("got updates");
 //            try {
 //                Thread.sleep(800);
@@ -99,14 +98,14 @@ public class SenderService extends Service {
     @SuppressLint("CheckResult")
     private void sendNotSynced() {
         try {
-            Thread.sleep(1000);
+            Thread.sleep(800);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         Maybe<List<DayWithAbsent>> notSynced = dayRepository.getNotSynced();
         notSynced
-                .subscribeOn(AppDatabase.scheduler)
-                .observeOn(AppDatabase.scheduler)
+                .subscribeOn(AppDatabase.serviceScheduler)
+                .observeOn(AppDatabase.serviceScheduler)
                 .subscribe(daysWithAbsent -> {
                     for (DayWithAbsent dayWithAbsent : daysWithAbsent) {
                         Day day = new Day(dayWithAbsent.day.groupId, dayWithAbsent.day.date, dayWithAbsent);

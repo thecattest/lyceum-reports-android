@@ -13,7 +13,6 @@ import com.thecattest.samsung.lyceumreports.Data.Models.Relations.DayWithAbsentA
 
 import java.util.List;
 
-import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 
 @Dao

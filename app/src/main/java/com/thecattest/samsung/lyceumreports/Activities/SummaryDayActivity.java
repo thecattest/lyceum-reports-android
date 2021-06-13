@@ -26,7 +26,7 @@ import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
 import com.thecattest.samsung.lyceumreports.Managers.RetrofitManager;
 import com.thecattest.samsung.lyceumreports.Managers.StatusManager;
 import com.thecattest.samsung.lyceumreports.R;
-import com.thecattest.samsung.lyceumreports.Services.SenderService;
+import com.thecattest.samsung.lyceumreports.Services.SyncService;
 
 import java.util.ArrayList;
 
@@ -64,7 +64,7 @@ public class SummaryDayActivity extends AppCompatActivity {
                 Log.d("Updates", "broadcast got");
                 loadData(false);
             }
-        }, new IntentFilter(SenderService.CHANNEL));
+        }, new IntentFilter(SyncService.CHANNEL));
     }
 
     private void findViews() {

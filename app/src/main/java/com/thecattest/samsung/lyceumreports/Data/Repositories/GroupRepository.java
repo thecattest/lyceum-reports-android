@@ -2,7 +2,6 @@ package com.thecattest.samsung.lyceumreports.Data.Repositories;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -19,7 +18,6 @@ import com.thecattest.samsung.lyceumreports.Data.Models.Student;
 import com.thecattest.samsung.lyceumreports.DefaultCallback;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
 import com.thecattest.samsung.lyceumreports.R;
-import com.thecattest.samsung.lyceumreports.Services.SenderService;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -27,7 +25,6 @@ import java.util.List;
 
 import io.reactivex.Maybe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -229,7 +226,7 @@ public class GroupRepository {
         studentRepository.insert(students);
         dayRepository.insert(days);
         groupDao.insert(groups)
-                .subscribeOn(AppDatabase.scheduler)
+                .subscribeOn(AppDatabase.serviceScheduler)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((unused) -> {});
         if (!groups.isEmpty()) {

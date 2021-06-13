@@ -20,7 +20,6 @@ import com.thecattest.samsung.lyceumreports.R;
 import java.util.LinkedList;
 import java.util.List;
 
-import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import retrofit2.Call;

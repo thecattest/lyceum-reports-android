@@ -32,6 +32,7 @@ public abstract class AppDatabase extends RoomDatabase {
             Executors.newFixedThreadPool(1);
 
     public static final Scheduler scheduler = Schedulers.from(executor);
+    public static final Scheduler serviceScheduler = Schedulers.from(executor);
 
     public abstract GroupDao groupDao();
     public abstract DayDao dayDao();

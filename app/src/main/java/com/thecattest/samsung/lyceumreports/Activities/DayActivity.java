@@ -34,7 +34,7 @@ import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
 import com.thecattest.samsung.lyceumreports.Managers.RetrofitManager;
 import com.thecattest.samsung.lyceumreports.Managers.StatusManager;
 import com.thecattest.samsung.lyceumreports.R;
-import com.thecattest.samsung.lyceumreports.Services.SenderService;
+import com.thecattest.samsung.lyceumreports.Services.SyncService;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import retrofit2.Retrofit;
@@ -80,7 +80,7 @@ public class DayActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 loadGroup();
             }
-        }, new IntentFilter(SenderService.CHANNEL));
+        }, new IntentFilter(SyncService.CHANNEL));
 
         groupId = getIntent().getIntExtra(GROUP_ID, 6);
         String groupLabel = getIntent().getStringExtra(GROUP_LABEL);

@@ -15,7 +15,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="n">
         <service
-            android:name=".Services.SenderService"
+            android:name=".Services.SyncService"
             android:enabled="true"
             android:exported="true"></service>
 

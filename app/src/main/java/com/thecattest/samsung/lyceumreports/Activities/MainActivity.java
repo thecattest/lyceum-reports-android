@@ -21,14 +21,12 @@ import com.thecattest.samsung.lyceumreports.Data.ApiService;
 import com.thecattest.samsung.lyceumreports.Data.AppDatabase;
 import com.thecattest.samsung.lyceumreports.Data.Models.Permissions;
 import com.thecattest.samsung.lyceumreports.Data.Models.Relations.GroupWithDaysAndStudents;
-import com.thecattest.samsung.lyceumreports.Data.Repositories.DayRepository;
 import com.thecattest.samsung.lyceumreports.Data.Repositories.GroupRepository;
-import com.thecattest.samsung.lyceumreports.Data.Repositories.StudentRepository;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
 import com.thecattest.samsung.lyceumreports.Managers.RetrofitManager;
 import com.thecattest.samsung.lyceumreports.Managers.StatusManager;
 import com.thecattest.samsung.lyceumreports.R;
-import com.thecattest.samsung.lyceumreports.Services.SenderService;
+import com.thecattest.samsung.lyceumreports.Services.SyncService;
 
 import java.util.ArrayList;
 
@@ -66,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("Updates", "broadcast got");
                 loadData();
             }
-        }, new IntentFilter(SenderService.CHANNEL));
+        }, new IntentFilter(SyncService.CHANNEL));
 
         permissions = loginManager.getPermissions();
         updateMenu();
@@ -76,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        startService(new Intent(this, SenderService.class));
+        startService(new Intent(this, SyncService.class));
     }
 
     @Override
