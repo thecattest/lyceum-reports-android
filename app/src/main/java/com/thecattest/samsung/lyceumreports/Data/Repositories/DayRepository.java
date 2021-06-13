@@ -69,7 +69,7 @@ public class DayRepository {
     }
 
     public void sendDay(DefaultCallback.OnPost onPost, DefaultCallback.OnPost onSuccess,
-                        Day day) {
+                        Day day, View buttonsGroup) {
         Call<Void> sendDayCall = apiService.sendDay(day);
         if (context != null && loginManager != null && mainLayout != null)
             sendDayCall.enqueue(new DefaultCallback<Void>(context, loginManager, mainLayout) {
@@ -84,10 +84,11 @@ public class DayRepository {
                 public void onResponseFailure(Call<Void> call, Throwable t) {
                     Snackbar snackbar = Snackbar.make(
                             mainLayout,
-                            R.string.snackbar_server_error,
-                            Snackbar.LENGTH_SHORT
+                            R.string.snackbar_will_be_sent_later,
+                            Snackbar.LENGTH_LONG
                     );
-                    snackbar.setAction(R.string.button_dismiss, v -> snackbar.dismiss());
+                    snackbar.setAnchorView(buttonsGroup);
+                    snackbar.setAction(R.string.button_ok, v -> snackbar.dismiss());
                     snackbar.show();
                 }
 

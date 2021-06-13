@@ -14,6 +14,8 @@
     <string name="snackbar_server_error">Ошибка, попробуйте ещё раз позднее</string>
     <string name="snackbar_server_error_code">Ошибка при выполнении запроса :( код </string>
     <string name="snackbar_server_error_code_500">Сервер выдал ошибку 500, попробуйте позднее</string>
+    <string name="snackbar_server_error_code_500_will_be_sent_later">Ошибка 500. Данные отправятся автоматически, когда сервер станет доступен</string>
+    <string name="snackbar_will_be_sent_later">Сервер сейчас не доступен. Данные отправятся автоматически, когда это будет возможно</string>
     <string name="snackbar_server_ok">Сработало :)</string>
     <string name="snackbar_wrong_login_password">Неправильный логин или пароль</string>
     <string name="snackbar_authorization_successful">Авторизация прошла успешно</string>

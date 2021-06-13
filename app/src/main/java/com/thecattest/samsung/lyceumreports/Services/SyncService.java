@@ -106,7 +106,7 @@ public class SyncService extends Service {
                         dayRepository.sendDay(() -> {
                         }, () -> {
                             showToast(day.groupId + ": " + day.date + " - sent!");
-                        }, day);
+                        }, day, null);
                     }
                 });
     }

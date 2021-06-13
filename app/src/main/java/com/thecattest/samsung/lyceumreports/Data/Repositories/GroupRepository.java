@@ -97,13 +97,25 @@ public class GroupRepository {
     }
 
     public void refreshGroup(DefaultCallback.OnPost onPost, DefaultCallback.OnPost onSuccess,
-                             int groupId, String date) {
+                             int groupId, String date, View buttonsGroup) {
         Call<Group> groupRefreshCall = apiService.getGroup(groupId, date);
         groupRefreshCall.enqueue(new DefaultCallback<Group>(context, loginManager, mainLayout) {
             @Override
             public void onResponse200(Response<Group> response) {
                 insert(response.body(), date);
                 onSuccess.execute();
+            }
+
+            @Override
+            public void onResponse500(Response<Group> response) {
+                Snackbar snackbar = Snackbar.make(
+                        mainLayout,
+                        R.string.snackbar_server_error_code_500,
+                        Snackbar.LENGTH_LONG
+                );
+                snackbar.setAnchorView(buttonsGroup);
+                snackbar.setAction(R.string.button_dismiss, v -> snackbar.dismiss());
+                snackbar.show();
             }
 
             @Override

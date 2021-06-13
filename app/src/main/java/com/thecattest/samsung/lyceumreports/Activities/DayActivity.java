@@ -166,7 +166,7 @@ public class DayActivity extends AppCompatActivity {
                     swipeRefreshLayout.setRefreshing(false);
                     statusManager.setMainLayout();
                     loadGroup();
-                }, () -> {}, groupId, formattedDate);
+                }, () -> {}, groupId, formattedDate, buttonsGroup);
     }
 
     private void sendDay() {
@@ -191,7 +191,7 @@ public class DayActivity extends AppCompatActivity {
                         snackbar.setAnchorView(buttonsGroup);
                         snackbar.show();
                     },
-                    day);
+                    day, buttonsGroup);
         } catch (NullPointerException ignored) {}
     }
 
