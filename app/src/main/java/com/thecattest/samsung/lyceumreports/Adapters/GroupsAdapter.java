@@ -23,7 +23,7 @@ public class GroupsAdapter extends ArrayAdapter<GroupWithDaysAndStudents> {
     private final boolean canEdit;
 
     public GroupsAdapter(Context context, ArrayList<GroupWithDaysAndStudents> groups, boolean canEdit) {
-        super(context, R.layout.summary_card, groups);
+        super(context, R.layout.list_item_summary_main, groups);
         this.canEdit = canEdit;
     }
 
@@ -32,7 +32,7 @@ public class GroupsAdapter extends ArrayAdapter<GroupWithDaysAndStudents> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         final GroupWithDaysAndStudents group = getItem(position);
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.summary_card, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item_summary_main, parent, false);
         }
 
         TextView classLabel = convertView.findViewById(R.id.cardClassLabel);

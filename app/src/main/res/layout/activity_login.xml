@@ -36,8 +36,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/loadingProgressBar"
-        android:layout_marginHorizontal="15dp"
-        android:layout_marginTop="10dp">
+        android:layout_marginHorizontal="@dimen/login_form_horizontal_margin"
+        android:layout_marginTop="@dimen/login_form_vertical_margin">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/loginLayout"
@@ -60,7 +60,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/loginLayout"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/login_form_vertical_margin"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:hint="@string/hint_password"
             app:endIconMode="password_toggle">
@@ -79,9 +79,9 @@
             app:layout_constraintTop_toBottomOf="@id/passwordLayout"
             app:layout_constraintRight_toRightOf="parent"
             android:text="@string/button_login"
-            android:layout_marginVertical="15dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp" />
+            android:layout_marginVertical="@dimen/login_form_vertical_margin"
+            android:layout_marginEnd="@dimen/login_button_margin"
+            android:layout_marginRight="@dimen/login_button_margin" />
 
         <ScrollView
             android:id="@+id/scrollView"

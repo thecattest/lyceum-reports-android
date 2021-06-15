@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class SummaryDayAdapter extends ArrayAdapter<DayWithAbsentAndGroup> {
     public SummaryDayAdapter(Context context, ArrayList<DayWithAbsentAndGroup> days) {
-        super(context, R.layout.summary_day_row, days);
+        super(context, R.layout.list_item_summary_table, days);
     }
 
     @NonNull
@@ -25,7 +25,7 @@ public class SummaryDayAdapter extends ArrayAdapter<DayWithAbsentAndGroup> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         final DayWithAbsentAndGroup day = getItem(position);
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.summary_day_row, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item_summary_table, parent, false);
         }
 
         ((TextView) convertView.findViewById(R.id.text1)).setText(

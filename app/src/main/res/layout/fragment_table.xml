@@ -20,6 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/header_font_size"
+            android:textColor="@color/list_item_summary_class"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -49,7 +50,7 @@
             android:id="@+id/summaryDayList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:listitem="@layout/summary_day_row"/>
+            tools:listitem="@layout/list_item_summary_table"/>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

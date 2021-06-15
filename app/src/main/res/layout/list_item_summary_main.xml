@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="@dimen/summary_outer_padding">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@drawable/list_item_summary_main_border">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cardHeader"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/header_height"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@drawable/list_item_summary_main_header">
+
+            <TextView
+                android:id="@+id/cardClassLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/header_font_size"
+                android:textColor="@color/list_item_summary_class"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginLeft="@dimen/header_horizontal_margin"
+                android:layout_marginStart="@dimen/header_horizontal_margin" />
+
+            <Button
+                android:id="@+id/addButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/button_edit"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:textSize="@dimen/header_button_font_size"
+                android:textAllCaps="false"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginEnd="@dimen/header_horizontal_margin"
+                android:layout_marginRight="@dimen/header_horizontal_margin" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cardBody"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/cardHeader"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:padding="@dimen/summary_inner_padding">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/today"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                android:paddingBottom="@dimen/summary_inner_padding">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/todayDateGroup"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/todayLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        android:textColor="@color/list_item_summary_date_label"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/summary_date_font_size"
+                        android:text="@string/summary_card_today"/>
+
+                    <TextView
+                        android:id="@+id/todayDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toRightOf="@id/todayLabel"
+                        android:layout_marginLeft="@dimen/summary_date_label_space_between"
+                        android:layout_marginStart="@dimen/summary_date_label_space_between"
+                        android:textColor="@color/list_item_summary_date"
+                        android:textSize="@dimen/summary_date_font_size"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <TextView
+                    android:id="@+id/todayAbsent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/todayDateGroup"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    android:textSize="@dimen/summary_absent_font_size"
+                    android:layout_marginLeft="@dimen/summary_absent_indent"
+                    android:layout_marginStart="@dimen/summary_absent_indent"
+                    android:layout_marginTop="@dimen/summary_absent_top_margin" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:id="@+id/hr"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/summary_hr_height"
+                android:background="@color/hr"
+                app:layout_constraintTop_toBottomOf="@id/today"/>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/yesterday"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/hr"
+                android:paddingTop="@dimen/summary_inner_padding">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/yesterdayDateGroup"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/yesterdayLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        android:textColor="@color/list_item_summary_date_label"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/summary_date_font_size"
+                        android:text="@string/summary_card_yesterday"/>
+
+                    <TextView
+                        android:id="@+id/yesterdayDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toRightOf="@id/yesterdayLabel"
+                        android:layout_marginLeft="@dimen/summary_date_label_space_between"
+                        android:layout_marginStart="@dimen/summary_date_label_space_between"
+                        android:textColor="@color/list_item_summary_date"
+                        android:textSize="@dimen/summary_date_font_size"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <TextView
+                    android:id="@+id/yesterdayAbsent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/yesterdayDateGroup"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    android:textSize="@dimen/summary_absent_font_size"
+                    android:layout_marginLeft="@dimen/summary_absent_indent"
+                    android:layout_marginStart="@dimen/summary_absent_indent"
+                    android:layout_marginTop="@dimen/summary_absent_top_margin"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

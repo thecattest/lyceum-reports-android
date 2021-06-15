@@ -1,9 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="card_border_radius">8dp</dimen>
-    <dimen name="buttonMargin">10dp</dimen>
-    <dimen name="date_picker_text_size">16sp</dimen>
-    <dimen name="header_horizontal_margin">20dp</dimen>
+    <!-- Dimensions -->
     <dimen name="header_height">64dp</dimen>
+    <dimen name="summary_border_width">1dp</dimen>
+    <dimen name="summary_hr_height">1dp</dimen>
+    <dimen name="summary_border_radius">8dp</dimen>
+
+    <!-- Margins and paddings -->
+    <dimen name="confirm_button_margin">10dp</dimen>
+    <dimen name="login_button_margin">8dp</dimen>
+
+    <dimen name="header_horizontal_margin">20dp</dimen>
+
+    <dimen name="summary_outer_padding">10dp</dimen>
+    <dimen name="summary_inner_padding">16dp</dimen>
+
+    <dimen name="summary_absent_indent">10dp</dimen>
+    <dimen name="summary_absent_top_margin">4dp</dimen>
+    <dimen name="summary_date_label_space_between">3dp</dimen>
+
+    <dimen name="login_form_horizontal_margin">15dp</dimen>
+    <dimen name="login_form_vertical_margin">10dp</dimen>
+
+    <!-- Font sizes -->
     <dimen name="header_font_size">26sp</dimen>
+    <dimen name="header_button_font_size">16sp</dimen>
+
+    <dimen name="summary_date_font_size">18sp</dimen>
+    <dimen name="summary_absent_font_size">16sp</dimen>
 </resources>
