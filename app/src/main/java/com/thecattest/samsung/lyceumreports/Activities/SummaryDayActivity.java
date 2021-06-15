@@ -1,7 +1,6 @@
 package com.thecattest.samsung.lyceumreports.Activities;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -17,7 +16,6 @@ import com.thecattest.samsung.lyceumreports.Data.AppDatabase;
 import com.thecattest.samsung.lyceumreports.Data.Models.Relations.DayWithAbsentAndGroup;
 import com.thecattest.samsung.lyceumreports.Data.Repositories.DayRepository;
 import com.thecattest.samsung.lyceumreports.Data.Repositories.GroupRepository;
-import com.thecattest.samsung.lyceumreports.Data.Repositories.StudentRepository;
 import com.thecattest.samsung.lyceumreports.Managers.DatePickerManager;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
 import com.thecattest.samsung.lyceumreports.Managers.RetrofitManager;
@@ -87,13 +85,6 @@ public class SummaryDayActivity extends AppCompatActivity {
     }
 
     public void onRefresh() { refreshData(); }
-
-    @Override
-    public void onBackPressed() {
-        Intent i = new Intent(SummaryDayActivity.this, MainActivity.class);
-        startActivity(i);
-        finish();
-    }
 
     private void refreshData() {
         statusManager.setLoadingLayout();

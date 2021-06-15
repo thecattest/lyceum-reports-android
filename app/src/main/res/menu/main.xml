@@ -9,11 +9,19 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/daySummaryTable"
-        android:title="@string/title_summary_day"
-        android:icon="@drawable/ic_table_24"
+        android:id="@+id/statistics"
+        android:title="@string/title_statistics"
+        android:icon="@drawable/ic_statistics_24"
         android:visible="false"
-        android:contentDescription="@string/title_summary_day"
+        android:contentDescription="@string/title_statistics"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/table"
+        android:title="@string/title_table"
+        android:icon="@drawable/ic_table_rows_24"
+        android:visible="false"
+        android:contentDescription="@string/title_table"
         app:showAsAction="ifRoom" />
 
     <item

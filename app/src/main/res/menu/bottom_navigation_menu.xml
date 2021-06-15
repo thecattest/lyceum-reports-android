@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/diagram"
+        android:title="@string/title_diagram"
+        android:icon="@drawable/ic_chart_24"
+        android:contentDescription="@string/title_diagram"
+        android:enabled="true" />
+
+    <item
+        android:id="@+id/table"
+        android:title="@string/title_table"
+        android:icon="@drawable/ic_table_rows_24"
+        android:contentDescription="@string/title_table"
+        android:enabled="true" />
+
+</menu>

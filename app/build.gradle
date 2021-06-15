@@ -12,6 +12,7 @@ android {
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -34,11 +35,19 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
 
     def room_version = "2.3.0"
-    def rxjava_version = "2.1.0"
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
+
+    def rxjava_version = "2.1.0"
     implementation "androidx.room:room-rxjava2:$rxjava_version"
     implementation "io.reactivex.rxjava2:rxandroid:$rxjava_version"
+
+    def nav_version = "2.3.5"
+    implementation("androidx.navigation:navigation-fragment:$nav_version")
+    implementation("androidx.navigation:navigation-ui:$nav_version")
+    implementation("androidx.navigation:navigation-dynamic-features-fragment:$nav_version")
+
+    implementation 'com.android.support:multidex:1.0.3'
 
     implementation 'com.android.support:support-annotations:28.0.0'
     implementation 'com.google.android.material:material:1.3.0'

@@ -14,10 +14,19 @@
         android:theme="@style/Theme.LyceumReports"
         android:usesCleartextTraffic="true"
         tools:targetApi="n">
-        <activity android:name=".Activities.SummaryDayActivity" android:screenOrientation="portrait" />
-        <activity android:name=".Activities.LoginActivity" android:screenOrientation="portrait" />
-        <activity android:name=".Activities.DayActivity" android:screenOrientation="portrait" />
-        <activity android:name=".Activities.MainActivity" android:screenOrientation="portrait">
+        <activity android:name=".Activities.StatisticsActivity"></activity>
+        <activity
+            android:name=".Activities.SummaryDayActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.LoginActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.DayActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

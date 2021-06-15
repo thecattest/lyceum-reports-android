@@ -3,9 +3,11 @@
 
     <!-- Page titles -->
     <string name="title_main">Отсутствующие</string>
-    <string name="title_summary_day">Отсутствующие: день</string>
+    <string name="title_table">Таблица</string>
     <string name="title_authorization">Авторизация</string>
     <string name="title_day">День</string>
+    <string name="title_diagram">График</string>
+    <string name="title_statistics">Статистика</string>
 
     <!-- Snackbars titles -->
     <string name="snackbar_no_info">За этот день данных нет</string>
@@ -17,6 +19,7 @@
     <string name="snackbar_server_ok">Сработало :)</string>
     <string name="snackbar_wrong_login_password">Неправильный логин или пароль</string>
     <string name="snackbar_authorization_successful">Авторизация прошла успешно</string>
+    <string name="snackbar_back_again_to_exit">Нажмите ещё раз, чтобы выйти</string>
 
     <!-- Dialog -->
     <string name="dialog_title_unsaved_changes">Несохранённые изменения</string>

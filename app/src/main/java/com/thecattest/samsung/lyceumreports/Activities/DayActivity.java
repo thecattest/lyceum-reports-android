@@ -1,7 +1,6 @@
 package com.thecattest.samsung.lyceumreports.Activities;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -25,7 +24,6 @@ import com.thecattest.samsung.lyceumreports.Data.Models.Relations.GroupWithStude
 import com.thecattest.samsung.lyceumreports.Data.Models.Student;
 import com.thecattest.samsung.lyceumreports.Data.Repositories.DayRepository;
 import com.thecattest.samsung.lyceumreports.Data.Repositories.GroupRepository;
-import com.thecattest.samsung.lyceumreports.Data.Repositories.StudentRepository;
 import com.thecattest.samsung.lyceumreports.Managers.DatePickerManager;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
 import com.thecattest.samsung.lyceumreports.Managers.RetrofitManager;
@@ -132,13 +130,6 @@ public class DayActivity extends AppCompatActivity {
     }
 
     public void onRefresh() { refreshGroupAndDay(); }
-
-    @Override
-    public void onBackPressed() {
-        Intent i = new Intent(DayActivity.this, MainActivity.class);
-        startActivity(i);
-        finish();
-    }
 
     public void onCancelButtonClick(View v) { onBackPressed(); }
 

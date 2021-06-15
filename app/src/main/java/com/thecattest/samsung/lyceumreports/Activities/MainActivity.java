@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,9 +18,7 @@ import com.thecattest.samsung.lyceumreports.Data.ApiService;
 import com.thecattest.samsung.lyceumreports.Data.AppDatabase;
 import com.thecattest.samsung.lyceumreports.Data.Models.Permissions;
 import com.thecattest.samsung.lyceumreports.Data.Models.Relations.GroupWithDaysAndStudents;
-import com.thecattest.samsung.lyceumreports.Data.Repositories.DayRepository;
 import com.thecattest.samsung.lyceumreports.Data.Repositories.GroupRepository;
-import com.thecattest.samsung.lyceumreports.Data.Repositories.StudentRepository;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
 import com.thecattest.samsung.lyceumreports.Managers.RetrofitManager;
 import com.thecattest.samsung.lyceumreports.Managers.StatusManager;
@@ -31,6 +30,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity {
+
+    private long lastTimeBackPressed = 0;
 
     private ListView groupsListView;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -97,14 +98,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean onMenuItemClick(MenuItem item) {
+        Intent i;
         switch (item.getItemId()) {
             case R.id.logout:
                 loginManager.logout();
                 return true;
-            case R.id.daySummaryTable:
-                Intent i = new Intent(MainActivity.this, SummaryDayActivity.class);
+            case R.id.statistics:
+                i = new Intent(MainActivity.this, StatisticsActivity.class);
                 startActivity(i);
-                finish();
+                return true;
+            case R.id.table:
+                i = new Intent(MainActivity.this, SummaryDayActivity.class);
+                startActivity(i);
                 return true;
             case R.id.refresh:
                 refreshData();
@@ -114,7 +119,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {}
+    public void onBackPressed() {
+        long currentTime = System.currentTimeMillis() / 1000L;
+        if (currentTime - lastTimeBackPressed <= 3) {
+            super.onBackPressed();
+        } else {
+            lastTimeBackPressed = currentTime;
+            Toast.makeText(this, R.string.snackbar_back_again_to_exit, Toast.LENGTH_SHORT).show();
+        }
+    }
 
     private void refreshData() {
         statusManager.setLoadingLayout();
@@ -144,7 +157,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateMenu() {
         Menu menu = toolbar.getMenu();
-        menu.findItem(R.id.daySummaryTable).setVisible(permissions.canViewTable);
+        menu.findItem(R.id.table).setVisible(permissions.canViewTable);
+        menu.findItem(R.id.statistics).setVisible(permissions.canViewTable);
         toolbar.invalidate();
     }
 }
