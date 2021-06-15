@@ -39,7 +39,7 @@ public class StatisticsActivity extends AppCompatActivity {
 
     private void setListeners() {
         bottomNavigation.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
-        toolbar.setNavigationOnClickListener(v -> onBackPressed());
+        toolbar.setNavigationOnClickListener(v -> finish());
     }
 
     @Override

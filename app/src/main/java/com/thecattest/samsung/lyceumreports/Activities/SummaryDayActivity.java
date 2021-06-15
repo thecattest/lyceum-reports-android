@@ -51,6 +51,8 @@ public class SummaryDayActivity extends AppCompatActivity {
         initManagers();
         initRetrofit();
         initRepositories();
+
+        swipeRefreshLayout.setEnabled(false);
     }
 
     private void findViews() {

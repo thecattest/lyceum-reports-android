@@ -16,10 +16,14 @@ public class LoginManager {
     private static final String KEY_CAN_VIEW_TABLE = "CAN_VIEW_TABLE";
 
     private final SharedPreferences sharedPreferences;
-    private final AppCompatActivity context;
+    private AppCompatActivity activity;
 
-    public LoginManager(AppCompatActivity context) {
-        this.context = context;
+    public LoginManager(AppCompatActivity activity) {
+        this.activity = activity;
+        sharedPreferences = activity.getSharedPreferences(URLConfig.BASE_URL, Context.MODE_PRIVATE);
+    }
+
+    public LoginManager(Context context) {
         sharedPreferences = context.getSharedPreferences(URLConfig.BASE_URL, Context.MODE_PRIVATE);
     }
 
@@ -61,8 +65,10 @@ public class LoginManager {
     }
 
     public void handleNotAuthorized() {
-        Intent i = new Intent(context, LoginActivity.class);
-        context.startActivity(i);
-        context.finish();
+        if (activity != null) {
+            Intent i = new Intent(activity, LoginActivity.class);
+            activity.startActivity(i);
+            activity.finish();
+        }
     }
 }
