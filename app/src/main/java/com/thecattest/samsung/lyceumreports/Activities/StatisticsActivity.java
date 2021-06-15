@@ -25,7 +25,7 @@ public class StatisticsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_statistics);
 
         NavHostFragment navHostFragment =
-                (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+                (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.navHostFragment);
         navController = navHostFragment.getNavController();
 
         findViews();

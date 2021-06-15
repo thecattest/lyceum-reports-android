@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -21,7 +23,6 @@ import com.thecattest.samsung.lyceumreports.Data.Models.Relations.GroupWithDaysA
 import com.thecattest.samsung.lyceumreports.Data.Repositories.GroupRepository;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
 import com.thecattest.samsung.lyceumreports.Managers.RetrofitManager;
-import com.thecattest.samsung.lyceumreports.Managers.StatusManager;
 import com.thecattest.samsung.lyceumreports.R;
 
 import java.util.ArrayList;
@@ -36,10 +37,9 @@ public class MainActivity extends AppCompatActivity {
     private ListView groupsListView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private MaterialToolbar toolbar;
+    private ProgressBar loadingProgressBar;
 
     private LoginManager loginManager;
-    private StatusManager statusManager;
-
     private GroupRepository groupRepository;
     private ApiService apiService;
 
@@ -65,12 +65,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         swipeRefreshLayout.setRefreshing(false);
-        statusManager.setMainLayout();
+        loadingProgressBar.setVisibility(View.GONE);
     }
 
     private void findViews() {
         groupsListView = findViewById(R.id.groupsList);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        loadingProgressBar = findViewById(R.id.loadingProgressBar);
         toolbar = findViewById(R.id.topAppBar);
     }
 
@@ -81,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void initManagers() {
         loginManager = new LoginManager(this);
-        statusManager = new StatusManager(this, swipeRefreshLayout);
     }
 
     private void initRetrofit() {
@@ -99,17 +99,19 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean onMenuItemClick(MenuItem item) {
         Intent i;
-        switch (item.getItemId()) {
-            case R.id.logout:
-                loginManager.logout();
-                return true;
-            case R.id.statistics:
-                i = new Intent(MainActivity.this, StatisticsActivity.class);
-                startActivity(i);
-                return true;
-            case R.id.refresh:
-                refreshData();
-                return true;
+        int itemId = item.getItemId();
+        if (itemId == R.id.logout) {
+            loginManager.logout();
+            return true;
+        }
+        if (itemId == R.id.statistics) {
+            i = new Intent(MainActivity.this, StatisticsActivity.class);
+            startActivity(i);
+            return true;
+        }
+        if (itemId == R.id.refresh) {
+            refreshData();
+            return true;
         }
         return false;
     }
@@ -126,10 +128,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void refreshData() {
-        statusManager.setLoadingLayout();
+        loadingProgressBar.setVisibility(View.VISIBLE);
         groupRepository.refreshGroups(
-                () -> {statusManager.setMainLayout(); swipeRefreshLayout.setRefreshing(false);},
-                this::loadData
+                () -> {
+                    loadingProgressBar.setVisibility(View.GONE);
+                    swipeRefreshLayout.setRefreshing(false);
+                    loadData();
+                },
+                () -> {}
         );
     }
 

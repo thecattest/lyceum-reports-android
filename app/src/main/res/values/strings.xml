@@ -39,6 +39,7 @@
     <string name="button_ok">ок</string>
     <string name="button_login">Войти</string>
     <string name="button_logout">Выйти</string>
+    <string name="button_discard">удалить</string>
 
     <!-- Summary -->
     <string name="summary_card_yesterday">Вчера</string>

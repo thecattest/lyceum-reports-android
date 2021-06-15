@@ -6,13 +6,15 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.thecattest.samsung.lyceumreports.Adapters.StudentsAdapter;
@@ -27,7 +29,6 @@ import com.thecattest.samsung.lyceumreports.Data.Repositories.GroupRepository;
 import com.thecattest.samsung.lyceumreports.Managers.DatePickerManager;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
 import com.thecattest.samsung.lyceumreports.Managers.RetrofitManager;
-import com.thecattest.samsung.lyceumreports.Managers.StatusManager;
 import com.thecattest.samsung.lyceumreports.R;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -41,14 +42,14 @@ public class DayActivity extends AppCompatActivity {
     private TextView classLabel;
     private ListView studentsListView;
     private Button confirmButton;
-    private Button cancelButton;
     private Button datePickerTrigger;
-    private RelativeLayout buttonsGroup;
-    private RelativeLayout mainLayout;
+    private ProgressBar loadingProgressBar;
+    private ConstraintLayout buttonsGroup;
+    private ConstraintLayout mainLayout;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private MaterialToolbar toolbar;
 
     private LoginManager loginManager;
-    private StatusManager statusManager;
     private DatePickerManager datePickerManager;
 
     private StudentsAdapter studentsAdapter;
@@ -69,7 +70,10 @@ public class DayActivity extends AppCompatActivity {
         initRetrofit();
         initRepositories();
 
-        groupId = getIntent().getIntExtra(GROUP_ID, 6);
+        groupId = getIntent().getIntExtra(GROUP_ID, -1);
+        if (groupId == -1) {
+            finish();
+        }
         String groupLabel = getIntent().getStringExtra(GROUP_LABEL);
         classLabel.setText(groupLabel);
 
@@ -80,31 +84,32 @@ public class DayActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         swipeRefreshLayout.setRefreshing(false);
-        statusManager.setMainLayout();
+        loadingProgressBar.setVisibility(View.GONE);
     }
 
     private void findViews() {
         classLabel = findViewById(R.id.classLabel);
         studentsListView = findViewById(R.id.studentsList);
         confirmButton = findViewById(R.id.confirmButton);
-        cancelButton = findViewById(R.id.cancelButton);
         datePickerTrigger = findViewById(R.id.datePickerTrigger);
         buttonsGroup = findViewById(R.id.buttonsGroup);
 
         mainLayout = findViewById(R.id.main);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        loadingProgressBar = findViewById(R.id.loadingProgressBar);
+
+        toolbar = findViewById(R.id.topAppBar);
     }
 
     private void setListeners() {
         confirmButton.setOnClickListener(this::onConfirmButtonClick);
-        cancelButton.setOnClickListener(this::onCancelButtonClick);
-        swipeRefreshLayout.setOnRefreshListener(this::onRefresh);
+        swipeRefreshLayout.setOnRefreshListener(this::refreshGroupAndDay);
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
     }
 
     private void initManagers() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         loginManager = new LoginManager(this);
-        statusManager = new StatusManager(this, mainLayout);
         datePickerManager = new DatePickerManager(
                 this,
                 datePickerTrigger,
@@ -129,14 +134,10 @@ public class DayActivity extends AppCompatActivity {
         updateConfirmButtonState();
     }
 
-    public void onRefresh() { refreshGroupAndDay(); }
-
-    public void onCancelButtonClick(View v) { onBackPressed(); }
-
     public void onConfirmButtonClick(View v) { sendDay(); }
 
     private void refreshGroupAndDay() {
-        statusManager.setLoadingLayout();
+        loadingProgressBar.setVisibility(View.VISIBLE);
         datePickerManager.setEnabled(false);
 
         String formattedDate = datePickerManager.getDate();
@@ -144,7 +145,7 @@ public class DayActivity extends AppCompatActivity {
                 () -> {
                     datePickerManager.setEnabled(true);
                     swipeRefreshLayout.setRefreshing(false);
-                    statusManager.setMainLayout();
+                    loadingProgressBar.setVisibility(View.GONE);
                     loadGroup();
                 }, () -> {}, groupId, formattedDate);
     }
@@ -152,7 +153,7 @@ public class DayActivity extends AppCompatActivity {
     private void sendDay() {
         confirmButton.setEnabled(false);
         datePickerManager.setEnabled(false);
-        statusManager.setLoadingLayout();
+        loadingProgressBar.setVisibility(View.VISIBLE);
         try {
             Day day = studentsAdapter.getDay();
             dayRepository.update(day);
@@ -160,7 +161,7 @@ public class DayActivity extends AppCompatActivity {
                     () -> {
                         confirmButton.setEnabled(true);
                         datePickerManager.setEnabled(true);
-                        statusManager.setMainLayout();
+                        loadingProgressBar.setVisibility(View.GONE);
                     },
                     () -> {
                         Snackbar snackbar = Snackbar.make(
@@ -192,7 +193,7 @@ public class DayActivity extends AppCompatActivity {
     }
 
     private void updateView(GroupWithStudents group) {
-        statusManager.setMainLayout();
+        loadingProgressBar.setVisibility(View.GONE);
 
         if (group == null) {
             updateAdapterGroup(new GroupWithStudents());

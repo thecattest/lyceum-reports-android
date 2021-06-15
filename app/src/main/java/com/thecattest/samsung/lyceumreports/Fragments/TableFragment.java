@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -32,7 +33,7 @@ import retrofit2.Retrofit;
 public class TableFragment extends Fragment {
 
     private SwipeRefreshLayout swipeRefreshLayout;
-    private View loadingLayout;
+    private ProgressBar loadingProgressBar;
     private ListView summaryDayListView;
     private TextView datePickerTrigger;
 
@@ -66,7 +67,7 @@ public class TableFragment extends Fragment {
     }
 
     private void findViews(View view) {
-        loadingLayout = view.findViewById(R.id.fragmentLoading);
+        loadingProgressBar = view.findViewById(R.id.loadingProgressBar);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
         summaryDayListView = view.findViewById(R.id.summaryDayList);
         datePickerTrigger = view.findViewById(R.id.datePickerTrigger);
@@ -99,13 +100,13 @@ public class TableFragment extends Fragment {
     public void onRefresh() { refreshData(); }
 
     private void refreshData() {
-        loadingLayout.setVisibility(View.VISIBLE);
+        loadingProgressBar.setVisibility(View.VISIBLE);
         datePickerManager.setEnabled(false);
 
         String formattedDate = datePickerManager.getDate();
         groupRepository.refreshDaySummary(
                 () -> {
-                    loadingLayout.setVisibility(View.GONE);
+                    loadingProgressBar.setVisibility(View.GONE);
                     datePickerManager.setEnabled(true);
                     swipeRefreshLayout.setRefreshing(false);
                     loadData(false);
@@ -132,7 +133,7 @@ public class TableFragment extends Fragment {
     }
 
     private void updateView(ArrayList<DayWithAbsentAndGroup> days) {
-        loadingLayout.setVisibility(View.GONE);
+        loadingProgressBar.setVisibility(View.GONE);
         swipeRefreshLayout.setEnabled(!datePickerManager.isEmpty());
 
         SummaryDayAdapter summaryDayAdapter = new SummaryDayAdapter(getContext(), days);

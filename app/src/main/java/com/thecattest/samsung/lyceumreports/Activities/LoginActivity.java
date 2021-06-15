@@ -1,17 +1,16 @@
 package com.thecattest.samsung.lyceumreports.Activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.RelativeLayout;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
@@ -20,7 +19,6 @@ import com.thecattest.samsung.lyceumreports.Data.Models.Permissions;
 import com.thecattest.samsung.lyceumreports.DefaultCallback;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
 import com.thecattest.samsung.lyceumreports.Managers.RetrofitManager;
-import com.thecattest.samsung.lyceumreports.Managers.StatusManager;
 import com.thecattest.samsung.lyceumreports.R;
 
 import java.util.Objects;
@@ -31,14 +29,14 @@ import retrofit2.Retrofit;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private RelativeLayout loginFormLayout;
+    private ConstraintLayout loginFormLayout;
     private TextInputEditText login;
     private TextInputEditText password;
     private Button loginButton;
     private ScrollView scrollView;
+    private ProgressBar loadingProgressBar;
 
     private LoginManager loginManager;
-    private StatusManager statusManager;
 
     private ApiService apiService;
 
@@ -63,6 +61,7 @@ public class LoginActivity extends AppCompatActivity {
         password = findViewById(R.id.password);
         loginButton = findViewById(R.id.loginButton);
         scrollView = findViewById(R.id.scrollView);
+        loadingProgressBar = findViewById(R.id.loadingProgressBar);
     }
 
     private void setListeners() {
@@ -97,7 +96,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private void initManagers() {
         loginManager = new LoginManager(this);
-        statusManager = new StatusManager(this, loginFormLayout);
     }
 
     private void initRetrofit() {
@@ -109,7 +107,7 @@ public class LoginActivity extends AppCompatActivity {
     public void onBackPressed() {}
 
     public void login(View v) {
-        statusManager.setLoadingLayout();
+        loadingProgressBar.setVisibility(View.VISIBLE);
 
         String loginString = Objects.requireNonNull(login.getText()).toString();
         String passwordString = Objects.requireNonNull(password.getText()).toString();
@@ -154,21 +152,12 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onPostExecute() {
-                statusManager.setMainLayout();
+                loadingProgressBar.setVisibility(View.GONE);
             }
         });
     }
 
     private void updateButtonState() {
         loginButton.setEnabled(loginIsValid && passwordIsValid);
-    }
-
-    private void hideKeyboard() {
-        InputMethodManager inputMethodManager = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        View view = this.getCurrentFocus();
-        if (view == null) {
-            view = new View(this);
-        }
-        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }

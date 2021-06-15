@@ -7,7 +7,7 @@
     tools:context=".Activities.StatisticsActivity">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/topBar"
+        android:id="@+id/topAppBarLayout"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -24,13 +24,13 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/nav_host_fragment"
+        android:id="@+id/navHostFragment"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/topBar"
+        app:layout_constraintTop_toBottomOf="@id/topAppBarLayout"
         app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
 
         app:defaultNavHost="true"

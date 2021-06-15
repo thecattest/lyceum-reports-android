@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/tableFragment"
@@ -9,44 +10,41 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/header"
-        app:layout_constraintTop_toTopOf="parent"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:layout_alignParentTop="true"
+        android:layout_height="@dimen/header_height"
+        app:layout_constraintTop_toBottomOf="@id/topAppBarLayout"
         android:background="@color/header">
 
         <TextView
             android:id="@+id/classLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="26sp"
+            android:textSize="@dimen/header_font_size"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginLeft="20dp"
-            android:layout_marginStart="20dp"
+            android:layout_marginLeft="@dimen/header_horizontal_margin"
+            android:layout_marginStart="@dimen/header_horizontal_margin"
             android:text="@string/title_day"/>
 
         <include layout="@layout/date_picker_trigger"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <include
-        android:id="@+id/fragmentLoading"
-        android:layout_height="wrap_content"
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/loadingProgressBar"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/header"
-        layout="@layout/fragment_loading"/>
+        android:indeterminate="true"
+        android:visibility="gone"/>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
-        app:layout_constraintTop_toBottomOf="@id/fragmentLoading"
+        app:layout_constraintTop_toBottomOf="@id/loadingProgressBar"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_below="@id/fragmentLoading">
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
         <ListView
             android:id="@+id/summaryDayList"
             android:layout_width="match_parent"
