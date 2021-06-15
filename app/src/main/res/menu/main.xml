@@ -17,14 +17,6 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/table"
-        android:title="@string/title_table"
-        android:icon="@drawable/ic_table_rows_24"
-        android:visible="false"
-        android:contentDescription="@string/title_table"
-        app:showAsAction="ifRoom" />
-
-    <item
         android:id="@+id/logout"
         android:title="@string/button_logout"
         android:icon="@drawable/ic_logout_24"

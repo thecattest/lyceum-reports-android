@@ -107,10 +107,6 @@ public class MainActivity extends AppCompatActivity {
                 i = new Intent(MainActivity.this, StatisticsActivity.class);
                 startActivity(i);
                 return true;
-            case R.id.table:
-                i = new Intent(MainActivity.this, SummaryDayActivity.class);
-                startActivity(i);
-                return true;
             case R.id.refresh:
                 refreshData();
                 return true;
@@ -157,7 +153,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateMenu() {
         Menu menu = toolbar.getMenu();
-        menu.findItem(R.id.table).setVisible(permissions.canViewTable);
         menu.findItem(R.id.statistics).setVisible(permissions.canViewTable);
         toolbar.invalidate();
     }
