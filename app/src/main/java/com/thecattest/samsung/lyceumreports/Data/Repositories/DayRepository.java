@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import io.reactivex.Maybe;
+import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -30,9 +31,9 @@ public class DayRepository {
     private final DayDao dayDao;
     public final StudentRepository studentRepository;
 
-    private final Context context;
-    private final LoginManager loginManager;
-    private final View mainLayout;
+    private Context context;
+    private LoginManager loginManager;
+    private View mainLayout;
     private final ApiService apiService;
 
     public DayRepository(Context context,
@@ -43,9 +44,21 @@ public class DayRepository {
         this.context = context;
         this.loginManager = loginManager;
         this.mainLayout = mainLayout;
-        this.studentRepository = new StudentRepository(context);
+        this.studentRepository = new StudentRepository(db);
         dayDao = db.dayDao();
         this.apiService = apiService;
+    }
+
+    public DayRepository(Context context,
+                         ApiService apiService) {
+        AppDatabase db = AppDatabase.getInstance(context);
+        this.studentRepository = new StudentRepository(db);
+        dayDao = db.dayDao();
+        this.apiService = apiService;
+    }
+
+    public Maybe<List<DayWithAbsent>> getNotSynced() {
+        return dayDao.getNotSynced();
     }
 
     public Maybe<DayWithAbsent> getByGroupIdAndDate(int groupId, String date) {
@@ -57,30 +70,49 @@ public class DayRepository {
     }
 
     public void sendDay(DefaultCallback.OnPost onPost, DefaultCallback.OnPost onSuccess,
-                        Day day) {
+                        Day day, View buttonsGroup) {
         Call<Void> sendDayCall = apiService.sendDay(day);
-        sendDayCall.enqueue(new DefaultCallback<Void>(context, loginManager, mainLayout) {
-            @Override
-            public void onResponse200(Response<Void> response) {
-                onSuccess.execute();
-                day.isSyncedWithServer = true;
-                update(day);
-            }
+        if (context != null && loginManager != null && mainLayout != null)
+            sendDayCall.enqueue(new DefaultCallback<Void>(context, loginManager, mainLayout) {
+                @Override
+                public void onResponse200(Response<Void> response) {
+                    onSuccess.execute();
+                    day.isSyncedWithServer = true;
+                    update(day);
+                }
 
-            @Override
-            public void onResponseFailure(Call<Void> call, Throwable t) {
-                Snackbar snackbar = Snackbar.make(
-                        mainLayout,
-                        R.string.snackbar_server_error,
-                        Snackbar.LENGTH_SHORT
-                );
-                snackbar.setAction(R.string.button_dismiss, v -> snackbar.dismiss());
-                snackbar.show();
-            }
+                @Override
+                public void onResponseFailure(Call<Void> call, Throwable t) {
+                    Snackbar snackbar = Snackbar.make(
+                            mainLayout,
+                            R.string.snackbar_will_be_sent_later,
+                            Snackbar.LENGTH_LONG
+                    );
+                    snackbar.setAnchorView(buttonsGroup);
+                    snackbar.setAction(R.string.button_ok, v -> snackbar.dismiss());
+                    snackbar.show();
+                }
 
-            @Override
-            public void onPostExecute() { onPost.execute(); }
-        });
+                @Override
+                public void onPostExecute() { onPost.execute(); }
+            });
+        else
+            sendDayCall.enqueue(new DefaultCallback<Void>() {
+                @Override
+                public void onResponse200(Response<Void> response) {
+                    onSuccess.execute();
+                    day.isSyncedWithServer = true;
+                    update(day);
+                }
+
+                @Override
+                public void onResponseFailure(Call<Void> call, Throwable t) {
+
+                }
+
+                @Override
+                public void onPostExecute() { onPost.execute(); }
+            });
     }
 
     @SuppressLint("CheckResult")
@@ -103,6 +135,10 @@ public class DayRepository {
     }
 
     public void insert(List<Day> days) {
+        insert(days, AppDatabase.scheduler);
+    }
+
+    public void insert(List<Day> days, Scheduler scheduler) {
         LinkedList<Student> students = new LinkedList<>();
         LinkedList<DayAbsentCrossRef> refs = new LinkedList<>();
 
@@ -113,13 +149,13 @@ public class DayRepository {
             }
         }
 
-        studentRepository.insert(students);
+        studentRepository.insert(students, scheduler);
         dayDao.insert(days)
-                .subscribeOn(AppDatabase.scheduler)
+                .subscribeOn(scheduler)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(AppDatabase.getDefaultObserver());
         dayDao.insertRefs(refs)
-                .subscribeOn(AppDatabase.scheduler)
+                .subscribeOn(scheduler)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(AppDatabase.getDefaultObserver());
     }
@@ -136,18 +172,40 @@ public class DayRepository {
     }
 
     public void deleteByGroupIdsAndDates(List<Integer> groupIds, List<String> dates) {
+        deleteByGroupIdsAndDates(groupIds, dates, AppDatabase.scheduler);
+    }
+
+    public void deleteByGroupIdsAndDates(List<Integer> groupIds, List<String> dates, Scheduler scheduler) {
         dayDao.deleteRefsByGroupIdsAndDates(groupIds, dates)
-                .subscribeOn(AppDatabase.scheduler)
+                .subscribeOn(scheduler)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(AppDatabase.getDefaultObserver());
         dayDao.deleteByGroupIdsAndDates(groupIds, dates)
-                .subscribeOn(AppDatabase.scheduler)
+                .subscribeOn(scheduler)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(AppDatabase.getDefaultObserver());
     }
 
     public void deleteAllButGroupIds(List<Integer> groupIds) {
         dayDao.deleteAllButGroupIds(groupIds)
+                .subscribeOn(AppDatabase.scheduler)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(AppDatabase.getDefaultObserver());
+    }
+
+    public void deleteSyncedRefs(List<Integer> groupIds, List<String> dates) {
+        dayDao.deleteSyncedRefsByGroupIdsAndDates(groupIds, dates)
+                .subscribeOn(AppDatabase.scheduler)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(AppDatabase.getDefaultObserver());
+    }
+
+    public void deleteAll() {
+        dayDao.deleteAllRefs()
+                .subscribeOn(AppDatabase.scheduler)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(AppDatabase.getDefaultObserver());
+        dayDao.deleteAll()
                 .subscribeOn(AppDatabase.scheduler)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(AppDatabase.getDefaultObserver());

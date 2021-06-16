@@ -46,4 +46,7 @@ public interface GroupDao {
             "WHERE gid = :groupId " +
             "LIMIT 1")
     Maybe<GroupWithStudents> getById(int groupId);
+
+    @Query("DELETE FROM groups")
+    Maybe<Void> deleteAll();
 }

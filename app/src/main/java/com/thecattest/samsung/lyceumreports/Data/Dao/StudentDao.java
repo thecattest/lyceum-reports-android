@@ -23,4 +23,7 @@ public interface StudentDao {
     @Query("DELETE FROM students " +
             "WHERE group_id NOT IN (:groupIds)")
     Maybe<Void> deleteAllButGroupIds(List<Integer> groupIds);
+
+    @Query("DELETE FROM students")
+    Maybe<Void> deleteAll();
 }

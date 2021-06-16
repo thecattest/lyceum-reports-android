@@ -8,15 +8,18 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.thecattest.samsung.lyceumreports.Activities.LoginActivity;
 import com.thecattest.samsung.lyceumreports.Data.Models.Permissions;
+import com.thecattest.samsung.lyceumreports.Services.SyncService;
 import com.thecattest.samsung.lyceumreports.URLConfig;
 
 public class LoginManager {
     private static final String KEY_COOKIES = "COOKIES";
     private static final String KEY_CAN_EDIT = "CAN_EDIT";
     private static final String KEY_CAN_VIEW_TABLE = "CAN_VIEW_TABLE";
+    private static final String KEY_LAST_UPDATED = "LAST_UPDATED";
 
     private final SharedPreferences sharedPreferences;
     private AppCompatActivity activity;
+    private Context context;
 
     public LoginManager(AppCompatActivity activity) {
         this.activity = activity;
@@ -24,11 +27,32 @@ public class LoginManager {
     }
 
     public LoginManager(Context context) {
+        this.context = context;
         sharedPreferences = context.getSharedPreferences(URLConfig.BASE_URL, Context.MODE_PRIVATE);
+    }
+
+    public boolean isLoggedIn() {
+        return !getCookie().isEmpty();
     }
 
     public String getCookie() {
         return sharedPreferences.getString(KEY_COOKIES, "");
+    }
+
+    public long setLastUpdated() {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        long unixTime = System.currentTimeMillis() / 1000L;
+        editor.putLong(KEY_LAST_UPDATED, unixTime);
+        editor.apply();
+        return unixTime;
+    }
+
+    public long getLastUpdated() {
+        long lastUpdated = sharedPreferences.getLong(KEY_LAST_UPDATED, 0L);
+        if (lastUpdated == 0L) {
+            return setLastUpdated();
+        }
+        return lastUpdated;
     }
 
     public void setCookie(String cookies) {
@@ -56,6 +80,7 @@ public class LoginManager {
         editor.remove(KEY_COOKIES);
         editor.remove(KEY_CAN_VIEW_TABLE);
         editor.remove(KEY_CAN_EDIT);
+        editor.remove(KEY_LAST_UPDATED);
         editor.apply();
     }
 
@@ -65,10 +90,14 @@ public class LoginManager {
     }
 
     public void handleNotAuthorized() {
+        Intent serviceIntent = new Intent(activity, SyncService.class);
         if (activity != null) {
+            activity.stopService(serviceIntent);
             Intent i = new Intent(activity, LoginActivity.class);
             activity.startActivity(i);
             activity.finish();
+        } else if (context != null) {
+            context.stopService(serviceIntent);
         }
     }
 }

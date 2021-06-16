@@ -1,7 +1,12 @@
 package com.thecattest.samsung.lyceumreports.Fragments;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +29,7 @@ import com.thecattest.samsung.lyceumreports.Managers.DatePickerManager;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
 import com.thecattest.samsung.lyceumreports.Managers.RetrofitManager;
 import com.thecattest.samsung.lyceumreports.R;
+import com.thecattest.samsung.lyceumreports.Services.SyncService;
 
 import java.util.ArrayList;
 
@@ -64,6 +70,18 @@ public class TableFragment extends Fragment {
 
         swipeRefreshLayout.setEnabled(false);
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.d("Updates", "broadcast got");
+                loadData(false);
+            }
+        }, new IntentFilter(SyncService.REDRAW_BROADCAST));
     }
 
     private void findViews(View view) {

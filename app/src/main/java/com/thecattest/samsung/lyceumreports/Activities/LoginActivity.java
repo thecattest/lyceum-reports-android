@@ -16,6 +16,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.thecattest.samsung.lyceumreports.Data.ApiService;
 import com.thecattest.samsung.lyceumreports.Data.Models.Permissions;
+import com.thecattest.samsung.lyceumreports.Data.Repositories.GroupRepository;
 import com.thecattest.samsung.lyceumreports.DefaultCallback;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
 import com.thecattest.samsung.lyceumreports.Managers.RetrofitManager;
@@ -29,7 +30,6 @@ import retrofit2.Retrofit;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private ConstraintLayout loginFormLayout;
     private TextInputEditText login;
     private TextInputEditText password;
     private Button loginButton;
@@ -53,10 +53,12 @@ public class LoginActivity extends AppCompatActivity {
         initManagers();
         initRetrofit();
         updateButtonState();
+
+        GroupRepository groupRepository = new GroupRepository(this, loginManager, apiService);
+        groupRepository.deleteAll();
     }
 
     private void findViews() {
-        loginFormLayout = findViewById(R.id.loginFormLayout);
         login = findViewById(R.id.login);
         password = findViewById(R.id.password);
         loginButton = findViewById(R.id.loginButton);

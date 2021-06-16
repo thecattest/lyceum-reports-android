@@ -1,6 +1,8 @@
 package com.thecattest.samsung.lyceumreports.Data.Repositories;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -34,7 +36,7 @@ public class GroupRepository {
 
     private final Context context;
     private final LoginManager loginManager;
-    private final View mainLayout;
+    private View mainLayout;
     private final ApiService apiService;
 
     public GroupRepository(Context context,
@@ -46,6 +48,18 @@ public class GroupRepository {
         this.loginManager = loginManager;
         this.mainLayout = mainLayout;
         this.dayRepository = new DayRepository(context, loginManager, mainLayout, apiService);
+        this.studentRepository = dayRepository.studentRepository;
+        this.apiService = apiService;
+        groupDao = db.groupDao();
+    }
+
+    public GroupRepository(Context context,
+                           LoginManager loginManager,
+                           ApiService apiService) {
+        AppDatabase db = AppDatabase.getInstance(context);
+        this.context = context;
+        this.loginManager = loginManager;
+        this.dayRepository = new DayRepository(context, apiService);
         this.studentRepository = dayRepository.studentRepository;
         this.apiService = apiService;
         groupDao = db.groupDao();
@@ -83,13 +97,25 @@ public class GroupRepository {
     }
 
     public void refreshGroup(DefaultCallback.OnPost onPost, DefaultCallback.OnPost onSuccess,
-                             int groupId, String date) {
+                             int groupId, String date, View buttonsGroup) {
         Call<Group> groupRefreshCall = apiService.getGroup(groupId, date);
         groupRefreshCall.enqueue(new DefaultCallback<Group>(context, loginManager, mainLayout) {
             @Override
             public void onResponse200(Response<Group> response) {
                 insert(response.body(), date);
                 onSuccess.execute();
+            }
+
+            @Override
+            public void onResponse500(Response<Group> response) {
+                Snackbar snackbar = Snackbar.make(
+                        mainLayout,
+                        R.string.snackbar_server_error_code_500,
+                        Snackbar.LENGTH_LONG
+                );
+                snackbar.setAnchorView(buttonsGroup);
+                snackbar.setAction(R.string.button_dismiss, v -> snackbar.dismiss());
+                snackbar.show();
             }
 
             @Override
@@ -123,6 +149,30 @@ public class GroupRepository {
                 );
                 snackbar.setAction(R.string.button_dismiss, v -> snackbar.dismiss());
                 snackbar.show();
+            }
+
+            @Override
+            public void onPostExecute() { onPost.execute(); }
+        });
+    }
+
+    public void getUpdates(DefaultCallback.OnPost onPost, DefaultCallback.OnPost onSuccess) {
+        long unixTime = System.currentTimeMillis() / 1000L;
+        long lastUpdated = loginManager.getLastUpdated();
+        long delta = unixTime - lastUpdated + 5;
+        Call<ArrayList<Group>> updatesCall = apiService.getUpdates(delta);
+        Log.d("Updates", String.valueOf(delta));
+        updatesCall.enqueue(new DefaultCallback<ArrayList<Group>>() {
+            @Override
+            public void onResponse200(Response<ArrayList<Group>> response) {
+                loginManager.setLastUpdated();
+                ArrayList<Group> groups = response.body();
+                update(groups, onSuccess);
+            }
+
+            @Override
+            public void onResponseFailure(Call<ArrayList<Group>> call, Throwable t) {
+
             }
 
             @Override
@@ -166,6 +216,37 @@ public class GroupRepository {
                 .subscribe(AppDatabase.getDefaultObserver());
     }
 
+    @SuppressLint("CheckResult")
+    public void update(List<Group> groups, DefaultCallback.OnPost onSuccess) {
+        LinkedList<Student> students = new LinkedList<>();
+        LinkedList<Day> days = new LinkedList<>();
+        LinkedList<Integer> groupIds = new LinkedList<>();
+        LinkedList<String> dates = new LinkedList<>();
+        for (Group group : groups) {
+            groupIds.add(group.gid);
+            if (group.days == null)
+                continue;
+            days.addAll(group.days);
+            for (Day day : days) {
+//                day.isSyncedWithServer = false;
+                dates.add(day.date);
+            }
+            students.addAll(group.students);
+        }
+//        dayRepository.deleteSyncedRefs(groupIds, dates);
+        dayRepository.deleteByGroupIdsAndDates(groupIds, dates, AppDatabase.serviceScheduler);
+        studentRepository.insert(students, AppDatabase.serviceScheduler);
+        dayRepository.insert(days, AppDatabase.serviceScheduler);
+        groupDao.insert(groups)
+                .subscribeOn(AppDatabase.serviceScheduler)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe((unused) -> {});
+        if (!groups.isEmpty()) {
+            Log.d("Updates", days.get(0).absent.toString());
+            onSuccess.execute();
+        }
+    }
+
     public void deleteByIdAndDate(int groupId, String date) {
         ArrayList<Integer> groupIds = new ArrayList<>();
         groupIds.add(groupId);
@@ -191,6 +272,15 @@ public class GroupRepository {
         dayRepository.deleteAllButGroupIds(groupIds);
         groupDao.deleteAllButIds(groupIds)
                 .subscribeOn(AppDatabase.scheduler)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(AppDatabase.getDefaultObserver());
+    }
+
+    public void deleteAll() {
+        studentRepository.deleteAll();
+        dayRepository.deleteAll();
+        groupDao.deleteAll()
+                .subscribeOn(AppDatabase.serviceScheduler)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(AppDatabase.getDefaultObserver());
     }

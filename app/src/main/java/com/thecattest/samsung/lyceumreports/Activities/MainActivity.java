@@ -1,8 +1,12 @@
 package com.thecattest.samsung.lyceumreports.Activities;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +28,7 @@ import com.thecattest.samsung.lyceumreports.Data.Repositories.GroupRepository;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
 import com.thecattest.samsung.lyceumreports.Managers.RetrofitManager;
 import com.thecattest.samsung.lyceumreports.R;
+import com.thecattest.samsung.lyceumreports.Services.SyncService;
 
 import java.util.ArrayList;
 
@@ -56,8 +61,26 @@ public class MainActivity extends AppCompatActivity {
         initRetrofit();
         initRepositories();
 
+        if (!loginManager.isLoggedIn())
+            loginManager.handleNotAuthorized();
+
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.d("Updates", "broadcast got");
+                loadData();
+            }
+        }, new IntentFilter(SyncService.REDRAW_BROADCAST));
+
         permissions = loginManager.getPermissions();
         updateMenu();
+        loadData();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        startService(new Intent(this, SyncService.class));
         loadData();
     }
 

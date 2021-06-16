@@ -1,8 +1,13 @@
 package com.thecattest.samsung.lyceumreports.Activities;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
@@ -30,6 +35,7 @@ import com.thecattest.samsung.lyceumreports.Managers.DatePickerManager;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
 import com.thecattest.samsung.lyceumreports.Managers.RetrofitManager;
 import com.thecattest.samsung.lyceumreports.R;
+import com.thecattest.samsung.lyceumreports.Services.SyncService;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import retrofit2.Retrofit;
@@ -70,12 +76,20 @@ public class DayActivity extends AppCompatActivity {
         initRetrofit();
         initRepositories();
 
+
         groupId = getIntent().getIntExtra(GROUP_ID, -1);
         if (groupId == -1) {
             finish();
         }
         String groupLabel = getIntent().getStringExtra(GROUP_LABEL);
         classLabel.setText(groupLabel);
+
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                loadGroup();
+            }
+        }, new IntentFilter(SyncService.REDRAW_BROADCAST));
 
         loadGroup();
     }
@@ -147,7 +161,7 @@ public class DayActivity extends AppCompatActivity {
                     swipeRefreshLayout.setRefreshing(false);
                     loadingProgressBar.setVisibility(View.GONE);
                     loadGroup();
-                }, () -> {}, groupId, formattedDate);
+                }, () -> {}, groupId, formattedDate, buttonsGroup);
     }
 
     private void sendDay() {
@@ -168,11 +182,11 @@ public class DayActivity extends AppCompatActivity {
                                 mainLayout,
                                 R.string.snackbar_server_ok,
                                 Snackbar.LENGTH_SHORT);
-                        snackbar.setAction(R.string.button_refresh, btn -> refreshGroupAndDay());
+//                        snackbar.setAction(R.string.button_refresh, btn -> refreshGroupAndDay());
                         snackbar.setAnchorView(buttonsGroup);
                         snackbar.show();
                     },
-                    day);
+                    day, buttonsGroup);
         } catch (NullPointerException ignored) {}
     }
 
@@ -231,12 +245,15 @@ public class DayActivity extends AppCompatActivity {
         updateConfirmButtonState();
         updateSwipeRefreshLayoutState();
         studentsListView.setOnItemClickListener(this::onStudentItemClick);
-        if (studentsAdapter.noLoadedAbsent())
-            Snackbar.make(
+        if (studentsAdapter.noLoadedAbsent()) {
+            Snackbar snackbar = Snackbar.make(
                     mainLayout,
                     R.string.snackbar_no_absent,
                     Snackbar.LENGTH_SHORT
-            ).setAnchorView(buttonsGroup).show();
+            );
+            snackbar.setAnchorView(buttonsGroup);
+            snackbar.show();
+        }
         if (day.day == null) {
             Snackbar snackbar = Snackbar.make(
                     mainLayout,
@@ -247,7 +264,9 @@ public class DayActivity extends AppCompatActivity {
             snackbar.show();
         }
         else {
-            checkUnsavedChanges();
+            try {
+                checkUnsavedChanges();
+            } catch (WindowManager.BadTokenException ignored) {}
         }
     }
 
