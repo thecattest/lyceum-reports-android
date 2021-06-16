@@ -276,6 +276,11 @@ public class DayActivity extends AppCompatActivity {
             new MaterialAlertDialogBuilder(this)
                     .setTitle(R.string.dialog_title_unsaved_changes)
                     .setMessage(R.string.dialog_text_unsaved_changes)
+                    .setNegativeButton(R.string.button_discard, (dialog, which) -> {
+                        dayRepository.deleteByGroupIdAndDate(groupId, datePickerManager.getDate());
+                        dialog.dismiss();
+                        loadDay(true);
+                    })
                     .setPositiveButton(R.string.button_ok, (dialog, which) -> dialog.dismiss())
                     .show();
         }

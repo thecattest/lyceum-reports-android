@@ -70,7 +70,10 @@ public class SyncService extends Service {
             while (running) {
                 try {
                     Thread.sleep(5000);
-                    getUpdates();
+                    if (loginManager.getAutoUpdate())
+                        getUpdates();
+                    else if (loginManager.getAutoSend())
+                        sendNotSynced();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -90,6 +93,8 @@ public class SyncService extends Service {
 
     @SuppressLint("CheckResult")
     private void sendNotSynced() {
+        if (!loginManager.getAutoSend())
+            return;
 //        try {
 //            Thread.sleep(800);
 //        } catch (InterruptedException e) {

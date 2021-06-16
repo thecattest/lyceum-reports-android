@@ -33,6 +33,7 @@ dependencies {
 
     implementation 'com.squareup.retrofit2:retrofit:2.1.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
+    implementation 'androidx.preference:preference:1.1.1'
 
     def room_version = "2.3.0"
     implementation "androidx.room:room-runtime:$room_version"

@@ -132,6 +132,11 @@ public class MainActivity extends AppCompatActivity {
             startActivity(i);
             return true;
         }
+        if (itemId == R.id.settings) {
+            i = new Intent(MainActivity.this, SettingsActivity.class);
+            startActivity(i);
+            return true;
+        }
         if (itemId == R.id.refresh) {
             refreshData();
             return true;

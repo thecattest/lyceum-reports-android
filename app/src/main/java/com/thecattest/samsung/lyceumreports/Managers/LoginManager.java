@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import com.thecattest.samsung.lyceumreports.Activities.LoginActivity;
 import com.thecattest.samsung.lyceumreports.Data.Models.Permissions;
+import com.thecattest.samsung.lyceumreports.R;
 import com.thecattest.samsung.lyceumreports.Services.SyncService;
 import com.thecattest.samsung.lyceumreports.URLConfig;
 
@@ -16,19 +18,28 @@ public class LoginManager {
     private static final String KEY_CAN_EDIT = "CAN_EDIT";
     private static final String KEY_CAN_VIEW_TABLE = "CAN_VIEW_TABLE";
     private static final String KEY_LAST_UPDATED = "LAST_UPDATED";
+    private final String KEY_AUTO_UPDATE;
+    private final String KEY_AUTO_SEND;
 
     private final SharedPreferences sharedPreferences;
+    private final SharedPreferences defaultSharedPreferences;
     private AppCompatActivity activity;
     private Context context;
 
     public LoginManager(AppCompatActivity activity) {
         this.activity = activity;
         sharedPreferences = activity.getSharedPreferences(URLConfig.BASE_URL, Context.MODE_PRIVATE);
+        defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
+        KEY_AUTO_SEND = activity.getResources().getString(R.string.auto_send_key);
+        KEY_AUTO_UPDATE = activity.getResources().getString(R.string.auto_update_key);
     }
 
     public LoginManager(Context context) {
         this.context = context;
         sharedPreferences = context.getSharedPreferences(URLConfig.BASE_URL, Context.MODE_PRIVATE);
+        defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        KEY_AUTO_SEND = context.getResources().getString(R.string.auto_send_key);
+        KEY_AUTO_UPDATE = context.getResources().getString(R.string.auto_update_key);
     }
 
     public boolean isLoggedIn() {
@@ -73,6 +84,14 @@ public class LoginManager {
         editor.putBoolean(KEY_CAN_EDIT, permissions.canEdit);
         editor.putBoolean(KEY_CAN_VIEW_TABLE, permissions.canViewTable);
         editor.apply();
+    }
+
+    public boolean getAutoUpdate() {
+        return defaultSharedPreferences.getBoolean(KEY_AUTO_UPDATE, false);
+    }
+
+    public boolean getAutoSend() {
+        return defaultSharedPreferences.getBoolean(KEY_AUTO_SEND, false);
     }
 
     public void removeAll() {

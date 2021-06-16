@@ -8,6 +8,7 @@
     <string name="title_day">День</string>
     <string name="title_diagram">График</string>
     <string name="title_statistics">Статистика</string>
+    <string name="title_settings">Настройки</string>
 
     <!-- Snackbars titles -->
     <string name="snackbar_no_info">За этот день данных нет</string>
@@ -78,4 +79,17 @@
         <item>ноя</item>
         <item>дек</item>
     </string-array>
+
+    <!-- Preference Titles -->
+    <string name="sync_header">Синхронизация</string>
+
+    <string name="auto_update_title">Автообновление</string>
+    <string name="auto_update_on">Автоматически скачивать новые данные с сервера, если они есть</string>
+    <string name="auto_update_off">Только ручное обновление</string>
+    <string name="auto_update_key">AUTO_UPDATE</string>
+
+    <string name="auto_send_title">Автоотправка</string>
+    <string name="auto_send_on">Автоматически отправлять изменения при восстановлении подключения</string>
+    <string name="auto_send_off">Только ручная отправка</string>
+    <string name="auto_send_key">AUTO_SEND</string>
 </resources>
