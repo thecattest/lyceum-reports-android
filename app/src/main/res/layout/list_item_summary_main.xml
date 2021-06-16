@@ -24,7 +24,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/header_font_size"
-                android:textColor="@color/list_item_summary_class"
+                android:textColor="@color/summary_class_text_color"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -74,7 +74,7 @@
                         android:layout_height="wrap_content"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
-                        android:textColor="@color/list_item_summary_date_label"
+                        android:textColor="@color/summary_date_label_text_color"
                         android:textStyle="bold"
                         android:textSize="@dimen/summary_date_font_size"
                         android:text="@string/summary_card_today"/>
@@ -87,7 +87,7 @@
                         app:layout_constraintLeft_toRightOf="@id/todayLabel"
                         android:layout_marginLeft="@dimen/summary_date_label_space_between"
                         android:layout_marginStart="@dimen/summary_date_label_space_between"
-                        android:textColor="@color/list_item_summary_date"
+                        android:textColor="@color/summary_date_text_color"
                         android:textSize="@dimen/summary_date_font_size"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -109,7 +109,7 @@
                 android:id="@+id/hr"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/summary_hr_height"
-                android:background="@color/hr"
+                android:background="@color/summary_hr_color"
                 app:layout_constraintTop_toBottomOf="@id/today"/>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -131,7 +131,7 @@
                         android:layout_height="wrap_content"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
-                        android:textColor="@color/list_item_summary_date_label"
+                        android:textColor="@color/summary_date_label_text_color"
                         android:textStyle="bold"
                         android:textSize="@dimen/summary_date_font_size"
                         android:text="@string/summary_card_yesterday"/>
@@ -144,7 +144,7 @@
                         app:layout_constraintLeft_toRightOf="@id/yesterdayLabel"
                         android:layout_marginLeft="@dimen/summary_date_label_space_between"
                         android:layout_marginStart="@dimen/summary_date_label_space_between"
-                        android:textColor="@color/list_item_summary_date"
+                        android:textColor="@color/summary_date_text_color"
                         android:textSize="@dimen/summary_date_font_size"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>

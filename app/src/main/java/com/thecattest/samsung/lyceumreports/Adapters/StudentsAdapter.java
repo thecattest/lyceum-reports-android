@@ -37,7 +37,7 @@ public class StudentsAdapter extends ArrayAdapter<Student> {
         String studentText = student.getName();
         ((TextView) convertView.findViewById(android.R.id.text1)).setText(studentText);
         if (group.group.days != null && !group.group.days.isEmpty()) {
-            int backgroundColor = group.group.days.get(0).absent.contains(student) ? R.color.absent : R.color.white;
+            int backgroundColor = group.group.days.get(0).absent.contains(student) ? R.color.absent_background_color : R.color.white;
             convertView.setBackgroundColor(getContext().getResources().getColor(backgroundColor));
         }
 

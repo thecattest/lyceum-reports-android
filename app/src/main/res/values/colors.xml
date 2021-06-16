@@ -1,23 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#B39DDB</color>
-    <color name="purple_400">#7E57C2</color>
-    <color name="purple_600">#5E35B1</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
+    <color name="purple">#9575CD</color>
+    <color name="purple_light">#c7a4ff</color>
+    <color name="purple_dark">#65499c</color>
+    <color name="blue">#a7b0ff</color>
+    <color name="blue_dark">#44559c</color>
+
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="absent">#EAC1C1</color>
-    <color name="header">#F7F7F7</color>
-    <color name="status_bar_night">#EEEEEE</color>
-    <color name="status_bar">#AAAAAA</color>
-    <color name="link_color">#007bff</color>
-    <color name="card_border">#DFDFDF</color>
-    <color name="hr">#E5E5E5</color>
-    <color name="main">#c6c1ea</color>
-    <color name="main_text_color">#212529</color>
-    <color name="card_border_color">#dfdfdf</color>
-    <color name="list_item_summary_class">#212529</color>
-    <color name="list_item_summary_date_label">#222</color>
-    <color name="list_item_summary_date">#777</color>
+    <color name="absent_background_color">@color/blue</color>
+    <color name="header_background_color">#F7F7F7</color>
+    <color name="summary_hr_color">#E5E5E5</color>
+    <color name="summary_border_color">#dfdfdf</color>
+    <color name="summary_class_text_color">#212529</color>
+    <color name="summary_date_label_text_color">#222</color>
+    <color name="summary_date_text_color">#777</color>
 </resources>

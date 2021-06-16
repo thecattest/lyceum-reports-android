@@ -11,7 +11,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:textColor="@color/list_item_summary_date_label"
+            android:textColor="@color/summary_date_label_text_color"
             android:textStyle="bold"
             android:textSize="@dimen/summary_date_font_size"/>
 

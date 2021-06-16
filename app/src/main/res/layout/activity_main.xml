@@ -30,6 +30,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/topAppBarLayout"
         android:indeterminate="true"
+        app:indicatorColor="@color/blue_dark"
         android:visibility="gone"/>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
