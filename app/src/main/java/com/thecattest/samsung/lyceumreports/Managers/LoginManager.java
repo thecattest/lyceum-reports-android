@@ -87,11 +87,11 @@ public class LoginManager {
     }
 
     public boolean getAutoUpdate() {
-        return defaultSharedPreferences.getBoolean(KEY_AUTO_UPDATE, false);
+        return defaultSharedPreferences.getBoolean(KEY_AUTO_UPDATE, true);
     }
 
     public boolean getAutoSend() {
-        return defaultSharedPreferences.getBoolean(KEY_AUTO_SEND, false);
+        return defaultSharedPreferences.getBoolean(KEY_AUTO_SEND, true);
     }
 
     public void removeAll() {
@@ -101,6 +101,10 @@ public class LoginManager {
         editor.remove(KEY_CAN_EDIT);
         editor.remove(KEY_LAST_UPDATED);
         editor.apply();
+        SharedPreferences.Editor defaultEditor = defaultSharedPreferences.edit();
+        defaultEditor.remove(KEY_AUTO_UPDATE);
+        defaultEditor.remove(KEY_AUTO_SEND);
+        defaultEditor.apply();
     }
 
     public void logout() {
