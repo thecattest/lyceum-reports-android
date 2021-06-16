@@ -31,6 +31,7 @@ public class SyncService extends Service {
     private DayRepository dayRepository;
     private LoginManager loginManager;
     private boolean running = true;
+    private final boolean showToasts = false;
 
     public SyncService() {
     }
@@ -121,6 +122,8 @@ public class SyncService extends Service {
     }
 
     private void showToast(String text) {
+        if (!showToasts)
+            return;
         Message msg = new Message();
         msg.obj = text;
         handler.sendMessage(msg);
