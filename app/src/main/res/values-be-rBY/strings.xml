@@ -47,7 +47,7 @@
 
     
     <string name="summary_card_yesterday">Учора</string>
-    <string name="summary_card_today">сёння</string>
+    <string name="summary_card_today">Сёння</string>
     <string name="summary_status_no_info">Няма дадзеных</string>
     <string name="summary_status_no_absent">@string/snackbar_no_absent</string>
 
