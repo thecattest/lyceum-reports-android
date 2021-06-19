@@ -1,0 +1,87 @@
+<resources>
+    <string name="app_name">Жоқ</string>
+    
+    <string name="title_main">@string/app_name</string>
+    <string name="title_table">Кесте</string>
+    <string name="title_authorization">Авторизация</string>
+    <string name="title_day">Күн</string>
+    <string name="title_class">Сынып</string>
+    <string name="title_diagram">Кесте</string>
+    <string name="title_statistics">Статистика</string>
+    <string name="title_settings">Параметрлер</string>
+    
+    <string name="snackbar_no_info">Осы күнге арналған деректер жоқ</string>
+    <string name="snackbar_no_absent">Сыныптағы барлық адамдар</string>
+    <string name="snackbar_request_cancelled">Бас тарту</string>
+    <string name="snackbar_server_error">Қате, кейінірек қайталап көріңіз</string>
+    <string name="snackbar_server_error_code">Сұранысты орындау кезінде қате :( код</string>
+    <string name="snackbar_server_error_code_500">Сервер 500 қателік жіберді, кейінірек қайталап көріңіз</string>
+    <string name="snackbar_server_error_code_500_will_be_sent_later">Қате 500. Деректер сервер қол жетімді болған кезде автоматты түрде жіберіледі</string>
+    <string name="snackbar_will_be_sent_later">Сервер қазір қол жетімді емес. Деректер мүмкіндігінше автоматты түрде жіберіледі</string>
+    <string name="snackbar_server_ok">Бұл жұмыс істеді :)</string>
+    <string name="snackbar_wrong_login_password">Логин немесе пароль дұрыс емес</string>
+    <string name="snackbar_authorization_successful">Авторизация сәтті өтті</string>
+    <string name="snackbar_back_again_to_exit">Шығу үшін қайтадан басыңыз</string>
+    
+    <string name="dialog_title_unsaved_changes">Сақталмаған өзгерістер</string>
+    <string name="dialog_text_unsaved_changes">Осы күнге өзгерістер енгізілген жоқ.</string>
+    <string name="dialog_title_no_data">Деректер жоқ</string>
+    <string name="dialog_text_no_data">Сіз таңдаған күні ешқандай сабаққа қатысқандар жоқ.</string>
+    <string name="dialog_title_choose_group">Сынып таңдау</string>
+    
+    <string name="button_edit">өңдеу</string>
+    <string name="button_submit_day_default">жіберу</string>
+    <string name="button_submit_day_no_one_absent">сыныптағылардың барлығы</string>
+    <string name="button_cancel">артқа</string>
+    <string name="button_date_picker_trigger">күнді таңдаңыз</string>
+    <string name="button_refresh">Жаңарту</string>
+    <string name="button_check_again">қайта тексеріңіз</string>
+    <string name="button_dismiss">жабық</string>
+    <string name="button_ok">Жақсы</string>
+    <string name="button_login">Кіру</string>
+    <string name="button_logout">Шығу</string>
+    <string name="button_discard">жою</string>
+    <string name="button_class_picker_trigger">сыныпты таңдау</string>
+    
+    <string name="summary_card_yesterday">Кеше</string>
+    <string name="summary_card_today">Бүгін</string>
+    <string name="summary_status_no_info">Мәлімет жоқ</string>
+    <string name="summary_status_no_absent">@string/snackbar_no_absent</string>
+    
+    <string name="hint_login">Кіру</string>
+    <string name="hint_password">Пароль</string>
+
+    <string name="placeholder_no_chart">Алдымен сіз сыныпты таңдауыңыз керек</string>
+    <string name="placeholder_no_table">Алдымен сіз күнді таңдауыңыз керек</string>
+    
+    <string name="loading_title">Жүктелуде…</string>
+    
+    <string name="date_format">yyyy-MM-dd</string>
+    <string-array name="date_months_shortened">
+        <item/>
+        <item>жан</item>
+        <item>ақпан</item>
+        <item>наурыз</item>
+        <item>сәуір</item>
+        <item>мамыр</item>
+        <item>маусым</item>
+        <item>шілде</item>
+        <item>тамыз</item>
+        <item>сеп</item>
+        <item>сегіздік</item>
+        <item>бірақ мен</item>
+        <item>желтоқсан</item>
+    </string-array>
+
+    <string name="sync_header">Синхрондау</string>
+
+    <string name="auto_update_title">Автоматты жаңарту</string>
+    <string name="auto_update_on">Егер бар болса, автоматты түрде серверден жаңа деректерді жүктеп алыңыз</string>
+    <string name="auto_update_off">Тек қолмен жаңарту</string>
+    <string name="auto_update_key">AUTO_UPDATE</string>
+
+    <string name="auto_send_title">Автоматты жіберу</string>
+    <string name="auto_send_on">Байланыс қалпына келтірілген кезде автоматты түрде өзгерістер жіберіңіз</string>
+    <string name="auto_send_off">Тек қолмен тасымалдау</string>
+    <string name="auto_send_key">АВТО_ЖІБЕРУ</string>
+</resources>

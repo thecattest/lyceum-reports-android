@@ -64,11 +64,6 @@
     <!-- Loading Layout -->
     <string name="loading_title">Загрузка…</string>
 
-    <!-- Server Error Layout -->
-    <string name="server_error_title">Ой</string>
-    <string name="server_error_subtitle">Что-то пошло не так</string>
-    <string name="server_error_button"><u>Попробовать снова</u></string>
-
     <!-- Date -->
     <string name="date_format">yyyy-MM-dd</string>
     <string-array name="date_months_shortened">
