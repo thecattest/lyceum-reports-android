@@ -6,6 +6,7 @@
     <string name="title_table">Таблица</string>
     <string name="title_authorization">Авторизация</string>
     <string name="title_day">День</string>
+    <string name="title_class">Класс</string>
     <string name="title_diagram">График</string>
     <string name="title_statistics">Статистика</string>
     <string name="title_settings">Настройки</string>
@@ -29,6 +30,7 @@
     <string name="dialog_text_unsaved_changes">Изменения за этот день не были отправлены.</string>
     <string name="dialog_title_no_data">Данных нет</string>
     <string name="dialog_text_no_data">В выбранный вами день ни в одном классе не отмечены отсутствующие.</string>
+    <string name="dialog_title_choose_group">Выбор класса</string>
 
     <!-- Buttons -->
     <string name="button_edit">редактировать</string>
@@ -43,6 +45,7 @@
     <string name="button_login">Войти</string>
     <string name="button_logout">Выйти</string>
     <string name="button_discard">удалить</string>
+    <string name="button_class_picker_trigger">выбрать класс</string>
 
     <!-- Summary -->
     <string name="summary_card_yesterday">Вчера</string>
@@ -92,4 +95,5 @@
     <string name="auto_send_on">Автоматически отправлять изменения при восстановлении подключения</string>
     <string name="auto_send_off">Только ручная отправка</string>
     <string name="auto_send_key">AUTO_SEND</string>
+    <string name="no_bar_chart">Сначала нужно выбрать класс</string>
 </resources>

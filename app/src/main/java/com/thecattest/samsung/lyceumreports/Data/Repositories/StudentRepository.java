@@ -18,13 +18,13 @@ public class StudentRepository {
     }
 
     public void insert(List<Student> students) {
-        insert(students, AppDatabase.scheduler);
+        insert(students, AppDatabase.scheduler, AndroidSchedulers.mainThread());
     }
 
-    public void insert(List<Student> students, Scheduler scheduler) {
+    public void insert(List<Student> students, Scheduler scheduler, Scheduler schedulerToObserveOn) {
         studentDao.insert(students)
                 .subscribeOn(scheduler)
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(schedulerToObserveOn)
                 .subscribe(AppDatabase.getDefaultObserver());
     }
 

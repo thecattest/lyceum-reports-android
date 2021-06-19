@@ -57,13 +57,13 @@ public class Group {
         return Calendar.getInstance().getTime();
     }
 
-    public String getServerFormatDate(Context context, Date date) {
+    public static String getServerFormatDate(Context context, Date date) {
         @SuppressLint("SimpleDateFormat")
         DateFormat dateFormat = new SimpleDateFormat(context.getResources().getString(R.string.date_format));
         return dateFormat.format(date);
     }
 
-    public String getHumanDate(Context context, String serverFormatDate) {
+    public static String getHumanDate(Context context, String serverFormatDate) {
         String[] months = context.getResources().getStringArray(R.array.date_months_shortened);
         String[] dateArr = serverFormatDate.split("-");
 

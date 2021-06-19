@@ -128,6 +128,37 @@ public class GroupRepository {
         });
     }
 
+    public void refreshGroupSummary(DefaultCallback.OnPost onPost, DefaultCallback.OnPost onSuccess,
+                             int groupId) {
+        Call<Group> groupRefreshCall = apiService.getGroupSummary(groupId);
+        groupRefreshCall.enqueue(new DefaultCallback<Group>(context, loginManager, mainLayout) {
+            @Override
+            public void onResponse200(Response<Group> response) {
+                insert(response.body());
+                onSuccess.execute();
+            }
+
+            @Override
+            public void onResponse500(Response<Group> response) {
+                Snackbar snackbar = Snackbar.make(
+                        mainLayout,
+                        R.string.snackbar_server_error_code_500,
+                        Snackbar.LENGTH_LONG
+                );
+                snackbar.setAction(R.string.button_dismiss, v -> snackbar.dismiss());
+                snackbar.show();
+            }
+
+            @Override
+            public void onResponseFailure(Call<Group> call, Throwable t) {
+                Toast.makeText(context, R.string.snackbar_server_error, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onPostExecute() { onPost.execute(); }
+        });
+    }
+
     public void refreshDaySummary(DefaultCallback.OnPost onPost, DefaultCallback.OnPost onSuccess,
                                   String date) {
         Call<ArrayList<Group>> refreshDaySummary = apiService.getDaySummary(date);
@@ -159,7 +190,7 @@ public class GroupRepository {
     public void getUpdates(DefaultCallback.OnPost onPost, DefaultCallback.OnPost onSuccess) {
         long unixTime = System.currentTimeMillis() / 1000L;
         long lastUpdated = loginManager.getLastUpdated();
-        long delta = unixTime - lastUpdated + 5;
+        long delta = unixTime - lastUpdated + 1;
         Call<ArrayList<Group>> updatesCall = apiService.getUpdates(delta);
         Log.d("Updates", String.valueOf(delta));
         updatesCall.enqueue(new DefaultCallback<ArrayList<Group>>() {
@@ -178,6 +209,25 @@ public class GroupRepository {
             @Override
             public void onPostExecute() { onPost.execute(); }
         });
+    }
+
+    public void insert(Group group) {
+        LinkedList<Integer> groupIds = new LinkedList<>();
+        LinkedList<String> dates = new LinkedList<>();
+        groupIds.add(group.gid);
+        LinkedList<Day> days = new LinkedList<>(group.days);
+        for (Day day : days)
+            dates.add(day.date);
+        LinkedList<Student> students = new LinkedList<>(group.students);
+        dayRepository.deleteByGroupIdsAndDates(groupIds, dates);
+        deleteByIdsAndDates(groupIds, dates);
+//        deleteAllButIds(groupIds);
+        studentRepository.insert(students);
+        dayRepository.insert(days);
+        groupDao.insert(group)
+                .subscribeOn(AppDatabase.scheduler)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(AppDatabase.getDefaultObserver());
     }
 
     public void insert(Group group, String date) {
@@ -234,15 +284,14 @@ public class GroupRepository {
             students.addAll(group.students);
         }
 //        dayRepository.deleteSyncedRefs(groupIds, dates);
-        dayRepository.deleteByGroupIdsAndDates(groupIds, dates, AppDatabase.serviceScheduler);
-        studentRepository.insert(students, AppDatabase.serviceScheduler);
-        dayRepository.insert(days, AppDatabase.serviceScheduler);
+        dayRepository.deleteByGroupIdsAndDates(groupIds, dates, AppDatabase.serviceScheduler, AppDatabase.serviceScheduler);
+        studentRepository.insert(students, AppDatabase.serviceScheduler, AppDatabase.serviceScheduler);
+        dayRepository.insert(days, AppDatabase.serviceScheduler, AppDatabase.serviceScheduler);
         groupDao.insert(groups)
                 .subscribeOn(AppDatabase.serviceScheduler)
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(AppDatabase.serviceScheduler)
                 .subscribe((unused) -> {});
         if (!groups.isEmpty()) {
-            Log.d("Updates", days.get(0).absent.toString());
             onSuccess.execute();
         }
     }

@@ -170,7 +170,7 @@ public class DayActivity extends AppCompatActivity {
         loadingProgressBar.setVisibility(View.VISIBLE);
         try {
             Day day = studentsAdapter.getDay();
-            dayRepository.update(day);
+            dayRepository.update(day, AppDatabase.scheduler, AndroidSchedulers.mainThread());
             dayRepository.sendDay(
                     () -> {
                         confirmButton.setEnabled(true);

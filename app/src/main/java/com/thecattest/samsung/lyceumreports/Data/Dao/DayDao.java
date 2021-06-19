@@ -99,6 +99,14 @@ public interface DayDao {
             "LIMIT 1")
     Maybe<List<DayWithAbsent>> getNotSynced();
 
+    @Transaction
+    @Query("SELECT * " +
+            "FROM days " +
+            "WHERE group_id = :groupId " +
+            "ORDER BY date ASC " +
+            "LIMIT 20")
+    Maybe<List<DayWithAbsent>> getSummary(int groupId);
+
     @Query("DELETE FROM days")
     Maybe<Void> deleteAll();
 

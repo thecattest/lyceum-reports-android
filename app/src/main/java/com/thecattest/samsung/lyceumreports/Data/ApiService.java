@@ -28,6 +28,9 @@ public interface ApiService {
     @GET(URLConfig.V2_GROUP_ENDPOINT)
     Call<Group> getGroup(@Path("group_id") int groupId, @Path("date") String date);
 
+    @GET(URLConfig.V2_GROUP_SUMMARY_ENDPOINT)
+    Call<Group> getGroupSummary(@Path("group_id") int groupId);
+
     @POST(URLConfig.V2_DAYS_LIST_ENDPOINT)
     Call<Void> sendDay(@Body Day day);
 
