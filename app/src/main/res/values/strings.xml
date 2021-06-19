@@ -2,7 +2,7 @@
     <string name="app_name">Отсутствующие</string>
 
     <!-- Page titles -->
-    <string name="title_main">Отсутствующие</string>
+    <string name="title_main">@string/app_name</string>
     <string name="title_table">Таблица</string>
     <string name="title_authorization">Авторизация</string>
     <string name="title_day">День</string>

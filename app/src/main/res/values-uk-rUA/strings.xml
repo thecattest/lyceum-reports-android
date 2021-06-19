@@ -1,0 +1,87 @@
+<resources>
+    <string name="app_name">Відсутні</string>
+    
+    <string name="title_main">@string/app_name</string>
+    <string name="title_table">Таблиця</string>
+    <string name="title_authorization">Авторизація</string>
+    <string name="title_day">День</string>
+    <string name="title_class">Клас</string>
+    <string name="title_diagram">Графік</string>
+    <string name="title_statistics">Статистика</string>
+    <string name="title_settings">Налаштування</string>
+    
+    <string name="snackbar_no_info">За цей день даних немає</string>
+    <string name="snackbar_no_absent">Все в класі</string>
+    <string name="snackbar_request_cancelled">скасування</string>
+    <string name="snackbar_server_error">Помилка, спробуйте ще раз пізніше</string>
+    <string name="snackbar_server_error_code">Помилка при виконанні запиту :( код</string>
+    <string name="snackbar_server_error_code_500">Сервер видав помилку 500, спробуйте пізніше</string>
+    <string name="snackbar_server_error_code_500_will_be_sent_later">Помилка 500. Дані відправляться автоматично, коли сервер стане доступний</string>
+    <string name="snackbar_will_be_sent_later">Сервер зараз не доступний. Дані відправляться автоматично, коли це буде можливо</string>
+    <string name="snackbar_server_ok">Спрацювало :)</string>
+    <string name="snackbar_wrong_login_password">Неправильний логін або пароль</string>
+    <string name="snackbar_authorization_successful">Авторизація пройшла успішно</string>
+    <string name="snackbar_back_again_to_exit">Натисніть ще раз, щоб вийти</string>
+
+    <string name="dialog_title_unsaved_changes">Незбережені зміни</string>
+    <string name="dialog_text_unsaved_changes">Зміни за цей день не були надіслані.</string>
+    <string name="dialog_title_no_data">Данних нема</string>
+    <string name="dialog_text_no_data">В обраний вами день ні в одному класі не відзначені відсутні.</string>
+    <string name="dialog_title_choose_group">Вибір класу</string>
+
+    <string name="button_edit">редагувати</string>
+    <string name="button_submit_day_default">Надіслати</string>
+    <string name="button_submit_day_no_one_absent">все в класі</string>
+    <string name="button_cancel">назад</string>
+    <string name="button_date_picker_trigger">вибрати дату</string>
+    <string name="button_refresh">оновити</string>
+    <string name="button_check_again">перевірити знову</string>
+    <string name="button_dismiss">закрити</string>
+    <string name="button_ok">ок</string>
+    <string name="button_login">Увійти</string>
+    <string name="button_logout">вийти</string>
+    <string name="button_discard">вилучити</string>
+    <string name="button_class_picker_trigger">вибрати клас</string>
+    
+    <string name="summary_card_yesterday">Вчора</string>
+    <string name="summary_card_today">Сьогодні</string>
+    <string name="summary_status_no_info">Немає даних</string>
+    <string name="summary_status_no_absent">@string/snackbar_no_absent</string>
+
+    <string name="hint_login">Логін</string>
+    <string name="hint_password">Пароль</string>
+
+    <string name="placeholder_no_chart">Спочатку потрібно вибрати клас</string>
+    <string name="placeholder_no_table">Спочатку потрібно вибрати дату</string>
+    
+    <string name="loading_title">Завантаження…</string>
+    
+    <string name="date_format">yyyy-MM-dd</string>
+    <string-array name="date_months_shortened">
+        <item/>
+        <item>сiч</item>
+        <item>лют</item>
+        <item>бер</item>
+        <item>квiт</item>
+        <item>трав</item>
+        <item>черв</item>
+        <item>лип</item>
+        <item>серп</item>
+        <item>вер</item>
+        <item>жовт</item>
+        <item>лист</item>
+        <item>груд</item>
+    </string-array>
+    
+    <string name="sync_header">Синхронізація</string>
+
+    <string name="auto_update_title">Автопоновлення</string>
+    <string name="auto_update_on">Автоматично завантажувати нові дані з сервера, якщо вони є</string>
+    <string name="auto_update_off">Тільки ручне оновлення</string>
+    <string name="auto_update_key">AUTO_UPDATE</string>
+
+    <string name="auto_send_title">Автоотправка</string>
+    <string name="auto_send_on">Автоматично відправляти зміни при відновленні підключення</string>
+    <string name="auto_send_off">Тільки ручна відправка</string>
+    <string name="auto_send_key">AUTO_SEND</string>
+</resources>
