@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -39,6 +40,7 @@ import retrofit2.Retrofit;
 public class TableFragment extends Fragment {
 
     private SwipeRefreshLayout swipeRefreshLayout;
+    private ConstraintLayout noTable;
     private ProgressBar loadingProgressBar;
     private ListView summaryDayListView;
     private TextView datePickerTrigger;
@@ -87,6 +89,7 @@ public class TableFragment extends Fragment {
     private void findViews(View view) {
         loadingProgressBar = view.findViewById(R.id.loadingProgressBar);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
+        noTable = view.findViewById(R.id.tablePlaceholder);
         summaryDayListView = view.findViewById(R.id.summaryDayList);
         datePickerTrigger = view.findViewById(R.id.datePickerTrigger);
     }
@@ -156,6 +159,9 @@ public class TableFragment extends Fragment {
 
         SummaryDayAdapter summaryDayAdapter = new SummaryDayAdapter(getContext(), days);
         summaryDayListView.setAdapter(summaryDayAdapter);
+
+        swipeRefreshLayout.setVisibility(View.VISIBLE);
+        noTable.setVisibility(View.GONE);
 
         if (days.isEmpty())
             new MaterialAlertDialogBuilder(getContext())

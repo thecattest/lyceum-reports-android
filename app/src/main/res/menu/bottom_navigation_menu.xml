@@ -11,7 +11,7 @@
     <item
         android:id="@+id/diagram"
         android:title="@string/title_diagram"
-        android:icon="@drawable/ic_chart_24"
+        android:icon="@drawable/ic_bar_chart_24"
         android:contentDescription="@string/title_diagram"
         android:enabled="true" />
 

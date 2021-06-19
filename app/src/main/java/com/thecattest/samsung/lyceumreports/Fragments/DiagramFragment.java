@@ -12,8 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -41,7 +41,7 @@ import retrofit2.Retrofit;
 public class DiagramFragment extends Fragment {
 
     private HorizontalBarChart chart;
-    private TextView noBarChart;
+    private ConstraintLayout noChart;
     private Button classPickerButton;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ProgressBar loadingProgressBar;
@@ -90,7 +90,7 @@ public class DiagramFragment extends Fragment {
 
     private void findViews(View view) {
         chart = view.findViewById(R.id.barChart);
-        noBarChart = view.findViewById(R.id.noBarChart);
+        noChart = view.findViewById(R.id.chartPlaceholder);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
         loadingProgressBar = view.findViewById(R.id.loadingProgressBar);
         classPickerButton = view.findViewById(R.id.classPickerTrigger);
@@ -190,7 +190,7 @@ public class DiagramFragment extends Fragment {
         chart.setPinchZoom(true);
         chart.setDoubleTapToZoomEnabled(false);
 
-        noBarChart.setVisibility(View.GONE);
+        noChart.setVisibility(View.GONE);
         swipeRefreshLayout.setVisibility(View.VISIBLE);
         chart.setData(barData);
         chart.invalidate();

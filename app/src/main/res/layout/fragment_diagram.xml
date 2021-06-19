@@ -63,14 +63,35 @@
             android:layout_height="match_parent" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <TextView
-        android:id="@+id/noBarChart"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:gravity="center"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/chartPlaceholder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/loadingProgressBar"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:text="@string/no_bar_chart"
-        android:textSize="@dimen/header_font_size"/>
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+            android:id="@+id/placeholderImage"
+            android:layout_width="@dimen/placeholder_image_side"
+            android:layout_height="@dimen/placeholder_image_side"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:src="@drawable/placeholder_diagram"/>
+
+        <TextView
+            android:id="@+id/placeholderText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/placeholderImage"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:text="@string/placeholder_no_chart"
+            android:textSize="@dimen/placeholder_font_size"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

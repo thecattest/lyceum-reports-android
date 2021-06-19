@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Lyceum Reports</string>
+    <string name="app_name">Отсутствующие</string>
 
     <!-- Page titles -->
     <string name="title_main">Отсутствующие</string>
@@ -57,6 +57,10 @@
     <string name="hint_login">Логин</string>
     <string name="hint_password">Пароль</string>
 
+    <!-- Placeholders -->
+    <string name="placeholder_no_chart">Сначала нужно выбрать класс</string>
+    <string name="placeholder_no_table">Сначала нужно выбрать дату</string>
+
     <!-- Loading Layout -->
     <string name="loading_title">Загрузка…</string>
 
@@ -95,5 +99,4 @@
     <string name="auto_send_on">Автоматически отправлять изменения при восстановлении подключения</string>
     <string name="auto_send_off">Только ручная отправка</string>
     <string name="auto_send_key">AUTO_SEND</string>
-    <string name="no_bar_chart">Сначала нужно выбрать класс</string>
 </resources>
