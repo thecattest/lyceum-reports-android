@@ -173,7 +173,7 @@ public class DiagramFragment extends Fragment {
                 return;
             }
         }
-        BarDataSet dataSet = new BarDataSet(absentCount, "Отсутствующие");
+        BarDataSet dataSet = new BarDataSet(absentCount, "");
         dataSet.setColors(ColorTemplate.LIBERTY_COLORS);
         BarData barData = new BarData(absentDate, dataSet);
         barData.setValueFormatter((v, entry, i, viewPortHandler) -> String.valueOf(Math.round(v)));

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Absent</string>
+    <string name="title_main">@string/app_name</string>
+    <string name="title_table">Table</string>
+    <string name="title_authorization">Authorization</string>
+    <string name="title_day">Day</string>
+    <string name="title_class">Group</string>
+    <string name="title_diagram">Diagram</string>
+    <string name="title_statistics">Statistic</string>
+    <string name="title_settings">Settings</string>
+    <string name="snackbar_no_info">No data for this day</string>
+    <string name="snackbar_no_absent">No absent</string>
+    <string name="snackbar_request_cancelled">Cancel</string>
+    <string name="snackbar_server_error">Error, try again later</string>
+    <string name="snackbar_server_error_code">Error executing request :( code</string>
+    <string name="snackbar_server_error_code_500">Error 500, try again later</string>
+    <string name="snackbar_server_error_code_500_will_be_sent_later">Error 500. Data will be sent when the server will be available</string>
+    <string name="snackbar_will_be_sent_later">Cannot access server. Data will be sent when the server will be available</string>
+    <string name="snackbar_server_ok">Sent :)</string>
+    <string name="snackbar_wrong_login_password">Login or password is incorrect</string>
+    <string name="snackbar_authorization_successful">Authorized</string>
+    <string name="snackbar_back_again_to_exit">Press again to exit</string>
+    <string name="dialog_title_unsaved_changes">Unsaved changes</string>
+    <string name="dialog_text_unsaved_changes">This day changes were not sent</string>
+    <string name="dialog_title_no_data">No data</string>
+    <string name="dialog_text_no_data">No data for the day you chose</string>
+    <string name="dialog_title_choose_group">Choose group</string>
+    <string name="button_edit">edit</string>
+    <string name="button_submit_day_default">send</string>
+    <string name="button_submit_day_no_one_absent">no absent</string>
+    <string name="button_cancel">back</string>
+    <string name="button_date_picker_trigger">pick a date</string>
+    <string name="button_refresh">Refresh</string>
+    <string name="button_check_again">check again</string>
+    <string name="button_dismiss">close</string>
+    <string name="button_ok">OK</string>
+    <string name="button_login">Log in</string>
+    <string name="button_logout">Log out</string>
+    <string name="button_discard">delete</string>
+    <string name="button_class_picker_trigger">pick a group</string>
+    <string name="summary_card_yesterday">Yesterday</string>
+    <string name="summary_card_today">Today</string>
+    <string name="summary_status_no_info">No data</string>
+    <string name="summary_status_no_absent">@string/snackbar_no_absent</string>
+    <string name="hint_login">Login</string>
+    <string name="hint_password">Password</string>
+    <string name="placeholder_no_chart">First pick a group</string>
+    <string name="placeholder_no_table">First pick a date</string>
+    <string name="loading_title">Loading…</string>
+    <string name="date_format">yyyy-MM-dd</string>
+    <string name="sync_header">Synchronization</string>
+    <string name="auto_update_title">Autoupdate</string>
+    <string name="auto_update_on">Automatically download updates if there are</string>
+    <string name="auto_update_off">Manually update only</string>
+    <string name="auto_update_key">AUTO_UPDATE</string>
+    <string name="auto_send_title">Autosend</string>
+    <string name="auto_send_on">Automatically send updates when the connection is restored</string>
+    <string name="auto_send_off">Manually send only</string>
+    <string name="auto_send_key">AUTO_SEND</string>
+
+    <string-array name="date_months_shortened">
+        <item />
+        <item>jan</item>
+        <item>feb</item>
+        <item>mar</item>
+        <item>apr</item>
+        <item>may</item>
+        <item>jun</item>
+        <item>jul</item>
+        <item>aug</item>
+        <item>sep</item>
+        <item>oct</item>
+        <item>nov</item>
+        <item>dec</item>
+    </string-array>
+</resources>

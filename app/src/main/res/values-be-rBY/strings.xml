@@ -22,7 +22,6 @@
     <string name="snackbar_wrong_login_password">Няправільны імя або пароль</string>
     <string name="snackbar_authorization_successful">Аўтарызацыя прайшла паспяхова</string>
     <string name="snackbar_back_again_to_exit">Націсніце яшчэ раз, каб выйсці</string>
-
     
     <string name="dialog_title_unsaved_changes">Несохранённые змены</string>
     <string name="dialog_text_unsaved_changes">Змены за гэты дзень не былі адпраўленыя.</string>
@@ -30,7 +29,6 @@
     <string name="dialog_text_no_data">У абраны вамі дзень ні ў адным класе не адзначаныя адсутныя.</string>
     <string name="dialog_title_choose_group">Выбар класа</string>
 
-    
     <string name="button_edit">рэдагаваць</string>
     <string name="button_submit_day_default">адправіць</string>
     <string name="button_submit_day_no_one_absent">усё ў класе</string>
@@ -44,17 +42,14 @@
     <string name="button_logout">выйсці</string>
     <string name="button_discard">выдаліць</string>
     <string name="button_class_picker_trigger">выбраць клас</string>
-
     
     <string name="summary_card_yesterday">Учора</string>
     <string name="summary_card_today">Сёння</string>
     <string name="summary_status_no_info">Няма дадзеных</string>
     <string name="summary_status_no_absent">@string/snackbar_no_absent</string>
 
-    
     <string name="hint_login">Лагін</string>
     <string name="hint_password">Пароль</string>
-
     
     <string name="placeholder_no_chart">Спачатку трэба выбраць клас</string>
     <string name="placeholder_no_table">Спачатку трэба выбраць дату</string>
