@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -23,13 +22,11 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.thecattest.samsung.lyceumreports.Data.ApiService;
 import com.thecattest.samsung.lyceumreports.Data.AppDatabase;
 import com.thecattest.samsung.lyceumreports.Data.Models.Group;
 import com.thecattest.samsung.lyceumreports.Data.Models.Relations.DayWithAbsent;
-import com.thecattest.samsung.lyceumreports.Data.Models.Relations.GroupWithDaysAndStudents;
 import com.thecattest.samsung.lyceumreports.Data.Repositories.GroupRepository;
 import com.thecattest.samsung.lyceumreports.Managers.LoginManager;
 import com.thecattest.samsung.lyceumreports.Managers.RetrofitManager;
@@ -37,7 +34,6 @@ import com.thecattest.samsung.lyceumreports.R;
 import com.thecattest.samsung.lyceumreports.Services.SyncService;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import retrofit2.Retrofit;
@@ -48,11 +44,10 @@ public class DiagramFragment extends Fragment {
     private TextView noBarChart;
     private Button classPickerButton;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private MaterialToolbar toolbar;
     private ProgressBar loadingProgressBar;
 
-    private HashMap<String, Integer> groupOptions = new HashMap<>();
-    private String[] groupOptionsStrings;
+    private int[] groupIds;
+    private String[] groupLabels;
     private Integer groupId;
 
     private GroupRepository groupRepository;
@@ -76,7 +71,8 @@ public class DiagramFragment extends Fragment {
 
         swipeRefreshLayout.setEnabled(false);
         classPickerButton.setEnabled(false);
-        loadGroupsOptions();
+        loadGroupsLabelsAndIds();
+
         return view;
     }
 
@@ -105,12 +101,12 @@ public class DiagramFragment extends Fragment {
         classPickerButton.setOnClickListener(v -> {
             new MaterialAlertDialogBuilder(getContext())
                     .setTitle(R.string.dialog_title_choose_group)
-                    .setItems(groupOptionsStrings, ((dialog, which) -> {
-                        String label = groupOptionsStrings[which];
+                    .setItems(groupLabels, ((dialog, which) -> {
+                        String label = groupLabels[which];
+                        groupId = groupIds[which];
                         classPickerButton.setText(label);
-                        groupId = groupOptions.get(label);
-                        loadGroup(true);
                         swipeRefreshLayout.setEnabled(true);
+                        loadGroup(true);
                     }))
                     .show();
         });
@@ -124,16 +120,17 @@ public class DiagramFragment extends Fragment {
     }
 
     @SuppressLint("CheckResult")
-    private void loadGroupsOptions() {
+    private void loadGroupsLabelsAndIds() {
         groupRepository.get()
                 .subscribeOn(AppDatabase.scheduler)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(groups -> {
-                    groupOptionsStrings = new String[groups.size()];
+                    groupLabels = new String[groups.size()];
+                    groupIds = new int[groups.size()];
                      for (int i = 0; i < groups.size(); i++) {
                          Group group = groups.get(i).group;
-                         groupOptions.put(group.getLabel(), group.gid);
-                         groupOptionsStrings[i] = group.getLabel();
+                         groupIds[i] = group.gid;
+                         groupLabels[i] = group.getLabel();
                      }
                      classPickerButton.setEnabled(true);
                 });
@@ -170,7 +167,11 @@ public class DiagramFragment extends Fragment {
         for (int i = 0; i < days.size(); i++) {
             DayWithAbsent day = days.get(i);
             absentCount.add(new BarEntry(day.absent.size(), i));
-            absentDate.add(Group.getHumanDate(getContext(), day.day.date));
+            try {
+                absentDate.add(Group.getHumanDate(getContext(), day.day.date));
+            } catch (NullPointerException ignored) {
+                return;
+            }
         }
         BarDataSet dataSet = new BarDataSet(absentCount, "Отсутствующие");
         dataSet.setColors(ColorTemplate.LIBERTY_COLORS);
