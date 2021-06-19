@@ -68,20 +68,20 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 Log.d("Updates", "broadcast got");
-                loadData();
+                loadData(false);
             }
         }, new IntentFilter(SyncService.REDRAW_BROADCAST));
 
         permissions = loginManager.getPermissions();
         updateMenu();
-        loadData();
+        loadData(true);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         startService(new Intent(this, SyncService.class));
-        loadData();
+        loadData(true);
     }
 
     @Override
@@ -161,26 +161,27 @@ public class MainActivity extends AppCompatActivity {
                 () -> {
                     loadingProgressBar.setVisibility(View.GONE);
                     swipeRefreshLayout.setRefreshing(false);
-                    loadData();
+                    loadData(false);
                 },
                 () -> {}
         );
     }
 
     @SuppressLint("CheckResult")
-    private void loadData() {
+    private void loadData(boolean firstTime) {
         groupRepository.get()
                 .subscribeOn(AppDatabase.scheduler)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        groupsWithDaysAndStudent -> updateView(new ArrayList<>(groupsWithDaysAndStudent), false),
-                        (t) -> {},
-                        () -> updateView(new ArrayList<>(), true));
+                        groups -> {
+                            if (groups.isEmpty() && firstTime)
+                                refreshData();
+                            else
+                                updateView(new ArrayList<>(groups));
+                        });
     }
 
-    private void updateView(ArrayList<GroupWithDaysAndStudents> groups, boolean noData) {
-        if (groups.isEmpty() && !noData)
-            refreshData();
+    private void updateView(ArrayList<GroupWithDaysAndStudents> groups) {
         GroupsAdapter groupsAdapter = new GroupsAdapter(this, groups, permissions.canEdit);
         groupsListView.setAdapter(groupsAdapter);
     }
